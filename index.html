@@ -9,44 +9,63 @@
 <div id="ehp"></div>
 
 <script type="text/template" id="simulation-template">
+    <label>Your level</label>
+    <input type="text" class="level" value="" /> <br />
+
     <label>Mob level</label>
     <input type="text" class="moblevel" value="" /> <br />
 
-    <label>Life</label>
-    <input type="text" class="life" value="" /> <br />
+    <label>VIT</label>
+    <input type="text" class="base_vit" value="" /> <br />
+
+    <label>WarCry runed +life</label>
+    <input type="checkbox" class="warcry_life" value="1" />
+    (<span class="warcry_life_alt_ehp"></span>)  <br />
+
+    <label>Buffed Life</label>
+    <input type="text" readonly=true class="life" value="" /> <hr />
 
     <label>Armor</label>
     <input type="text" class="base_armor" value="" />  <br />
 
     <label>Tough As Nails</label>
-    <input type="checkbox" class="toughasnails" value="1" /> <br />
+    <input type="checkbox" class="toughasnails" value="1" />
+    (<span class="toughasnails_alt_ehp"></span>) <br />
 
     <label>Vit To Armor</label>
-    <input type="checkbox" class="vittoarmor" value="1" /> <br />
+    <input type="checkbox" class="vittoarmor" value="1" />
+    (<span class="vittoarmor_alt_ehp"></span>) <br />
 
     <label>WarCry normal</label>
-    <input type="checkbox" class="warcry" value="1" /> <br />
+    <input type="checkbox" class="warcry" value="1" />
+    (<span class="warcry_alt_ehp"></span>)  <br />
 
     <label>WarCry runed +armor</label>
-    <input type="checkbox" class="warcry_armor" value="1" /> <br />
+    <input type="checkbox" class="warcry_armor" value="1" />
+    (<span class="warcry_armor_alt_ehp"></span>)  <br />
 
+    <label>Buffed Armor</label>
     <input type="text" readonly=true class="armor" value="" />
-    <span class="armor_reduc"></span> <br />
+    <span class="armor_reduc"></span> <hr />
 
     <label>Resistance</label>
     <input type="text" class="base_resist" value="" /> <br />
 
     <label>WarCry runed +resist</label>
-    <input type="checkbox" class="warcry_resist" value="1" /> <br />
+    <input type="checkbox" class="warcry_resist" value="1" />
+    (<span class="warcry_resist_alt_ehp"></span>) <br />
 
+    <label>Buffed Resistance</label>
     <input type="text" readonly=true class="resist" value="" />
-    <span class="resist_reduc"></span> <br />
+    <span class="resist_reduc"></span> <hr />
 
     <label>Threatening Shout (you can't get it on ranged)</label>
-    <input type="checkbox" class="threat_shout" value="1" /> <br />
+    <input type="checkbox" class="threat_shout" value="1" />
+    (<span class="threat_shout_alt_ehp"></span>) <br />
 
     <label>Superstition (won't work on physical)</label>
-    <input type="checkbox" class="superstition" value="1" /> <br />
+    <input type="checkbox" class="superstition" value="1" />
+    (<span class="superstition_alt_ehp"></span>) <br />
 
     <hr />
     <label>EHP</label>
@@ -58,9 +77,10 @@
 (function($) {
 	var Simulation = Backbone.Model.extend({
 	    defaults : {
-            life:         30000,
+            level:        60,
+            base_vit:     1200,
 		    base_armor:   4000,
-		    base_resist:  400,
+		    base_resist:  300,
 		    
 		    melee:        true,
 	
@@ -72,8 +92,10 @@
             threat_shout: false,
             superstition: false,
 		    
-		    moblevel:    63,
+		    moblevel:     63,
 
+            vit:          null,
+            life:         null,
             armor:        null,
             resist:       null,
             armor_reduc:  null,
@@ -89,8 +111,9 @@
 	    },
 	  
 	    simulate : function () {
-            this.set('armor', this.get('base_armor'));
+            this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
+            this.set('vit',    this.get('base_vit'));
             
             if (this.get('toughasnails')) {
                 this.set('armor', this.get('armor') * 1.25);
@@ -127,6 +150,18 @@
                 modifier *= (1 - 0.30);
             }
             
+            console.log(this.get('vit') *10);
+            
+            if (this.get('level') < 35) {
+            	this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
+            } else {
+            	this.set('life', (60 - 25) * this.get('vit'));
+            }
+            
+            if (this.get('warcry_life')) {
+	            this.set('life', this.get('life') * 1.10);
+		    }
+            
             var ehp = this.get('life') / modifier;
 	    	
 		    this.set('ehp', ehp);
@@ -142,7 +177,8 @@
 		},
 		
 		fieldMap: {
-            '.life':            'life',
+            '.level':           'level',
+            '.base_vit':        'base_vit',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.toughasnails':    'toughasnails',
@@ -150,11 +186,13 @@
             '.warcry':          'warcry',
             '.warcry_armor':    'warcry_armor',
             '.warcry_resist':   'warcry_resist',
+            '.warcry_life':     'warcry_life',
             '.threat_shout':    'threat_shout',
             '.superstition':    'superstition',
             
             '.moblevel':        'moblevel',
 
+            '.life':            'life',
             '.armor':           'armor',
             '.resist':          'resist',
             '.armor_reduc':     'armor_reduc',
@@ -202,13 +240,44 @@
             	var $fieldObj = $(selector,  this.el);
             	
             	if ($fieldObj.is('span')) {
-                    $fieldObj.html(this.model.get(field));
+                    $fieldObj.html(this.prepareVal(this.model.get(field)));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     $fieldObj.prop('checked', !!this.model.get(field));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                    $fieldObj.val(this.model.get(field));
+                    $fieldObj.val(this.prepareVal(this.model.get(field)));
             	}
             }, this);
+            
+            var ehp = this.model.get('ehp');
+            
+            var alt_booleans = ['toughasnails', 'vittoarmor', 'warcry', 'warcry_armor', 'warcry_resist', 'warcry_life', 'threat_shout', 'superstition'];
+            
+            _.each(alt_booleans, function(alt_field) {
+                var selector  = "." + alt_field +  "_alt_ehp";
+                var alt_val   = !this.model.get(alt_field);
+                var alt_model = this.model.clone();
+                
+                alt_model.set(alt_field, alt_val);
+                
+                $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model, alt_val) + "% change");
+            }, this);
+		},
+		
+		alternativePercentage: function(alternative, toughasnails_alt) {
+            var val1 = this.model.get('ehp');
+            var val2 = alternative.get('ehp');
+            
+            var relativeto = toughasnails_alt ? val1 : val2;
+			
+			return this.prepareVal(((val2 - val1) / relativeto) * 100);
+		},
+		
+		prepareVal: function(val) {
+			return this.roundNumber(val, 3);
+		},
+		
+		roundNumber: function(num, dec) {
+		    return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
 		},
 		
 		render: function() {			
