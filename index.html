@@ -18,6 +18,9 @@
     <label>VIT</label>
     <input type="text" class="base_vit" value="" /> <br />
 
+    <label>+ Life %</label>
+    <input type="text" class="extra_life" value="" /> <br />
+
     <label>WarCry runed +life</label>
     <input type="checkbox" class="warcry_life" value="1" />
     (<span class="warcry_life_alt_ehp"></span>)  <br />
@@ -81,6 +84,7 @@
             base_vit:     1200,
 		    base_armor:   4000,
 		    base_resist:  300,
+		    extra_life:   12,
 		    
 		    melee:        true,
 	
@@ -102,9 +106,7 @@
             resist_reduc: null,
 	    },
 	  
-	    initialize : function () {
-	    	console.log(this);
-	    	
+	    initialize : function () {	    	
 	    	this.on('change', this.simulate);
 	
 	    	this.simulate();
@@ -149,18 +151,20 @@
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
             }
-            
-            console.log(this.get('vit') *10);
-            
+                        
             if (this.get('level') < 35) {
             	this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
             } else {
             	this.set('life', (60 - 25) * this.get('vit'));
             }
             
+            var lifemodifier = 1 + (this.get('extra_life') / 100);
+            
             if (this.get('warcry_life')) {
-	            this.set('life', this.get('life') * 1.10);
-		    }
+                lifemodifier += 0.10;
+            }
+                        
+            this.set('life', this.get('life') * lifemodifier);
             
             var ehp = this.get('life') / modifier;
 	    	
@@ -178,6 +182,7 @@
 		
 		fieldMap: {
             '.level':           'level',
+            '.extra_life':      'extra_life',
             '.base_vit':        'base_vit',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
