@@ -42,6 +42,12 @@
     <input type="text" readonly=true class="resist" value="" />
     <span class="resist_reduc"></span> <br />
 
+    <label>Threatening Shout (you can't get it on ranged)</label>
+    <input type="checkbox" class="threat_shout" value="1" /> <br />
+
+    <label>Superstition (won't work on physical)</label>
+    <input type="checkbox" class="superstition" value="1" /> <br />
+
     <hr />
     <label>EHP</label>
     <input type="text" readonly=true class="ehp" value="" />
@@ -63,6 +69,8 @@
             warcry:       false,
             warcry_armor: false,
             warcry_resist:false,
+            threat_shout: false,
+            superstition: false,
 		    
 		    moblevel:    63,
 
@@ -102,8 +110,24 @@
             
             this.set('armor_reduc', this.get('armor') / (50 * this.get('moblevel') + this.get('armor')));
             this.set('resist_reduc', this.get('resist') / (5 * this.get('moblevel') + this.get('resist')));
-                        
-            var ehp = this.get('life') / ((1 - this.get('armor_reduc')) * (1 - this.get('resist_reduc')));
+            
+            var modifier = 1;
+            modifier *= (1 - this.get('armor_reduc'));
+            modifier *= (1 - this.get('resist_reduc'));
+
+            if (this.get('threat_shout')) {
+                modifier *= (1 - 0.25);
+            }
+            
+            if (this.get('superstition')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+            
+            var ehp = this.get('life') / modifier;
 	    	
 		    this.set('ehp', ehp);
 	    }
@@ -126,6 +150,8 @@
             '.warcry':          'warcry',
             '.warcry_armor':    'warcry_armor',
             '.warcry_resist':   'warcry_resist',
+            '.threat_shout':    'threat_shout',
+            '.superstition':    'superstition',
             
             '.moblevel':        'moblevel',
 
