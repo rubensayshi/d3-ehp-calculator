@@ -48,7 +48,7 @@
                 <tr>
 	                <th width="35%">Option</th>
 	                <th>Choice</th>
-	                <th width="30%">Alternative</th>
+	                <th width="30%">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -146,7 +146,7 @@
                 <tr>
 	                <th width="35%">Barbarian Options</th>
 	                <th>&nbsp;</th>
-	                <th width="30%">&nbsp;</th>
+	                <th width="30%">Alternative</th>
                 </tr>
             </thead>
             <tr>
@@ -201,7 +201,7 @@
                 <tr>
 	                <th width="35%">Wizard Options</th>
 	                <th>&nbsp;</th>
-	                <th width="30%">&nbsp;</th>
+	                <th width="30%">Alternative</th>
                 </tr>
             </thead> 
             <tr>
@@ -243,9 +243,10 @@
 
 <script>
 (function($) {
-    var Simulation = Backbone.Model.extend({
+	var VERSION = "32c4fee62e6fe2b7efc9898f7344a1cd9f09aa21";
+	
+    var Character = Backbone.Model.extend({
         defaults : {
-            your_class:   "br",
             level:        60,
             base_vit:     1200,
             base_armor:   4000,
@@ -258,19 +259,6 @@
                 "wd": { melee: false },
                 "wz": { melee: false }
             },
-    
-            toughasnails: false,
-            vittoarmor:   false,
-            warcry:       false,
-            warcry_armor: false,
-            warcry_resist:false,
-            threat_shout: false,
-            superstition: false,
-            
-            energy_armor: false,
-            prismatic:    false,
-            blur:         false,
-            glass_canon:  false,
             
             moblevel:     63,
 
@@ -282,14 +270,19 @@
             resist_reduc: null,
         },
       
-        initialize : function () {            
+        initialize : function () {
+        	if (this.get('options')) {
+	            _.each(this.get('options'), function(o_default, o_name) {
+	                this.set(o_name, o_default);
+	            }, this);   
+            }
             this.on('change', this.simulate);
-    
+            
             this.simulate();
         },
         
         getAllInputStats : function () {
-        	return {
+        	return _.extend({}, {
                 your_class:   this.get('your_class'),
                 level:        this.get('level'),
                 base_vit:     this.get('base_vit'),
@@ -297,41 +290,25 @@
                 base_resist:  this.get('base_resist'),
                 extra_life:   this.get('extra_life'),
                 moblevel:     this.get('moblevel'),
-        	};
+        	}, this.get('options'));
         },
+        
+        /*
+         * these modify methods should be implemented by specific class classes
+         */
+        modifyArmor             : function (armor)        { return armor; },
+        modifyResist            : function (resist)       { return resist; },
+        modifyLife              : function (life)         { return life; },
+        modifyLifeModifier      : function (lifemodifier) { return lifemodifier; },
+        modifyReductionModifier : function (modifier)     { return modifier; },
       
         simulate : function () {
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
-            
-            if (this.get('toughasnails')) {
-                this.set('armor', this.get('armor') * 1.25);
-            }
-            if (this.get('vittoarmor')) {
-                this.set('armor', this.get('armor') + this.get('vit'));
-            }
-            if (this.get('warcry_armor')) {
-                this.set('armor', this.get('armor') * 1.4);
-            } else if (this.get('warcry')) {
-                this.set('armor', this.get('armor') * 1.2);
-            }
-            
-            if (this.get('warcry_resist')) {
-                this.set('resist', this.get('resist') * 1.50);
-            }
-            
-            if (this.get('energy_armor')) {
-                this.set('armor', this.get('armor') * 1.65);
-            }
-            if (this.get('prismatic')) {
-                this.set('resist', this.get('resist') * 1.40);
-            }
-            if (this.get('glass_cannon') && this.get('glass_cannon')) {
-                this.set('armor', this.get('armor') * .90);
-                this.set('resist', this.get('resist') * .90);
-            }
-            
+
+            this.set('armor', this.modifyArmor(this.get('armor')));
+            this.set('resist', this.modifyResist(this.get('resist'))); 
             
             this.set('armor_reduc', this.get('armor') / (50 * this.get('moblevel') + this.get('armor')));
             this.set('resist_reduc', this.get('resist') / (5 * this.get('moblevel') + this.get('resist')));
@@ -339,24 +316,8 @@
             var modifier = 1;
             modifier *= (1 - this.get('armor_reduc'));
             modifier *= (1 - this.get('resist_reduc'));
-
-            if (this.get('threat_shout')) {
-                modifier *= (1 - 0.25);
-            }
             
-            if (this.get('superstition')) {
-                modifier *= (1 - 0.20);
-            }
-            
-            if (this.get('classes')[this.get('your_class')].melee) {
-                modifier *= (1 - 0.30);
-            }
-            
-            var modifier_melee = modifier;
-            
-            if (this.get('blur')) {
-                modifier_melee *= (1 - 0.20);
-            }
+            modifier = this.modifyReductionModifier(modifier);
             
             if (this.get('level') < 35) {
                 this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
@@ -366,26 +327,103 @@
             
             var lifemodifier = 1 + (this.get('extra_life') / 100);
             
-            if (this.get('warcry_life')) {
-                lifemodifier += 0.10;
-            }
+            lifemodifier = this.modifyLifeModifier(lifemodifier);
                         
             this.set('life', this.get('life') * lifemodifier);
             
-            var ehp_melee = this.get('life') / modifier_melee;
+            this.set('life', lifemodifier = this.modifyLife(this.get('life')));
+                     
+            
             var ehp = this.get('life') / modifier;
             
-            this.set('ehp_melee', ehp_melee);
             this.set('ehp', ehp);
         }
     });
+    var Barbarian = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "br",
+            melee     : true,
+            options   : {
+                toughasnails: false,
+                vittoarmor:   false,
+                warcry:       false,
+                warcry_armor: false,
+                warcry_resist:false,
+                threat_shout: false,
+                superstition: false,
+            },
+        }),
+        
+        modifyArmor : function (armor) {
+            if (this.get('toughasnails')) {
+                armor *= 1.25;
+            }
+            if (this.get('vittoarmor')) {
+                armor += this.get('vit');
+            }
+            if (this.get('warcry_armor')) {
+                armor *= 1.4;
+            } else if (this.get('warcry')) {
+                armor *= 1.2;
+            }
+            
+            return armor;
+        },
+        
+        modifyResist : function (resist) {
+            if (this.get('warcry_resist')) {
+                resist *= 1.50;
+            }
+            
+            return resist;
+        },
 
+        modifyLifeModifier : function (lifemodifier) {
+            if (this.get('warcry_life')) {
+                lifemodifier += 0.10;
+            }
+            
+            return lifemodifier; 
+        },
+        
+        modifyReductionModifier : function (modifier) {
+            if (this.get('threat_shout')) {
+                modifier *= (1 - 0.25);
+            }
+            
+            if (this.get('superstition')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+            
+            return modifier;
+        }
+    });
+    var Wizard = Barbarian.extend({
+        defaults: _.extend({}, Character.prototype.defaults, Barbarian.prototype.defaults, {
+            your_class: "wz",
+            melee     : false,
+            options   : {
+                toughasnails: false,
+                vittoarmor:   false,
+                warcry:       false,
+                warcry_armor: false,
+                warcry_resist:false,
+                threat_shout: false,
+                superstition: false,
+            },
+        })
+    });
+        
     var SimulationView = Backbone.View.extend({
         el: $('#ehp'),
         
         events: {
             'change input':       'viewToModel',
-            'change select':      'changeClass',
+            'change .your_class': 'changeClass',
             'click button.reset': 'viewToModel'
         },
         
@@ -440,8 +478,8 @@
             'glass_cannon'
         ],
         
-        initialize: function() {
-            _.bindAll(this, 'render', 'modelToView', 'viewToModel');
+        initialize: function() {        	
+            _.bindAll(this, 'render', 'modelToView', 'viewToModel', 'changeClass');
 
             this.template = _.template($('#simulation-template').html());
             
@@ -459,8 +497,6 @@
         },
         
         viewToModel: function() {
-            console.log('viewToModel');
-
             _.each(this.fieldMap, function(field, selector) {   
                 var $fieldObj = $(selector,  this.el);
                 
@@ -517,12 +553,11 @@
             }, this);
         },
         
-        changeClass: function() {
-            _.each(this.classFields, function(field) {
-                this.model.set(field, false, {silent: true});
-            }, this);
-            
-            this.viewToModel();
+        changeClass: function(event) {        	
+        	classname = $('.your_class', this.el).val();
+        	this.model = getModelForClass(classname);
+
+            this.modelToView();
         },
         
         alternativePercentage: function(alt_ehp, ehp, toughasnails_alt) {
@@ -547,21 +582,28 @@
         },
     });
     
-    
-    if (false && localStorage) {
-        stats = localStorage.getItem('previous_input_stats') ? JSON.parse(localStorage.getItem('previous_input_stats')) : {};
+    var getModelForClass = function(classname, forceNew) {
+    	storage_key = 'previous_' + VERSION + '_' + classname;
+        if (classname == 'br')      modelclass = Barbarian;
+        else if (classname == 'wz') modelclass = Wizard;
+        else                        console.log(classname);
+    	
+        if (!forceNew && localStorage && localStorage.getItem(storage_key)) {
+            model = new modelclass(JSON.parse(localStorage.getItem(storage_key)));
+        } else {
+            model = new modelclass();
+        }
         
-        model = new Simulation(stats);
+        if (localStorage) {
+            model.on('change', function(model) {
+                localStorage.setItem(storage_key, JSON.stringify(model));
+            }, model);
+        }
         
-        model.on('change', function(model) {
-        	localStorage.setItem('previous_input_stats', JSON.stringify(this.getAllInputStats()));
-        }, model);
-        
-    } else {
-    	model = new Simulation();
+        return model;
     }
     
-    var simView = new SimulationView({'model': model});
+    var simView = new SimulationView({'model': getModelForClass('br')});
 })(jQuery);
 </script>
 
