@@ -273,7 +273,7 @@
         initialize : function () {
         	if (this.get('options')) {
 	            _.each(this.get('options'), function(o_default, o_name) {
-	                this.set(o_name, o_default);
+	                if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
 	            }, this);   
             }
             this.on('change', this.simulate);
@@ -296,13 +296,14 @@
         /*
          * these modify methods should be implemented by specific class classes
          */
-        modifyArmor             : function (armor)        { return armor; },
-        modifyResist            : function (resist)       { return resist; },
-        modifyLife              : function (life)         { return life; },
-        modifyLifeModifier      : function (lifemodifier) { return lifemodifier; },
-        modifyReductionModifier : function (modifier)     { return modifier; },
+        modifyArmor                  : function (armor)        { return armor; },
+        modifyResist                 : function (resist)       { return resist; },
+        modifyLife                   : function (life)         { return life; },
+        modifyLifeModifier           : function (lifemodifier) { return lifemodifier; },
+        modifyReductionModifier      : function (modifier)     { return modifier; },
+        modifyReductionModifierMelee : function (modifier)     { return modifier; },
       
-        simulate : function () {
+        simulate : function () { 
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
@@ -318,6 +319,8 @@
             modifier *= (1 - this.get('resist_reduc'));
             
             modifier = this.modifyReductionModifier(modifier);
+            
+            var modifier_melee = this.modifyReductionModifierMelee(modifier);
             
             if (this.get('level') < 35) {
                 this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
@@ -335,8 +338,10 @@
                      
             
             var ehp = this.get('life') / modifier;
+            var ehp_melee = this.get('life') / modifier_melee;
             
             this.set('ehp', ehp);
+            this.set('ehp_melee', ehp_melee);
         }
     });
     var Barbarian = Character.extend({
@@ -402,20 +407,61 @@
             return modifier;
         }
     });
-    var Wizard = Barbarian.extend({
-        defaults: _.extend({}, Character.prototype.defaults, Barbarian.prototype.defaults, {
+    var Wizard = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
             your_class: "wz",
             melee     : false,
             options   : {
-                toughasnails: false,
-                vittoarmor:   false,
-                warcry:       false,
-                warcry_armor: false,
-                warcry_resist:false,
-                threat_shout: false,
-                superstition: false,
+                energy_armor:            false,
+                prismatic:  false,
+                blur:                    false,
+                glass_cannon:            false,
             },
-        })
+        }),
+        
+        modifyArmor : function (armor) {
+            if (this.get('energy_armor')) {
+                armor *= 1.65;
+            }
+            if (this.get('glass_cannon')) {
+                armor*= .90;
+            }
+            
+            return armor;
+        },
+        
+        modifyResist : function (resist) {
+            if (this.get('prismatic')) {
+                resist *= 1.40;
+            }
+            if (this.get('glass_cannon')) {
+                resist *= .90;
+            }
+            
+            return resist;
+        },
+
+        modifyLifeModifier : function (lifemodifier) {
+            return lifemodifier; 
+        },
+        
+        modifyReductionModifier : function (modifier) {
+            
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+            
+            return modifier;
+        },
+        
+        modifyReductionModifierMelee : function (modifier) {
+            
+            if (this.get('blur')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            return modifier;
+        }
     });
         
     var SimulationView = Backbone.View.extend({
@@ -490,10 +536,9 @@
                 "wd": _.template($('#simulation-not-available-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
-            this.model.on('change', this.modelToView, this);
             
             this.render();
-            this.modelToView();
+            this.changeClass();
         },
         
         viewToModel: function() {
@@ -554,8 +599,10 @@
         },
         
         changeClass: function(event) {        	
-        	classname = $('.your_class', this.el).val();
-        	this.model = getModelForClass(classname);
+            classname = $('.your_class', this.el).val();
+            
+            this.model = getModelForClass(classname);
+            this.model.on('change', this.modelToView, this);
 
             this.modelToView();
         },
