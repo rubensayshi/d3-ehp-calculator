@@ -26,6 +26,9 @@
             border-top: 1px solid black;
             border-bottom: 2px solid black;
          }
+         table {
+            width: 780px;
+         }
          thead th {
             border-bottom: 1px solid black;
          }
@@ -40,15 +43,28 @@
 
 <div class="templates">
     <div id="simulation-template">
-        <table class="table table-bordered">
+        <table id="options" class="table table-bordered">
             <thead>
                 <tr>
-	                <th>Option</th>
+	                <th width="35%">Option</th>
 	                <th>Choice</th>
-	                <th>Alternative</th>
+	                <th width="30%">Alternative</th>
                 </tr>
             </thead>
             <tbody>
+              <tr>
+                <th>Your Class</th>
+                <td>
+                  <select class="your_class">
+                    <option value="br">Barbarian</option>
+                    <option value="dh">Demon Hunter</option>
+                    <option value="mn">Monk</option>
+                    <option value="wd">Witch Doctor</option>
+                    <option value="wz">Wizard</option>
+                  </select>
+                </td>
+                <td></td>
+              </tr>
 	            <tr>
 		            <th>Your level</th>
 		            <td><input type="text" class="level" value="" /></td>
@@ -70,72 +86,47 @@
                     <td></td>
 	            </tr>
                 <tr>
-		            <th>War Cry - Invigorate</th>
-		            <td><input type="checkbox" class="warcry_life" value="1" /></td>
-                    <td class="warcry_life_alt_ehp"></td>
-	            </tr>
-                <tr class="highlighted-row">
-		            <th>Buffed Life</th>
-		            <td><input type="text" readonly=true class="life" value="" /></td>
-                    <td></td>
-	            </tr>
-                <tr>
 		            <th>Armor</th>
 		            <td><input type="text" class="base_armor" value="" />  <br /></td>
                     <td></td>
-	            </tr>
-                <tr>
-		            <th>Tough As Nails</th>
-		            <td><input type="checkbox" class="toughasnails" value="1" /></td>
-                    <td class="toughasnails_alt_ehp"></td>
-	            </tr>
-                <tr>
-		            <th>Nerves Of Steel</th>
-		            <td><input type="checkbox" class="vittoarmor" value="1" /></td>
-                    <td class="vittoarmor_alt_ehp"></td>
-	            </tr>
-                <tr>
-		            <th>War Cry - No Rune</th>
-		            <td><input type="checkbox" class="warcry" value="1" /></td>
-                    <td class="warcry_alt_ehp"></td>
-	            </tr>
-                <tr>
-		            <th>War Cry - Hardened Wrath</th>
-		            <td><input type="checkbox" class="warcry_armor" value="1" /></td>
-                    <td class="warcry_armor_alt_ehp"></td>
-	            </tr>
-                <tr class="highlighted-row">
-		            <th>Buffed Armor</th>
-		            <td><input type="text" readonly=true class="armor" value="" /></td>
-                    <td class="armor_reduc"></td>
 	            </tr>
                 <tr>
 		            <th>Resistance</th>
 		            <td><input type="text" class="base_resist" value="" /></td>
                     <td></td>
 	            </tr>
+           </table>
+           <table id="results" class="table table-bordered">
+             <thead>
                 <tr>
-		            <th>WarCry - Impunity</th>
-		            <td><input type="checkbox" class="warcry_resist" value="1" /></td>
-                    <td class="warcry_resist_alt_ehp"></td>
+	                <th width="35%">Results</th>
+	                <th>&nbsp;</th>
+	                <th width="30%">&nbsp;</th>
+                </tr>
+             </thead>
+             <tbody>
+                <tr class="highlighted-row">
+		            <th>Buffed Life</th>
+		            <td><input type="text" readonly=true class="life" value="" /></td>
+                    <td></td>
+	            </tr>
+                <tr class="highlighted-row">
+		            <th>Buffed Armor</th>
+		            <td><input type="text" readonly=true class="armor" value="" /></td>
+                    <td class="armor_reduc"></td>
 	            </tr>
                 <tr class="highlighted-row">
 		            <th>Buffed Resistance</th>
 		            <td><input type="text" readonly=true class="resist" value="" /></td>
                     <td class="resist_reduc"></td>
 	            </tr>
-                <tr>
-		            <th>Threatening Shout (you can't get it on ranged)</th>
-		            <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                    <td class="threat_shout_alt_ehp"></td>
-	            </tr>
-                <tr>
-		            <th>Superstition (won't work on physical)</th>
-		            <td><input type="checkbox" class="superstition" value="1" /></td>
-                    <td class="superstition_alt_ehp"></td>
-	            </tr>
             </tbody>
             <tfoot>
+                <tr class="highlighted-row">
+                    <th>EHP melee</th>
+                    <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
+                    <td></td>
+                </tr>
                 <tr class="highlighted-row">
                     <th>EHP</th>
                     <td><input type="text" readonly=true class="ehp" value="" /></td>
@@ -149,19 +140,124 @@
             </tfoot>
         </table>
     </div>
+    <div id="simulation-br-template">
+        <table class="table table-bordered class_options">
+            <thead>
+                <tr>
+	                <th width="35%">Barbarian Options</th>
+	                <th>&nbsp;</th>
+	                <th width="30%">&nbsp;</th>
+                </tr>
+            </thead>
+            <tr>
+              <th>War Cry - Invigorate</th>
+              <td><input type="checkbox" class="warcry_life" value="1" /></td>
+                  <td class="warcry_life_alt_ehp"></td>
+            </tr>
+            
+              <tr>
+              <th>Tough As Nails</th>
+              <td><input type="checkbox" class="toughasnails" value="1" /></td>
+                  <td class="toughasnails_alt_ehp"></td>
+            </tr>
+              <tr>
+              <th>Nerves Of Steel</th>
+              <td><input type="checkbox" class="vittoarmor" value="1" /></td>
+                  <td class="vittoarmor_alt_ehp"></td>
+            </tr>
+              <tr>
+              <th>War Cry - No Rune</th>
+              <td><input type="checkbox" class="warcry" value="1" /></td>
+                  <td class="warcry_alt_ehp"></td>
+            </tr>
+              <tr>
+              <th>War Cry - Hardened Wrath</th>
+              <td><input type="checkbox" class="warcry_armor" value="1" /></td>
+                  <td class="warcry_armor_alt_ehp"></td>
+            </tr>
+             
+              <tr>
+              <th>WarCry - Impunity</th>
+              <td><input type="checkbox" class="warcry_resist" value="1" /></td>
+                  <td class="warcry_resist_alt_ehp"></td>
+            </tr>
+            
+              <tr>
+              <th>Threatening Shout (you can't get it on ranged)</th>
+              <td><input type="checkbox" class="threat_shout" value="1" /></td>
+                  <td class="threat_shout_alt_ehp"></td>
+            </tr>
+              <tr>
+              <th>Superstition (won't work on physical)</th>
+              <td><input type="checkbox" class="superstition" value="1" /></td>
+                  <td class="superstition_alt_ehp"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div id="simulation-wz-template">
+        <table class="table table-bordered class_options">
+            <thead>
+                <tr>
+	                <th width="35%">Wizard Options</th>
+	                <th>&nbsp;</th>
+	                <th width="30%">&nbsp;</th>
+                </tr>
+            </thead> 
+            <tr>
+              <th>Blur</th>
+              <td><input type="checkbox" class="blur" value="1" /></td>
+                  <td class="blur_alt_ehp melee_only"></td>
+            </tr>
+            <tr>
+              <th>Energy Armor</th>
+              <td><input type="checkbox" class="energy_armor" value="1" /></td>
+                  <td class="energy_armor_alt_ehp"></td>
+            </tr>
+            <tr>
+              <th>Energy Armor - Prismatic</th>
+              <td><input type="checkbox" class="prismatic" value="1" /></td>
+                  <td class="prismatic_alt_ehp"></td>
+            </tr>
+            <tr>
+              <th>Glass Cannon</th>
+              <td><input type="checkbox" class="glass_cannon" value="1" /></td>
+                  <td class="glass_cannon_alt_ehp"></td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div id="simulation-not-available-template">
+        <table class="table table-bordered class_options">
+            <thead>
+                <tr>
+	                <th width="35%">Class Options Not Supported</th>
+	                <th>&nbsp;</th>
+	                <th width="30%">&nbsp;</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 
 <script>
 (function($) {
     var Simulation = Backbone.Model.extend({
         defaults : {
+            your_class:   "br",
             level:        60,
             base_vit:     1200,
             base_armor:   4000,
             base_resist:  300,
             extra_life:   12,
-            
-            melee:        true,
+            classes:      {
+                "br": { melee: true },
+                "dh": { melee: false },
+                "mn": { melee: true },
+                "wd": { melee: false },
+                "wz": { melee: false }
+            },
     
             toughasnails: false,
             vittoarmor:   false,
@@ -170,6 +266,11 @@
             warcry_resist:false,
             threat_shout: false,
             superstition: false,
+            
+            energy_armor: false,
+            prismatic:    false,
+            blur:         false,
+            glass_canon:  false,
             
             moblevel:     63,
 
@@ -208,6 +309,18 @@
                 this.set('resist', this.get('resist') * 1.50);
             }
             
+            if (this.get('energy_armor')) {
+                this.set('armor', this.get('armor') * 1.65);
+            }
+            if (this.get('prismatic')) {
+                this.set('resist', this.get('resist') * 1.40);
+            }
+            if (this.get('glass_cannon') && this.get('glass_cannon')) {
+                this.set('armor', this.get('armor') * .90);
+                this.set('resist', this.get('resist') * .90);
+            }
+            
+            
             this.set('armor_reduc', this.get('armor') / (50 * this.get('moblevel') + this.get('armor')));
             this.set('resist_reduc', this.get('resist') / (5 * this.get('moblevel') + this.get('resist')));
             
@@ -223,10 +336,16 @@
                 modifier *= (1 - 0.20);
             }
             
-            if (this.get('melee')) {
+            if (this.get('classes')[this.get('your_class')].melee) {
                 modifier *= (1 - 0.30);
             }
-                        
+            
+            var modifier_melee = modifier;
+            
+            if (this.get('blur')) {
+                modifier_melee *= (1 - 0.20);
+            }
+            
             if (this.get('level') < 35) {
                 this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
             } else {
@@ -241,8 +360,10 @@
                         
             this.set('life', this.get('life') * lifemodifier);
             
+            var ehp_melee = this.get('life') / modifier_melee;
             var ehp = this.get('life') / modifier;
             
+            this.set('ehp_melee', ehp_melee);
             this.set('ehp', ehp);
         }
     });
@@ -252,15 +373,19 @@
         
         events: {
             'change input':       'viewToModel',
+            'change select':      'changeClass',
             'click button.reset': 'viewToModel'
         },
         
         fieldMap: {
+            '.your_class':      'your_class',
             '.level':           'level',
             '.extra_life':      'extra_life',
             '.base_vit':        'base_vit',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
+            
+            // BARBARIAN
             '.toughasnails':    'toughasnails',
             '.vittoarmor':      'vittoarmor',
             '.warcry':          'warcry',
@@ -270,6 +395,12 @@
             '.threat_shout':    'threat_shout',
             '.superstition':    'superstition',
             
+            // WIZARD
+            '.energy_armor':    'energy_armor',
+            '.prismatic':       'prismatic',
+            '.blur':            'blur',
+            '.glass_cannon':    'glass_cannon',
+            
             '.moblevel':        'moblevel',
 
             '.life':            'life',
@@ -278,8 +409,24 @@
             '.armor_reduc':     'armor_reduc',
             '.resist_reduc':    'resist_reduc',  
             
+            '.ehp_melee':       'ehp_melee',
             '.ehp':             'ehp'
         },
+        
+        classFields: [
+            'toughasnails',
+            'vittoarmor',
+            'warcry',
+            'warcry_armor',
+            'warcry_resist',
+            'warcry_life',
+            'threat_shout',
+            'superstition',
+            'energy_armor',
+            'prismatic',
+            'blur',
+            'glass_cannon'
+        ],
         
         initialize: function() {
             _.bindAll(this, 'render', 'modelToView', 'viewToModel');
@@ -287,6 +434,13 @@
             this.model    = new Simulation;
             this.template = _.template($('#simulation-template').html());
             
+            this.class_templates = {
+                "br": _.template($('#simulation-br-template').html()),
+                "dh": _.template($('#simulation-not-available-template').html()),
+                "mn": _.template($('#simulation-not-available-template').html()),
+                "wd": _.template($('#simulation-not-available-template').html()),
+                "wz": _.template($('#simulation-wz-template').html())
+            };
             this.model.on('change', this.modelToView, this);
             
             this.render();
@@ -296,15 +450,17 @@
         viewToModel: function() {
             console.log('viewToModel');
 
-            _.each(this.fieldMap, function(field, selector) {                
+            _.each(this.fieldMap, function(field, selector) {   
                 var $fieldObj = $(selector,  this.el);
-
+                
                 if ($fieldObj.is('span')) {
                     // -- 
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     this.model.set(field, !!$fieldObj.prop('checked'), {silent: true});
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
                     this.model.set(field, parseInt($fieldObj.val()), {silent: true});
+                } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
+                    this.model.set(field, $fieldObj.val(), {silent: true});
                 }
             }, this);
             
@@ -314,7 +470,8 @@
         },
         
         modelToView: function() {
-            console.log('modelToView');
+            $(this.el).find('.class_options').remove();
+            $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
             
             _.each(this.fieldMap, function(field, selector) {
                 var $fieldObj = $(selector,  this.el);
@@ -325,12 +482,15 @@
                     $fieldObj.prop('checked', !!this.model.get(field));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
                     $fieldObj.val(this.prepareVal(this.model.get(field)));
+                } else if ($fieldObj.is('select')) {
+                    $fieldObj.val(this.model.get(field));
                 }
             }, this);
             
             var ehp = this.model.get('ehp');
+            var ehp_melee = this.model.get('ehp_melee');
             
-            var alt_booleans = ['toughasnails', 'vittoarmor', 'warcry', 'warcry_armor', 'warcry_resist', 'warcry_life', 'threat_shout', 'superstition'];
+            var alt_booleans = this.classFields;
             
             _.each(alt_booleans, function(alt_field) {
                 var selector  = "." + alt_field +  "_alt_ehp";
@@ -338,14 +498,25 @@
                 var alt_model = this.model.clone();
                 
                 alt_model.set(alt_field, alt_val);
-                
-                $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model, alt_val) + "% change");
+                if($(selector, this.el).hasClass('melee_only')){
+                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp_melee')) + " EHP melee; " + this.alternativePercentage(alt_model.get('ehp_melee'), ehp_melee, alt_val) + "% change");
+                } else {
+                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
+                }
             }, this);
         },
         
-        alternativePercentage: function(alternative, toughasnails_alt) {
-            var val1 = this.model.get('ehp');
-            var val2 = alternative.get('ehp');
+        changeClass: function() {
+            _.each(this.classFields, function(field) {
+                this.model.set(field, false, {silent: true});
+            }, this);
+            
+            this.viewToModel();
+        },
+        
+        alternativePercentage: function(alt_ehp, ehp, toughasnails_alt) {
+            var val1 = ehp;
+            var val2 = alt_ehp;
             
             var relativeto = toughasnails_alt ? val1 : val2;
             
@@ -360,7 +531,7 @@
             return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
         },
         
-        render: function() {            
+        render: function() {
             $(this.template()).appendTo($(this.el));
         },
     });
