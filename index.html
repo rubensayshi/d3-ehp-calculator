@@ -273,7 +273,7 @@
         initialize : function () {
         	if (this.get('options')) {
 	            _.each(this.get('options'), function(o_default, o_name) {
-	                if( !this.get(o_name) ) this.set(o_name, o_default);
+	                if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
 	            }, this);   
             }
             this.on('change', this.simulate);
