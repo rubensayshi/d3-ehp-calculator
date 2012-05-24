@@ -1,4 +1,7 @@
-d3-barb-ehp
+Diablo3 Effective Health Pool Calculator
 ===========
 
-d3-barb-ehp
+completely client side (javascript) calculator for your EHP.
+
+checkout the working version (project page on github): http://rubensayshi.github.com/d3-ehp-calculator/
+
