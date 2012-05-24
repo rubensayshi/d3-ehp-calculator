@@ -273,7 +273,7 @@
         initialize : function () {
         	if (this.get('options')) {
 	            _.each(this.get('options'), function(o_default, o_name) {
-	                this.set(o_name, o_default);
+	                if( !this.get(o_name) ) this.set(o_name, o_default);
 	            }, this);   
             }
             this.on('change', this.simulate);
@@ -303,7 +303,7 @@
         modifyReductionModifier      : function (modifier)     { return modifier; },
         modifyReductionModifierMelee : function (modifier)     { return modifier; },
       
-        simulate : function () { console.log('simulate');
+        simulate : function () { 
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
@@ -413,7 +413,7 @@
             melee     : false,
             options   : {
                 energy_armor:            false,
-                energy_armor_prismatic:  false,
+                prismatic:  false,
                 blur:                    false,
                 glass_cannon:            false,
             },
@@ -561,7 +561,7 @@
             }, this);
         },
         
-        modelToView: function() {console.log('modelToView');
+        modelToView: function() {
             $(this.el).find('.class_options').remove();
             $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
             
