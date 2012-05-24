@@ -287,6 +287,18 @@
     
             this.simulate();
         },
+        
+        getAllInputStats : function () {
+        	return {
+                your_class:   this.get('your_class'),
+                level:        this.get('level'),
+                base_vit:     this.get('base_vit'),
+                base_armor:   this.get('base_armor'),
+                base_resist:  this.get('base_resist'),
+                extra_life:   this.get('extra_life'),
+                moblevel:     this.get('moblevel'),
+        	};
+        },
       
         simulate : function () {
             this.set('armor',  this.get('base_armor'));
@@ -431,7 +443,6 @@
         initialize: function() {
             _.bindAll(this, 'render', 'modelToView', 'viewToModel');
 
-            this.model    = new Simulation;
             this.template = _.template($('#simulation-template').html());
             
             this.class_templates = {
@@ -536,7 +547,21 @@
         },
     });
     
-    var simView = new SimulationView();
+    
+    if (false && localStorage) {
+        stats = localStorage.getItem('previous_input_stats') ? JSON.parse(localStorage.getItem('previous_input_stats')) : {};
+        
+        model = new Simulation(stats);
+        
+        model.on('change', function(model) {
+        	localStorage.setItem('previous_input_stats', JSON.stringify(this.getAllInputStats()));
+        }, model);
+        
+    } else {
+    	model = new Simulation();
+    }
+    
+    var simView = new SimulationView({'model': model});
 })(jQuery);
 </script>
 
