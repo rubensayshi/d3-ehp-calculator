@@ -303,7 +303,7 @@
         modifyReductionModifier      : function (modifier)     { return modifier; },
         modifyReductionModifierMelee : function (modifier)     { return modifier; },
       
-        simulate : function () {
+        simulate : function () { console.log('simulate');
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
@@ -536,10 +536,9 @@
                 "wd": _.template($('#simulation-not-available-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
-            this.model.on('change', this.modelToView, this);
             
             this.render();
-            this.modelToView();
+            this.changeClass();
         },
         
         viewToModel: function() {
@@ -562,7 +561,7 @@
             }, this);
         },
         
-        modelToView: function() {
+        modelToView: function() {console.log('modelToView');
             $(this.el).find('.class_options').remove();
             $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
             
@@ -600,8 +599,10 @@
         },
         
         changeClass: function(event) {        	
-        	classname = $('.your_class', this.el).val();
-        	this.model = getModelForClass(classname);
+            classname = $('.your_class', this.el).val();
+            
+            this.model = getModelForClass(classname);
+            this.model.on('change', this.modelToView, this);
 
             this.modelToView();
         },
