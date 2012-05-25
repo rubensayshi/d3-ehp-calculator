@@ -324,7 +324,7 @@ var gahandler = (function() {
     var keepAlive = function() {
         time += interval;
 
-        _gaq.push(['_trackPageview', '/' + classname + '/' + time + '/']);
+        _gaq.push(['_trackPageview', '/' + classname + '/']);
     };
     
     var changeClass = function(_classname) {
@@ -879,14 +879,18 @@ var gahandler = (function() {
         'wz': [Wizard,      'Wizard']
     };
 
+    var getClassInfo = function(shortname) {
+        return (classlist[shortname]) ? modelclass = classlist[shortname] : [];
+    };
+    
     var getModelForClass = function(classname, forceNew) {
         var use_storage = !!localStorage;
         var storage_key = 'previous_' + VERSION + '_' + classname;
         var modelclass,
             model;
 
-        if (classlist[classname]) {
-            modelclass = classlist[classname][0];
+        if (getClassInfo(classname)) {
+            modelclass = getClassInfo(classname)[0];
         } else {
             // we should have some proper error here I think ...
             alert("you somehow selected a class which we do not recognise [" + classname + "]. \nApplication will now crash, we will refresh the page for you ;).");
@@ -907,7 +911,7 @@ var gahandler = (function() {
         }
 
         return model;
-    }
+    };
 
     var simView = new SimulationView({'model': getModelForClass('br')});
 })(jQuery);
