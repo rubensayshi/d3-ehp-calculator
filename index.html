@@ -329,7 +329,6 @@ var gahandler = (function() {
     
     var changeClass = function(_classname) {
         classname = _classname;
-        console.log(classname);
         
         reset();
     }
@@ -890,7 +889,9 @@ var gahandler = (function() {
             modelclass = classlist[classname][0];
         } else {
             // we should have some proper error here I think ...
-            console.log(classname);
+            alert("you somehow selected a class which we do not recognise [" + classname + "]. \nApplication will now crash, we will refresh the page for you ;).");
+            window.location.reload(true);
+            return;
         }
 
         if (!forceNew && use_storage && localStorage.getItem(storage_key)) {
