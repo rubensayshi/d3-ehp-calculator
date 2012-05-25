@@ -338,11 +338,13 @@ var gahandler = (function() {
     var keepAlive = function() {
         time += interval;
 
-        _gaq.push(['_trackPageview', '/' + classname + '/']);
+        _gaq.push(['_trackEvent', classname, 'keepalive']);
     };
     
     var changeClass = function(_classname) {
         classname = _classname;
+
+        _gaq.push(['_trackPageview', '/' + classname + '/']);
         
         reset();
     }
