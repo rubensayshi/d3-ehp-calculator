@@ -53,19 +53,19 @@
                 </tr>
             </thead>
             <tbody>
-              <tr>
-                <th>Your Class</th>
-                <td>
-                  <select class="your_class">
-                    <option value="br">Barbarian</option>
-                    <option value="dh">Demon Hunter</option>
-                    <option value="mn">Monk</option>
-                    <option value="wd">Witch Doctor</option>
-                    <option value="wz">Wizard</option>
-                  </select>
-                </td>
-                <td></td>
-              </tr>
+                <tr>
+                    <th>Your Class</th>
+                    <td>
+                        <select class="your_class">
+                            <option value="br">Barbarian</option>
+                            <option value="dh">Demon Hunter</option>
+                            <option value="mn">Monk</option>
+                            <option value="wd">Witch Doctor</option>
+                            <option value="wz">Wizard</option>
+                       </select>
+                    </td>
+                    <td></td>
+                </tr>
                 <tr>
                     <th>Your level</th>
                     <td><input type="text" class="level" value="" /></td>
@@ -101,16 +101,17 @@
                     <td><input type="text" class="base_dodge" value="" /></td>
                     <td></td>
                 </tr>
-           </table>
-           <table id="results" class="table table-bordered table-striped">
-             <thead>
+            </tbody>
+        </table>
+        <table id="results" class="table table-bordered table-striped">
+            <thead>
                 <tr>
                     <th width="35%">Results</th>
                     <th>EHP without dodge</th>
                     <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
                 </tr>
-             </thead>
-             <tbody>
+            </thead>
+            <tbody>
                 <tr class="highlighted-row">
                     <th>Buffed Life</th>
                     <td><input type="text" readonly=true class="life" value="" /></td>
@@ -146,6 +147,7 @@
             </tfoot>
         </table>
     </div>
+    
     <div id="simulation-br-template">
         <table class="table table-bordered class_options table-striped">
             <thead>
@@ -155,49 +157,49 @@
                     <th width="30%">Alternative</th>
                 </tr>
             </thead>
-            <tr>
-              <th title="+10% life">War Cry - Invigorate</th>
-              <td><input type="checkbox" class="warcry_life" value="1" /></td>
-                  <td class="warcry_life_alt_ehp"></td>
-            </tr>
-
-              <tr>
-              <th title="+25% armor">Tough As Nails</th>
-              <td><input type="checkbox" class="toughasnails" value="1" /></td>
-                  <td class="toughasnails_alt_ehp"></td>
-            </tr>
-              <tr>
-              <th title="100% of your vit as armor">Nerves Of Steel</th>
-              <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
-                  <td class="nervesofsteel_alt_ehp"></td>
-            </tr>
-              <tr>
-              <th title="+20% armor">War Cry - No Rune</th>
-              <td><input type="checkbox" class="warcry" value="1" /></td>
-                  <td class="warcry_alt_ehp"></td>
-            </tr>
-              <tr>
-              <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
-              <td><input type="checkbox" class="warcry_armor" value="1" /></td>
-              <td class="warcry_armor_alt_ehp"></td>
-            </tr>
-
-              <tr>
-              <th title="+50% to all your resistance stats">WarCry - Impunity</th>
-              <td><input type="checkbox" class="warcry_resist" value="1" /></td>
-              <td class="warcry_resist_alt_ehp"></td>
-            </tr>
-
-              <tr>
-              <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-              <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                  <td class="threat_shout_alt_ehp"></td>
-            </tr>
-              <tr>
-              <th title="+20% dmg reduction">Superstition <span class="label label-info auto_tooltip" title="note that it's non-physical damage only">?</span></th>
-              <td><input type="checkbox" class="superstition" value="1" /></td>
-                  <td class="superstition_alt_ehp"></td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th title="+10% life">War Cry - Invigorate</th>
+                    <td><input type="checkbox" class="warcry_life" value="1" /></td>
+                    <td class="warcry_life_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+25% armor">Tough As Nails</th>
+                    <td><input type="checkbox" class="toughasnails" value="1" /></td>
+                    <td class="toughasnails_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="100% of your vit as armor">Nerves Of Steel</th>
+                    <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
+                    <td class="nervesofsteel_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="+20% armor">War Cry - No Rune</th>
+                    <td><input type="checkbox" class="warcry" value="1" /></td>
+                    <td class="warcry_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
+                    <td><input type="checkbox" class="warcry_armor" value="1" /></td>
+                    <td class="warcry_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+50% to all your resistance stats">WarCry - Impunity</th>
+                    <td><input type="checkbox" class="warcry_resist" value="1" /></td>
+                    <td class="warcry_resist_alt_ehp"></td>
+                </tr>
+    
+                  <tr>
+                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
+                    <td class="threat_shout_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="+20% dmg reduction">Superstition <span class="label label-info auto_tooltip" title="note that it's non-physical damage only">?</span></th>
+                    <td><input type="checkbox" class="superstition" value="1" /></td>
+                    <td class="superstition_alt_ehp"></td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
@@ -210,27 +212,28 @@
                     <th width="30%">Alternative</th>
                 </tr>
             </thead>
-            <tr>
-              <th>Blur</th>
-              <td><input type="checkbox" class="blur" value="1" /></td>
-                  <td class="blur_alt_ehp melee_only"></td>
-            </tr>
-            <tr>
-              <th>Energy Armor</th>
-              <td><input type="checkbox" class="energy_armor" value="1" /></td>
-                  <td class="energy_armor_alt_ehp"></td>
-            </tr>
-            <tr>
-              <th>Energy Armor - Prismatic</th>
-              <td><input type="checkbox" class="prismatic" value="1" /></td>
-                  <td class="prismatic_alt_ehp"></td>
-            </tr>
-            <tr>
-              <th>Glass Cannon</th>
-              <td><input type="checkbox" class="glass_cannon" value="1" /></td>
-                  <td class="glass_cannon_alt_ehp"></td>
-            </tr>
-
+            <tbody>
+                <tr>
+                    <th>Blur</th>
+                    <td><input type="checkbox" class="blur" value="1" /></td>
+                    <td class="blur_alt_ehp melee_only"></td>
+                </tr>
+                <tr>
+                    <th>Energy Armor</th>
+                    <td><input type="checkbox" class="energy_armor" value="1" /></td>
+                    <td class="energy_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th>Energy Armor - Prismatic</th>
+                    <td><input type="checkbox" class="prismatic" value="1" /></td>
+                    <td class="prismatic_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th>Glass Cannon</th>
+                    <td><input type="checkbox" class="glass_cannon" value="1" /></td>
+                    <td class="glass_cannon_alt_ehp"></td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
@@ -275,15 +278,21 @@
             resist:       null,
             dodge:        null,
             armor_reduc:  null,
-            resist_reduc: null
+            resist_reduc: null,
+            
+            options:      {}
         },
 
         initialize : function () {
-            if (this.get('options')) {
-                _.each(this.get('options'), function(o_default, o_name) {
-                    if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
-                }, this);
-            }
+        	// ensure there's always an options collection
+        	if (!this.get('options')) {
+        		this.set('options', {});
+        	}
+        	
+            _.each(this.get('options'), function(o_default, o_name) {
+                if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
+            }, this);
+            
             this.on('change', this.simulate);
 
             this.simulate();
