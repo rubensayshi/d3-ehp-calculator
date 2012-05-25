@@ -310,6 +310,41 @@
     </div>
 </div>
 
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-32071149-1']);
+
+var gahandler = (function() {
+    var classname = '/_none/';
+    var time      = 0;
+    var interval  = 10;
+    var timer;
+    
+    var keepAlive = function() {
+        time += interval;
+
+        _gaq.push(['_trackPageview', '/' + classname + '/' + time + '/']);
+    };
+    
+    var changeClass = function(_classname) {
+        classname = _classname;
+        console.log(classname);
+        
+        reset();
+    }
+    
+    var reset = function() {
+    	keepAlive();
+        timer = setInterval(keepAlive, interval * 1000);
+    };
+    
+    return {
+        changeClass: changeClass
+    };
+})();
+</script>
+
 <script>
 (function($) {
     /*
@@ -794,6 +829,10 @@
 
             this.modelToView();
             $(".auto_tooltip").tooltip();
+            
+            if (gahandler) {
+                gahandler.changeClass(classname)
+            }
         },
 
         alternativePercentage: function(alt_ehp, ehp, alt_val) {
@@ -874,16 +913,12 @@
 </script>
 
 <script type="text/javascript">
+var _gaq = _gaq || [];
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-32071149-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
+(function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
+})();
 </script>
 </html>
