@@ -295,24 +295,45 @@
         
         /*
          * these modify methods should be implemented by specific class classes
+         *  the modifyBase* methods will modify the base stat before the modifier is applied
+         *  the modify*Modifier methods will modify the modifier (most of the time that starts on 1) and is applied to the base afterwards
+         * 
+         * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
          */
-        modifyArmor                  : function (armor)        { return armor; },
-        modifyResist                 : function (resist)       { return resist; },
-        modifyLife                   : function (life)         { return life; },
-        modifyLifeModifier           : function (lifemodifier) { return lifemodifier; },
-        modifyReductionModifier      : function (modifier)     { return modifier; },
-        modifyReductionModifierMelee : function (modifier)     { return modifier; },
+        modifyBaseArmor              : function (armor)          { return armor; },
+        modifyArmorModifier          : function (armormodifier)  { return armormodifier; },
+        modifyBaseResist             : function (resist)         { return resist; },
+        modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
+        modifyBaseLife               : function (life)           { return life; },
+        modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
+        modifyReductionModifier      : function (modifier)       {
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+            
+            return modifier;
+        },
+        modifyReductionModifierMelee : function (modifier)       { return modifier; },
       
         simulate : function () { 
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
 
-            this.set('armor', this.modifyArmor(this.get('armor')));
-            this.set('resist', this.modifyResist(this.get('resist'))); 
+            this.set('armor',  this.modifyBaseArmor(this.get('armor')));
+            this.set('resist', this.modifyBaseResist(this.get('resist')));
+
+            armormodifier = 1; 
+            armormodifier = this.modifyArmorModifier(armormodifier);
             
-            this.set('armor_reduc', this.get('armor') / (50 * this.get('moblevel') + this.get('armor')));
-            this.set('resist_reduc', this.get('resist') / (5 * this.get('moblevel') + this.get('resist')));
+            resistmodifier = 1; 
+            resistmodifier = this.modifyResistModifier(resistmodifier);
+
+            this.set('armor',  this.get('armor')  * armormodifier);
+            this.set('resist', this.get('resist') * resistmodifier);
+            
+            this.set('armor_reduc',  this.get('armor') /  (50 * this.get('moblevel') + this.get('armor')));
+            this.set('resist_reduc', this.get('resist') / (5  * this.get('moblevel') + this.get('resist')));
             
             var modifier = 1;
             modifier *= (1 - this.get('armor_reduc'));
@@ -327,15 +348,14 @@
             } else {
                 this.set('life', (60 - 25) * this.get('vit'));
             }
+
+            this.set('life', this.modifyBaseLife(this.get('life')));
             
             var lifemodifier = 1 + (this.get('extra_life') / 100);
             
             lifemodifier = this.modifyLifeModifier(lifemodifier);
                         
             this.set('life', this.get('life') * lifemodifier);
-            
-            this.set('life', lifemodifier = this.modifyLife(this.get('life')));
-                     
             
             var ehp = this.get('life') / modifier;
             var ehp_melee = this.get('life') / modifier_melee;
@@ -359,28 +379,37 @@
             },
         }),
         
-        modifyArmor : function (armor) {
-            if (this.get('toughasnails')) {
-                armor *= 1.25;
-            }
+        modifyBaseArmor : function (armor) {
             if (this.get('vittoarmor')) {
                 armor += this.get('vit');
             }
-            if (this.get('warcry_armor')) {
-                armor *= 1.4;
-            } else if (this.get('warcry')) {
-                armor *= 1.2;
-            }
             
-            return armor;
+            return armor
         },
         
-        modifyResist : function (resist) {
-            if (this.get('warcry_resist')) {
-                resist *= 1.50;
+        modifyArmorModifier : function (armormodifier) {
+        	// any version of warcry gives 20%
+	        if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life')) {
+	            armormodifier += .2;
+	        }
+	        // warcry runed for armor gives an aditional 20%
+	        if (this.get('warcry_armor')) {
+	            armormodifier += .2;
+	        }
+	        
+            if (this.get('toughasnails')) {
+            	armormodifier += .25;
             }
             
-            return resist;
+            return armormodifier;
+        },
+        
+        modifyResistModifier : function (resistmodifier) {
+            if (this.get('warcry_resist')) {
+            	resistmodifier += .50;
+            }
+            
+            return resistmodifier;
         },
 
         modifyLifeModifier : function (lifemodifier) {
@@ -419,43 +448,31 @@
             },
         }),
         
-        modifyArmor : function (armor) {
+        modifyArmorModifier : function (armormodifier) {
             if (this.get('energy_armor')) {
-                armor *= 1.65;
-            }
-            if (this.get('glass_cannon')) {
-                armor*= .90;
+            	armormodifier += .65;
             }
             
-            return armor;
+            if (this.get('glass_cannon')) {
+            	armormodifier -= .10;
+            }
+            
+            return armormodifier;
         },
         
-        modifyResist : function (resist) {
+        modifyResistModifier : function (resistmodifier) {
             if (this.get('prismatic')) {
-                resist *= 1.40;
+            	resistmodifier += .40;
             }
+            
             if (this.get('glass_cannon')) {
-                resist *= .90;
+            	resistmodifier -= .10;
             }
             
-            return resist;
-        },
-
-        modifyLifeModifier : function (lifemodifier) {
-            return lifemodifier; 
-        },
-        
-        modifyReductionModifier : function (modifier) {
-            
-            if (this.get('melee')) {
-                modifier *= (1 - 0.30);
-            }
-            
-            return modifier;
+            return resistmodifier;
         },
         
         modifyReductionModifierMelee : function (modifier) {
-            
             if (this.get('blur')) {
                 modifier *= (1 - 0.20);
             }
