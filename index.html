@@ -638,22 +638,44 @@
         
         render: function() {
             $(this.template()).appendTo($(this.el));
+            
+            var $classSelect = $('.your_class', this.el);
+            $classSelect.children().remove();
+            
+            _.each(classlist, function(info, shortname) {
+            	$('<option />').val(shortname).html(info[1]).appendTo($classSelect).sel;
+            }, this);
+            
+            $classSelect.val(this.model.get('your_class'));
         },
     });
     
+    var classlist = {
+        'br': [Barbarian,   'Barbarian'],
+        //'dh': [DemonHunter, 'Demon Hunter'],
+        //'mn': [Monk,        'Monk'],
+        //'wd': [WitchDocter, 'Witch Docter'],
+        'wz': [Wizard,      'Wizard']
+    };
+    
     var getModelForClass = function(classname, forceNew) {
-    	storage_key = 'previous_' + VERSION + '_' + classname;
-        if (classname == 'br')      modelclass = Barbarian;
-        else if (classname == 'wz') modelclass = Wizard;
-        else                        console.log(classname);
+    	var use_storage = !!localStorage && false;
+    	var storage_key = 'previous_' + VERSION + '_' + classname;
+    	var modelclass, model;
     	
-        if (!forceNew && localStorage && localStorage.getItem(storage_key)) {
+    	if (classlist[classname]) {
+    		modelclass = classlist[classname][0];
+    	} else {
+    	    console.log(classname);
+    	}
+    	
+        if (!forceNew && use_storage && localStorage.getItem(storage_key)) {
             model = new modelclass(JSON.parse(localStorage.getItem(storage_key)));
         } else {
             model = new modelclass();
         }
         
-        if (localStorage) {
+        if (use_storage) {
             model.on('change', function(model) {
                 localStorage.setItem(storage_key, JSON.stringify(model));
             }, model);
@@ -661,7 +683,7 @@
         
         return model;
     }
-    
+
     var simView = new SimulationView({'model': getModelForClass('br')});
 })(jQuery);
 </script>
