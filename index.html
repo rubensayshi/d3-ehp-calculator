@@ -102,6 +102,16 @@
                     <td></td>
                 </tr>
                 <tr>
+                    <th>Melee only Reduction</th>
+                    <td><input type="text" class="base_melee_reduc" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Ranged only Reduction</th>
+                    <td><input type="text" class="base_ranged_reduc" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <th>Dodge %</th>
                     <td><input type="text" class="base_dodge" value="" /></td>
                     <td></td>
@@ -135,14 +145,24 @@
             </tbody>
             <tfoot>
                 <tr class="highlighted-row">
+                    <th>EHP</th>
+                    <td><input type="text" readonly=true class="ehp" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
+                </tr>
+                <tr class="highlighted-row">
                     <th>EHP melee</th>
                     <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
                     <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
                 </tr>
                 <tr class="highlighted-row">
-                    <th>EHP</th>
-                    <td><input type="text" readonly=true class="ehp" value="" /></td>
-                    <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
+                    <th>EHP ranged</th>
+                    <td><input type="text" readonly=true class="ehp_ranged" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_ranged" value="" /></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>EHP magic</th>
+                    <td><input type="text" readonly=true class="ehp_magic" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_magic" value="" /></td>
                 </tr>
                 <tr>
                     <th></th>
@@ -200,7 +220,7 @@
                     <td class="threat_shout_alt_ehp"></td>
                 </tr>
                   <tr>
-                    <th title="+20% dmg reduction">Superstition <span class="label label-info auto_tooltip" title="note that it's non-physical damage only">?</span></th>
+                    <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
                     <td><input type="checkbox" class="superstition" value="1" /></td>
                     <td class="superstition_alt_ehp"></td>
                 </tr>
@@ -355,7 +375,10 @@ var gahandler = (function() {
             base_armor:   4000,
             base_resist:  300,
             base_dodge:   10,
+            base_dodge:   10,
             extra_life:   12,
+            base_melee_reduc:   0,
+            base_ranged_reduc:  0,
 
             melee:        false,
 
@@ -398,6 +421,8 @@ var gahandler = (function() {
                 base_resist:  this.get('base_resist'),
                 base_dodge:   this.get('base_dodge'),
                 extra_life:   this.get('extra_life'),
+                base_melee_reduc:   this.get('base_melee_reduc'),
+                base_ranged_reduc:  this.get('base_ranged_reduc'),
                 moblevel:     this.get('moblevel'),
             }, this.get('options'));
         },
@@ -423,7 +448,9 @@ var gahandler = (function() {
 
             return modifier;
         },
-        modifyReductionModifierMelee : function (modifier)       { return modifier; },
+        modifyReductionModifierMelee  : function (modifier)       { return modifier; },
+        modifyReductionModifierRanged : function (modifier)       { return modifier; },
+        modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
         simulate : function () {
             // grab the base values and set them so we can start modifying that value
@@ -462,7 +489,18 @@ var gahandler = (function() {
             modifier = this.modifyReductionModifier(modifier);
 
             // add melee only modifiers
-            var modifier_melee = this.modifyReductionModifierMelee(modifier);
+            var modifier_melee = modifier;
+            modifier_melee *= (1 - (this.get('base_melee_reduc') / 100));
+            modifier_melee = this.modifyReductionModifierMelee(modifier_melee);
+
+            // add ranged only modifiers
+            var modifier_ranged = modifier;
+            modifier_ranged *= (1 - (this.get('base_ranged_reduc') / 100));
+            var modifier_ranged = this.modifyReductionModifierRanged(modifier_ranged);
+            
+            // add magic only modifiers
+            var modifier_magic = modifier;
+            var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
 
             // calculate life based on vit/level
             if (this.get('level') < 35) {
@@ -489,12 +527,20 @@ var gahandler = (function() {
             var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
             var ehp_melee       = this.get('life') / modifier_melee;
             var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
+            var ehp_ranged      = this.get('life') / modifier_ranged;
+            var ehp_dodge_ranged= this.get('life') / modifier_ranged / dodgemodifier;
+            var ehp_magic       = this.get('life') / modifier_magic;
+            var ehp_dodge_magic = this.get('life') / modifier_magic / dodgemodifier;
 
             // set the final properties
             this.set('ehp',             ehp);
             this.set('ehp_dodge',       ehp_dodge);
             this.set('ehp_melee',       ehp_melee);
             this.set('ehp_dodge_melee', ehp_dodge_melee);
+            this.set('ehp_ranged',      ehp_ranged);
+            this.set('ehp_dodge_ranged',ehp_dodge_ranged);
+            this.set('ehp_magic',       ehp_magic);
+            this.set('ehp_dodge_magic', ehp_dodge_magic);
         }
     });
     var Barbarian = Character.extend({
@@ -558,12 +604,16 @@ var gahandler = (function() {
                 modifier *= (1 - 0.25);
             }
 
-            if (this.get('superstition')) {
-                modifier *= (1 - 0.20);
-            }
-
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
+            }
+
+            return modifier;
+        },
+
+        modifyReductionModifierMagic : function (modifier) {
+            if (this.get('superstition')) {
+                modifier *= (1 - 0.20);
             }
 
             return modifier;
@@ -681,6 +731,8 @@ var gahandler = (function() {
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.base_dodge':      'base_dodge',
+            '.base_melee_reduc': 'base_melee_reduc',
+            '.base_ranged_reduc':'base_ranged_reduc',
 
             // BARBARIAN
             '.toughasnails':    'toughasnails',
@@ -717,7 +769,11 @@ var gahandler = (function() {
             '.ehp':             'ehp',
             '.ehp_dodge':       'ehp_dodge',
             '.ehp_melee':       'ehp_melee',
-            '.ehp_dodge_melee': 'ehp_dodge_melee'
+            '.ehp_dodge_melee': 'ehp_dodge_melee',
+            '.ehp_ranged':      'ehp_ranged',
+            '.ehp_dodge_ranged':'ehp_dodge_ranged',
+            '.ehp_magic':       'ehp_magic',
+            '.ehp_dodge_magic': 'ehp_dodge_magic'
         },
 
         classFields: [
