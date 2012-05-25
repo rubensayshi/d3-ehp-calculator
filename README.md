@@ -13,7 +13,7 @@ Kevin McClellan (https://github.com/kdmcclel)
 
 Copyright and License
 =====================
-Copyright (c) 2012, Ruben de Vries
+Copyright (c) 2012, Ruben de Vries  
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
