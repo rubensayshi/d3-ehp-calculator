@@ -9,6 +9,7 @@
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
     
@@ -26,6 +27,11 @@
          }
          thead th {
             border-bottom: 1px solid black;
+         }
+         
+         td .label, th .label {
+            float: right;
+            margin-right: 5px;
          }
          
     </style>
@@ -76,7 +82,7 @@
                     <td></td>
 	            </tr>
                 <tr>
-		            <th>+ Life %</th>
+		            <th>+ Extra Life %</th>
 		            <td><input type="text" class="extra_life" value="" /></td>
                     <td></td>
 	            </tr>
@@ -86,17 +92,22 @@
                     <td></td>
 	            </tr>
                 <tr>
-		            <th>Resistance</th>
-		            <td><input type="text" class="base_resist" value="" /></td>
+                    <th>All Resistance</th>
+                    <td><input type="text" class="base_resist" value="" /></td>
                     <td></td>
-	            </tr>
+                </tr>
+                <tr>
+                    <th>Dodge %</th>
+                    <td><input type="text" class="base_dodge" value="" /></td>
+                    <td></td>
+                </tr>
            </table>
            <table id="results" class="table table-bordered table-striped">
              <thead>
                 <tr>
 	                <th width="35%">Results</th>
-	                <th>&nbsp;</th>
-	                <th width="30%">&nbsp;</th>
+	                <th>EHP without dodge</th>
+	                <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
                 </tr>
              </thead>
              <tbody>
@@ -120,12 +131,12 @@
                 <tr class="highlighted-row">
                     <th>EHP melee</th>
                     <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
-                    <td></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
                 </tr>
                 <tr class="highlighted-row">
                     <th>EHP</th>
                     <td><input type="text" readonly=true class="ehp" value="" /></td>
-                    <td></td>
+                    <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
                 </tr>
                 <tr>
                     <th></th>
@@ -145,45 +156,45 @@
                 </tr>
             </thead>
             <tr>
-              <th>War Cry - Invigorate</th>
+              <th title="+10% life">War Cry - Invigorate</th>
               <td><input type="checkbox" class="warcry_life" value="1" /></td>
                   <td class="warcry_life_alt_ehp"></td>
             </tr>
             
               <tr>
-              <th>Tough As Nails</th>
+              <th title="+25% armor">Tough As Nails</th>
               <td><input type="checkbox" class="toughasnails" value="1" /></td>
                   <td class="toughasnails_alt_ehp"></td>
             </tr>
               <tr>
-              <th>Nerves Of Steel</th>
+              <th title="100% of your vit as armor">Nerves Of Steel</th>
               <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
                   <td class="nervesofsteel_alt_ehp"></td>
             </tr>
               <tr>
-              <th>War Cry - No Rune</th>
+              <th title="+20% armor">War Cry - No Rune</th>
               <td><input type="checkbox" class="warcry" value="1" /></td>
                   <td class="warcry_alt_ehp"></td>
             </tr>
               <tr>
-              <th>War Cry - Hardened Wrath</th>
+              <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
               <td><input type="checkbox" class="warcry_armor" value="1" /></td>
-                  <td class="warcry_armor_alt_ehp"></td>
+              <td class="warcry_armor_alt_ehp"></td>
             </tr>
              
               <tr>
-              <th>WarCry - Impunity</th>
+              <th title="+50% to all your resistance stats">WarCry - Impunity</th>
               <td><input type="checkbox" class="warcry_resist" value="1" /></td>
-                  <td class="warcry_resist_alt_ehp"></td>
+              <td class="warcry_resist_alt_ehp"></td>
             </tr>
             
               <tr>
-              <th>Threatening Shout (you can't get it on ranged)</th>
+              <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
               <td><input type="checkbox" class="threat_shout" value="1" /></td>
                   <td class="threat_shout_alt_ehp"></td>
             </tr>
               <tr>
-              <th>Superstition (won't work on physical)</th>
+              <th title="+20% dmg reduction">Superstition <span class="label label-info auto_tooltip" title="note that it's non-physical damage only">?</span></th>
               <td><input type="checkbox" class="superstition" value="1" /></td>
                   <td class="superstition_alt_ehp"></td>
             </tr>
@@ -251,6 +262,7 @@
             base_vit:     1200,
             base_armor:   4000,
             base_resist:  300,
+            base_dodge:   10,
             extra_life:   12,
             
             melee:        false,
@@ -261,6 +273,7 @@
             life:         null,
             armor:        null,
             resist:       null,
+            dodge:        null,
             armor_reduc:  null,
             resist_reduc: null,
         },
@@ -283,6 +296,7 @@
                 base_vit:     this.get('base_vit'),
                 base_armor:   this.get('base_armor'),
                 base_resist:  this.get('base_resist'),
+                base_dodge:   this.get('base_dodge'),
                 extra_life:   this.get('extra_life'),
                 moblevel:     this.get('moblevel'),
         	}, this.get('options'));
@@ -301,6 +315,7 @@
         modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
         modifyBaseLife               : function (life)           { return life; },
         modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
+        modifyBaseDodge              : function (dodge)          { return dodge; },
         modifyReductionModifier      : function (modifier)       {
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
@@ -310,53 +325,76 @@
         },
         modifyReductionModifierMelee : function (modifier)       { return modifier; },
       
-        simulate : function () { 
+        simulate : function () {
+        	// grab the base values and set them so we can start modifying that value
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
+            this.set('dodge',  this.get('base_dodge'));
 
+            // modify the base values (static increases)
             this.set('armor',  this.modifyBaseArmor(this.get('armor')));
             this.set('resist', this.modifyBaseResist(this.get('resist')));
+            this.set('dodge',  this.modifyBaseDodge(this.get('dodge')));
 
+            // create and modify the armor modifier
             armormodifier = 1; 
             armormodifier = this.modifyArmorModifier(armormodifier);
-            
+
+            // create and modify the resist modifier
             resistmodifier = 1; 
             resistmodifier = this.modifyResistModifier(resistmodifier);
 
+            // apply the modifiers to the base value (with their static increases already applied) for armor and resist
             this.set('armor',  this.get('armor')  * armormodifier);
             this.set('resist', this.get('resist') * resistmodifier);
             
+            // calculate the actual reduction for armor and resist
             this.set('armor_reduc',  this.get('armor') /  (50 * this.get('moblevel') + this.get('armor')));
             this.set('resist_reduc', this.get('resist') / (5  * this.get('moblevel') + this.get('resist')));
             
+            // stack the modifiers
             var modifier = 1;
             modifier *= (1 - this.get('armor_reduc'));
             modifier *= (1 - this.get('resist_reduc'));
             
+            // add more modifiers
             modifier = this.modifyReductionModifier(modifier);
             
+            // add melee only modifiers
             var modifier_melee = this.modifyReductionModifierMelee(modifier);
             
+            // calculate life based on vit/level
             if (this.get('level') < 35) {
                 this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
             } else {
                 this.set('life', (60 - 25) * this.get('vit'));
             }
 
+            // modify the base life (static increases)
             this.set('life', this.modifyBaseLife(this.get('life')));
             
+            // create and modify the armor modifier
             var lifemodifier = 1 + (this.get('extra_life') / 100);
-            
             lifemodifier = this.modifyLifeModifier(lifemodifier);
                         
+            // apply the life modifier
             this.set('life', this.get('life') * lifemodifier);
             
-            var ehp = this.get('life') / modifier;
-            var ehp_melee = this.get('life') / modifier_melee;
+            // create the dodge modifier
+            var dodgemodifier = (1 - this.get('dodge') / 100);
             
-            this.set('ehp', ehp);
-            this.set('ehp_melee', ehp_melee);
+            // apply all modifiers
+            var ehp             = this.get('life') / modifier;
+            var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
+            var ehp_melee       = this.get('life') / modifier_melee;
+            var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
+
+            // set the final properties
+            this.set('ehp',             ehp);
+            this.set('ehp_dodge',       ehp_dodge);
+            this.set('ehp_melee',       ehp_melee);
+            this.set('ehp_dodge_melee', ehp_dodge_melee);
         }
     });
     var Barbarian = Character.extend({
@@ -492,6 +530,7 @@
             '.base_vit':        'base_vit',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
+            '.base_dodge':      'base_dodge',
             
             // BARBARIAN
             '.toughasnails':    'toughasnails',
@@ -514,11 +553,14 @@
             '.life':            'life',
             '.armor':           'armor',
             '.resist':          'resist',
+            '.dodge':           'dodge',
             '.armor_reduc':     'armor_reduc',
             '.resist_reduc':    'resist_reduc',  
             
+            '.ehp':             'ehp',
+            '.ehp_dodge':       'ehp_dodge',
             '.ehp_melee':       'ehp_melee',
-            '.ehp':             'ehp'
+            '.ehp_dodge_melee': 'ehp_dodge_melee',
         },
         
         classFields: [
@@ -687,6 +729,12 @@
     }
 
     var simView = new SimulationView({'model': getModelForClass('br')});
+
+    $(".auto_tooltip").tooltip();
+    $("#dodge_ehp_explained").tooltip({
+        title: "<strong>keep in mind; dodge is random.</strong><br />" + 
+               "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
+    });
 })(jQuery);
 </script>
 
