@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Diablo3 Effective Health Pool Calculator</title>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
@@ -33,6 +35,10 @@
             float: right;
             margin-right: 5px;
          }
+         
+         td input, td select {
+            margin-bottom: 0px;
+         }
 
     </style>
 </head>
@@ -44,7 +50,7 @@
 
 <div class="templates">
     <div id="simulation-template">
-        <table id="options" class="table table-bordered table-striped table-striped">
+        <table id="options" class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
                     <th width="35%">Option</th>
@@ -82,6 +88,11 @@
                     <td></td>
                 </tr>
                 <tr>
+                    <th>DEX</th>
+                    <td><input type="text" class="base_dex" value="" /> <span title="Dex is only used for skill effects (eg monk passive), not for dodge" class="label label-info auto_tooltip">?</span></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <th>+ Extra Life %</th>
                     <td><input type="text" class="extra_life" value="" /></td>
                     <td></td>
@@ -103,7 +114,7 @@
                 </tr>
             </tbody>
         </table>
-        <table id="results" class="table table-bordered table-striped">
+        <table id="results" class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
                     <th width="35%">Results</th>
@@ -149,7 +160,7 @@
     </div>
     
     <div id="simulation-br-template">
-        <table class="table table-bordered class_options table-striped">
+        <table class="table table-bordered class_options table-striped table-condensed">
             <thead>
                 <tr>
                     <th width="35%">Barbarian Options</th>
@@ -204,7 +215,7 @@
     </div>
 
     <div id="simulation-wz-template">
-        <table class="table table-bordered class_options table-striped">
+        <table class="table table-bordered class_options table-striped table-condensed">
             <thead>
                 <tr>
                     <th width="35%">Wizard Options</th>
@@ -214,22 +225,22 @@
             </thead>
             <tbody>
                 <tr>
-                    <th>Blur</th>
+                    <th title="-20% melee dmg taken">Blur</th>
                     <td><input type="checkbox" class="blur" value="1" /></td>
                     <td class="blur_alt_ehp melee_only"></td>
                 </tr>
                 <tr>
-                    <th>Energy Armor</th>
+                    <th title="+65% armor">Energy Armor</th>
                     <td><input type="checkbox" class="energy_armor" value="1" /></td>
                     <td class="energy_armor_alt_ehp"></td>
                 </tr>
                 <tr>
-                    <th>Energy Armor - Prismatic</th>
+                    <th title="+40% to all resistance stats">Energy Armor - Prismatic</th>
                     <td><input type="checkbox" class="prismatic" value="1" /></td>
                     <td class="prismatic_alt_ehp"></td>
                 </tr>
                 <tr>
-                    <th>Glass Cannon</th>
+                    <th title="-10% armor/resistance for 15% dmg">Glass Cannon</th>
                     <td><input type="checkbox" class="glass_cannon" value="1" /></td>
                     <td class="glass_cannon_alt_ehp"></td>
                 </tr>
@@ -237,8 +248,57 @@
         </table>
     </div>
 
+    <div id="simulation-mn-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Monk Options</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-25% damage taken from mobs you've hit">Resolve <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="resolve" value="1" /></td>
+                    <td class="resolve_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="100% of your dex as armor">Seize the Initiative</th>
+                    <td><input type="checkbox" class="seize_the_initiative" value="1" /></td>
+                    <td class="seize_the_initiative_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">The Guardian's Path <span class="label label-info auto_tooltip" title="note only if you are dualwielding!!">?</span></th>
+                    <td><input type="checkbox" class="the_guardians_path" value="1" /></td>
+                    <td class="the_guardians_path_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">Matra of Evasion <span class="label label-info auto_tooltip" title="can't include the activation bonus properly at this time">?</span></th>
+                    <td><input type="checkbox" class="mantra_of_evasion" value="1" /></td>
+                    <td class="mantra_of_evasion_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="an extra +20% armor (and the +15% dodge from the mantra itself)">Matra of Evasion - Hard Target</th>
+                    <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
+                    <td class="mantra_of_evasion_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th>TODO: Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="Need to figure out what would be a good uptime">?</span></th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>TODO: Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="Need to figure out what would be a good uptime">?</span></th>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <div id="simulation-not-available-template">
-        <table class="table table-bordered class_options table-striped">
+        <table class="table table-bordered class_options table-striped table-condensed">
             <thead>
                 <tr>
                     <th width="35%">Class Options Not Supported</th>
@@ -263,6 +323,7 @@
         defaults : {
             level:        60,
             base_vit:     1200,
+            base_dex:     1200,
             base_armor:   4000,
             base_resist:  300,
             base_dodge:   10,
@@ -273,6 +334,7 @@
             moblevel:     63,
 
             vit:          null,
+            dex:          null,
             life:         null,
             armor:        null,
             resist:       null,
@@ -303,6 +365,7 @@
                 your_class:   this.get('your_class'),
                 level:        this.get('level'),
                 base_vit:     this.get('base_vit'),
+                base_dex:     this.get('base_dex'),
                 base_armor:   this.get('base_armor'),
                 base_resist:  this.get('base_resist'),
                 base_dodge:   this.get('base_dodge'),
@@ -477,7 +540,7 @@
 
             return modifier;
         }
-    });
+    });                
     var Wizard = Character.extend({
         defaults: _.extend({}, Character.prototype.defaults, {
             your_class: "wz",
@@ -522,6 +585,55 @@
             return modifier;
         }
     });
+    var Monk = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "mn",
+            melee     : true,
+            options   : {
+                resolve:                false,
+                seize_the_initiative:   false,
+                the_guardians_path:     false,
+                mantra_of_evasion:      false,
+                mantra_of_evasion_armor:false
+            }
+        }),
+
+        modifyBaseArmor : function (armor) {
+        	if (this.get('seize_the_initiative')) {
+        		   armor += this.get('base_dex');
+            }
+
+            return armor;
+        },
+
+        modifyArmorModifier : function (armormodifier) {
+            if (this.get('mantra_of_evasion_armor')) {
+                armormodifier += .20;
+            }
+
+            return armormodifier;
+        },
+        
+
+        modifyBaseDodge : function (dodge) {
+            if (this.get('mantra_of_evasion')) {
+                dodge += 15;
+            }
+            if (this.get('the_guardians_path')) {
+                dodge += 15;
+            }
+        	
+        	return dodge; 
+        },
+
+        modifyReductionModifier : function (modifier) {
+            if (this.get('resolve')) {
+                modifier *= (1 - 0.25);
+            }
+
+            return modifier;
+        }
+    });
 
     var SimulationView = Backbone.View.extend({
         el: $('#ehp'),
@@ -537,6 +649,7 @@
             '.level':           'level',
             '.extra_life':      'extra_life',
             '.base_vit':        'base_vit',
+            '.base_dex':        'base_dex',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.base_dodge':      'base_dodge',
@@ -556,6 +669,13 @@
             '.prismatic':       'prismatic',
             '.blur':            'blur',
             '.glass_cannon':    'glass_cannon',
+
+            // MONK
+            '.resolve':                 'resolve',
+            '.seize_the_initiative':    'seize_the_initiative',
+            '.the_guardians_path':      'the_guardians_path',
+            '.mantra_of_evasion':       'mantra_of_evasion',
+            '.mantra_of_evasion_armor': 'mantra_of_evasion_armor',
 
             '.moblevel':        'moblevel',
 
@@ -584,7 +704,12 @@
             'energy_armor',
             'prismatic',
             'blur',
-            'glass_cannon'
+            'glass_cannon',
+            'resolve',
+            'seize_the_initiative',
+            'the_guardians_path',
+            'mantra_of_evasion',
+            'mantra_of_evasion_armor'
         ],
 
         initialize: function() {
@@ -595,7 +720,7 @@
             this.class_templates = {
                 "br": _.template($('#simulation-br-template').html()),
                 "dh": _.template($('#simulation-not-available-template').html()),
-                "mn": _.template($('#simulation-not-available-template').html()),
+                "mn": _.template($('#simulation-mn-template').html()),
                 "wd": _.template($('#simulation-not-available-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
@@ -668,6 +793,7 @@
             this.model.on('change', this.modelToView, this);
 
             this.modelToView();
+            $(".auto_tooltip").tooltip();
         },
 
         alternativePercentage: function(alt_ehp, ehp, alt_val) {
@@ -698,13 +824,19 @@
             }, this);
 
             $classSelect.val(this.model.get('your_class'));
+
+            $(".auto_tooltip").tooltip();
+            $("#dodge_ehp_explained").tooltip({
+                title: "<strong>keep in mind; dodge is random.</strong><br />" +
+                       "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
+            });
         }
     });
 
     var classlist = {
         'br': [Barbarian,   'Barbarian'],
         //'dh': [DemonHunter, 'Demon Hunter'],
-        //'mn': [Monk,        'Monk'],
+        'mn': [Monk,        'Monk'],
         //'wd': [WitchDocter, 'Witch Docter'],
         'wz': [Wizard,      'Wizard']
     };
@@ -738,12 +870,6 @@
     }
 
     var simView = new SimulationView({'model': getModelForClass('br')});
-
-    $(".auto_tooltip").tooltip();
-    $("#dodge_ehp_explained").tooltip({
-        title: "<strong>keep in mind; dodge is random.</strong><br />" +
-               "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
-    });
 })(jQuery);
 </script>
 
