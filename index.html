@@ -238,6 +238,11 @@
 
 <script>
 (function($) {
+	/*
+	 * version string is used to store data in localcache
+	 * when the code is changed in such a way that the cached data has become invalid
+	 * we can update the version string to invalidate the old cache
+	 */
 	var VERSION = "32c4fee62e6fe2b7efc9898f7344a1cd9f09aa21";
 	
     var Character = Backbone.Model.extend({
@@ -247,13 +252,8 @@
             base_armor:   4000,
             base_resist:  300,
             extra_life:   12,
-            classes:      {
-                "br": { melee: true },
-                "dh": { melee: false },
-                "mn": { melee: true },
-                "wd": { melee: false },
-                "wz": { melee: false }
-            },
+            
+            melee:        false,
             
             moblevel:     63,
 
@@ -619,11 +619,11 @@
             this.modelToView();
         },
         
-        alternativePercentage: function(alt_ehp, ehp, toughasnails_alt) {
+        alternativePercentage: function(alt_ehp, ehp, alt_val) {
             var val1 = ehp;
             var val2 = alt_ehp;
             
-            var relativeto = toughasnails_alt ? val1 : val2;
+            var relativeto = alt_val ? val1 : val2;
             
             return this.prepareVal(((val2 - val1) / relativeto) * 100);
         },
@@ -643,7 +643,7 @@
             $classSelect.children().remove();
             
             _.each(classlist, function(info, shortname) {
-            	$('<option />').val(shortname).html(info[1]).appendTo($classSelect).sel;
+            	$('<option />').val(shortname).html(info[1]).appendTo($classSelect);
             }, this);
             
             $classSelect.val(this.model.get('your_class'));
@@ -659,13 +659,15 @@
     };
     
     var getModelForClass = function(classname, forceNew) {
-    	var use_storage = !!localStorage && false;
+    	var use_storage = !!localStorage;
     	var storage_key = 'previous_' + VERSION + '_' + classname;
-    	var modelclass, model;
+    	var modelclass, 
+    	    model;
     	
     	if (classlist[classname]) {
     		modelclass = classlist[classname][0];
     	} else {
+    		// we should have some proper error here I think ...
     	    console.log(classname);
     	}
     	
