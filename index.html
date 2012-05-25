@@ -162,8 +162,8 @@
             </tr>
               <tr>
               <th>Nerves Of Steel</th>
-              <td><input type="checkbox" class="vittoarmor" value="1" /></td>
-                  <td class="vittoarmor_alt_ehp"></td>
+              <td><input type="checkbox" class="nervesofsteal" value="1" /></td>
+                  <td class="nervesofsteal_alt_ehp"></td>
             </tr>
               <tr>
               <th>War Cry - No Rune</th>
@@ -370,7 +370,7 @@
             melee     : true,
             options   : {
                 toughasnails: false,
-                vittoarmor:   false,
+                nervesofsteal:false,
                 warcry:       false,
                 warcry_armor: false,
                 warcry_resist:false,
@@ -380,7 +380,7 @@
         }),
         
         modifyBaseArmor : function (armor) {
-            if (this.get('vittoarmor')) {
+            if (this.get('nervesofsteal')) {
                 armor += this.get('vit');
             }
             
@@ -500,7 +500,7 @@
             
             // BARBARIAN
             '.toughasnails':    'toughasnails',
-            '.vittoarmor':      'vittoarmor',
+            '.nervesofsteal':   'nervesofsteal',
             '.warcry':          'warcry',
             '.warcry_armor':    'warcry_armor',
             '.warcry_resist':   'warcry_resist',
@@ -528,7 +528,7 @@
         
         classFields: [
             'toughasnails',
-            'vittoarmor',
+            'nervesofsteal',
             'warcry',
             'warcry_armor',
             'warcry_resist',
