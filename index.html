@@ -5,20 +5,20 @@
     <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
-    
+
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
     <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
-    
+
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" />
     <style>
          .templates {
             display: none;
          }
-         
+
          .highlighted-row th, .highlighted-row td {
             border-bottom: 1px solid black;
          }
@@ -28,12 +28,12 @@
          thead th {
             border-bottom: 1px solid black;
          }
-         
+
          td .label, th .label {
             float: right;
             margin-right: 5px;
          }
-         
+
     </style>
 </head>
 <div class="container">
@@ -47,9 +47,9 @@
         <table id="options" class="table table-bordered table-striped table-striped">
             <thead>
                 <tr>
-	                <th width="35%">Option</th>
-	                <th>Choice</th>
-	                <th width="30%">&nbsp;</th>
+                    <th width="35%">Option</th>
+                    <th>Choice</th>
+                    <th width="30%">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,31 +66,31 @@
                 </td>
                 <td></td>
               </tr>
-	            <tr>
-		            <th>Your level</th>
-		            <td><input type="text" class="level" value="" /></td>
-		            <td></td>
-	             </tr>
                 <tr>
-		            <th>Mob level</th>
-		            <td><input type="text" class="moblevel" value="" /></td>
+                    <th>Your level</th>
+                    <td><input type="text" class="level" value="" /></td>
                     <td></td>
-	            </tr>
+                 </tr>
                 <tr>
-		            <th>VIT</th>
-		            <td><input type="text" class="base_vit" value="" /></td>
+                    <th>Mob level</th>
+                    <td><input type="text" class="moblevel" value="" /></td>
                     <td></td>
-	            </tr>
+                </tr>
                 <tr>
-		            <th>+ Extra Life %</th>
-		            <td><input type="text" class="extra_life" value="" /></td>
+                    <th>VIT</th>
+                    <td><input type="text" class="base_vit" value="" /></td>
                     <td></td>
-	            </tr>
+                </tr>
                 <tr>
-		            <th>Armor</th>
-		            <td><input type="text" class="base_armor" value="" />  <br /></td>
+                    <th>+ Extra Life %</th>
+                    <td><input type="text" class="extra_life" value="" /></td>
                     <td></td>
-	            </tr>
+                </tr>
+                <tr>
+                    <th>Armor</th>
+                    <td><input type="text" class="base_armor" value="" />  <br /></td>
+                    <td></td>
+                </tr>
                 <tr>
                     <th>All Resistance</th>
                     <td><input type="text" class="base_resist" value="" /></td>
@@ -105,27 +105,27 @@
            <table id="results" class="table table-bordered table-striped">
              <thead>
                 <tr>
-	                <th width="35%">Results</th>
-	                <th>EHP without dodge</th>
-	                <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                    <th width="35%">Results</th>
+                    <th>EHP without dodge</th>
+                    <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
                 </tr>
              </thead>
              <tbody>
                 <tr class="highlighted-row">
-		            <th>Buffed Life</th>
-		            <td><input type="text" readonly=true class="life" value="" /></td>
+                    <th>Buffed Life</th>
+                    <td><input type="text" readonly=true class="life" value="" /></td>
                     <td></td>
-	            </tr>
+                </tr>
                 <tr class="highlighted-row">
-		            <th>Buffed Armor</th>
-		            <td><input type="text" readonly=true class="armor" value="" /></td>
+                    <th>Buffed Armor</th>
+                    <td><input type="text" readonly=true class="armor" value="" /></td>
                     <td class="armor_reduc"></td>
-	            </tr>
+                </tr>
                 <tr class="highlighted-row">
-		            <th>Buffed Resistance</th>
-		            <td><input type="text" readonly=true class="resist" value="" /></td>
+                    <th>Buffed Resistance</th>
+                    <td><input type="text" readonly=true class="resist" value="" /></td>
                     <td class="resist_reduc"></td>
-	            </tr>
+                </tr>
             </tbody>
             <tfoot>
                 <tr class="highlighted-row">
@@ -150,9 +150,9 @@
         <table class="table table-bordered class_options table-striped">
             <thead>
                 <tr>
-	                <th width="35%">Barbarian Options</th>
-	                <th>&nbsp;</th>
-	                <th width="30%">Alternative</th>
+                    <th width="35%">Barbarian Options</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">Alternative</th>
                 </tr>
             </thead>
             <tr>
@@ -160,7 +160,7 @@
               <td><input type="checkbox" class="warcry_life" value="1" /></td>
                   <td class="warcry_life_alt_ehp"></td>
             </tr>
-            
+
               <tr>
               <th title="+25% armor">Tough As Nails</th>
               <td><input type="checkbox" class="toughasnails" value="1" /></td>
@@ -181,13 +181,13 @@
               <td><input type="checkbox" class="warcry_armor" value="1" /></td>
               <td class="warcry_armor_alt_ehp"></td>
             </tr>
-             
+
               <tr>
               <th title="+50% to all your resistance stats">WarCry - Impunity</th>
               <td><input type="checkbox" class="warcry_resist" value="1" /></td>
               <td class="warcry_resist_alt_ehp"></td>
             </tr>
-            
+
               <tr>
               <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
               <td><input type="checkbox" class="threat_shout" value="1" /></td>
@@ -200,16 +200,16 @@
             </tr>
         </table>
     </div>
-    
+
     <div id="simulation-wz-template">
         <table class="table table-bordered class_options table-striped">
             <thead>
                 <tr>
-	                <th width="35%">Wizard Options</th>
-	                <th>&nbsp;</th>
-	                <th width="30%">Alternative</th>
+                    <th width="35%">Wizard Options</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">Alternative</th>
                 </tr>
-            </thead> 
+            </thead>
             <tr>
               <th>Blur</th>
               <td><input type="checkbox" class="blur" value="1" /></td>
@@ -230,17 +230,17 @@
               <td><input type="checkbox" class="glass_cannon" value="1" /></td>
                   <td class="glass_cannon_alt_ehp"></td>
             </tr>
-            
+
         </table>
     </div>
-    
+
     <div id="simulation-not-available-template">
         <table class="table table-bordered class_options table-striped">
             <thead>
                 <tr>
-	                <th width="35%">Class Options Not Supported</th>
-	                <th>&nbsp;</th>
-	                <th width="30%">&nbsp;</th>
+                    <th width="35%">Class Options Not Supported</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">&nbsp;</th>
                 </tr>
             </thead>
         </table>
@@ -249,13 +249,13 @@
 
 <script>
 (function($) {
-	/*
-	 * version string is used to store data in localcache
-	 * when the code is changed in such a way that the cached data has become invalid
-	 * we can update the version string to invalidate the old cache
-	 */
-	var VERSION = "32c4fee62e6fe2b7efc9898f7344a1cd9f09aa21";
-	
+    /*
+     * version string is used to store data in localcache
+     * when the code is changed in such a way that the cached data has become invalid
+     * we can update the version string to invalidate the old cache
+     */
+    var VERSION = "32c4fee62e6fe2b7efc9898f7344a1cd9f09aa21";
+
     var Character = Backbone.Model.extend({
         defaults : {
             level:        60,
@@ -264,9 +264,9 @@
             base_resist:  300,
             base_dodge:   10,
             extra_life:   12,
-            
+
             melee:        false,
-            
+
             moblevel:     63,
 
             vit:          null,
@@ -275,22 +275,22 @@
             resist:       null,
             dodge:        null,
             armor_reduc:  null,
-            resist_reduc: null,
+            resist_reduc: null
         },
-      
+
         initialize : function () {
-        	if (this.get('options')) {
-	            _.each(this.get('options'), function(o_default, o_name) {
-	                if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
-	            }, this);   
+            if (this.get('options')) {
+                _.each(this.get('options'), function(o_default, o_name) {
+                    if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
+                }, this);
             }
             this.on('change', this.simulate);
-            
+
             this.simulate();
         },
-        
+
         getAllInputStats : function () {
-        	return _.extend({}, {
+            return _.extend({}, {
                 your_class:   this.get('your_class'),
                 level:        this.get('level'),
                 base_vit:     this.get('base_vit'),
@@ -299,14 +299,14 @@
                 base_dodge:   this.get('base_dodge'),
                 extra_life:   this.get('extra_life'),
                 moblevel:     this.get('moblevel'),
-        	}, this.get('options'));
+            }, this.get('options'));
         },
-        
+
         /*
          * these modify methods should be implemented by specific class classes
          *  the modifyBase* methods will modify the base stat before the modifier is applied
          *  the modify*Modifier methods will modify the modifier (most of the time that starts on 1) and is applied to the base afterwards
-         * 
+         *
          * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
          */
         modifyBaseArmor              : function (armor)          { return armor; },
@@ -320,13 +320,13 @@
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
             }
-            
+
             return modifier;
         },
         modifyReductionModifierMelee : function (modifier)       { return modifier; },
-      
+
         simulate : function () {
-        	// grab the base values and set them so we can start modifying that value
+            // grab the base values and set them so we can start modifying that value
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
             this.set('vit',    this.get('base_vit'));
@@ -338,32 +338,32 @@
             this.set('dodge',  this.modifyBaseDodge(this.get('dodge')));
 
             // create and modify the armor modifier
-            armormodifier = 1; 
+            armormodifier = 1;
             armormodifier = this.modifyArmorModifier(armormodifier);
 
             // create and modify the resist modifier
-            resistmodifier = 1; 
+            resistmodifier = 1;
             resistmodifier = this.modifyResistModifier(resistmodifier);
 
             // apply the modifiers to the base value (with their static increases already applied) for armor and resist
             this.set('armor',  this.get('armor')  * armormodifier);
             this.set('resist', this.get('resist') * resistmodifier);
-            
+
             // calculate the actual reduction for armor and resist
             this.set('armor_reduc',  this.get('armor') /  (50 * this.get('moblevel') + this.get('armor')));
             this.set('resist_reduc', this.get('resist') / (5  * this.get('moblevel') + this.get('resist')));
-            
+
             // stack the modifiers
             var modifier = 1;
             modifier *= (1 - this.get('armor_reduc'));
             modifier *= (1 - this.get('resist_reduc'));
-            
+
             // add more modifiers
             modifier = this.modifyReductionModifier(modifier);
-            
+
             // add melee only modifiers
             var modifier_melee = this.modifyReductionModifierMelee(modifier);
-            
+
             // calculate life based on vit/level
             if (this.get('level') < 35) {
                 this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
@@ -373,17 +373,17 @@
 
             // modify the base life (static increases)
             this.set('life', this.modifyBaseLife(this.get('life')));
-            
+
             // create and modify the armor modifier
             var lifemodifier = 1 + (this.get('extra_life') / 100);
             lifemodifier = this.modifyLifeModifier(lifemodifier);
-                        
+
             // apply the life modifier
             this.set('life', this.get('life') * lifemodifier);
-            
+
             // create the dodge modifier
             var dodgemodifier = (1 - this.get('dodge') / 100);
-            
+
             // apply all modifiers
             var ehp             = this.get('life') / modifier;
             var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
@@ -408,40 +408,40 @@
                 warcry_armor: false,
                 warcry_resist:false,
                 threat_shout: false,
-                superstition: false,
-            },
+                superstition: false
+            }
         }),
-        
+
         modifyBaseArmor : function (armor) {
             if (this.get('nervesofsteel')) {
                 armor += this.get('vit');
             }
-            
+
             return armor
         },
-        
+
         modifyArmorModifier : function (armormodifier) {
-        	// any version of warcry gives 20%
-	        if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life')) {
-	            armormodifier += .2;
-	        }
-	        // warcry runed for armor gives an aditional 20%
-	        if (this.get('warcry_armor')) {
-	            armormodifier += .2;
-	        }
-	        
-            if (this.get('toughasnails')) {
-            	armormodifier += .25;
+            // any version of warcry gives 20%
+            if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life')) {
+                armormodifier += .2;
             }
-            
+            // warcry runed for armor gives an aditional 20%
+            if (this.get('warcry_armor')) {
+                armormodifier += .2;
+            }
+
+            if (this.get('toughasnails')) {
+                armormodifier += .25;
+            }
+
             return armormodifier;
         },
-        
+
         modifyResistModifier : function (resistmodifier) {
             if (this.get('warcry_resist')) {
-            	resistmodifier += .50;
+                resistmodifier += .50;
             }
-            
+
             return resistmodifier;
         },
 
@@ -449,23 +449,23 @@
             if (this.get('warcry_life')) {
                 lifemodifier += 0.10;
             }
-            
-            return lifemodifier; 
+
+            return lifemodifier;
         },
-        
+
         modifyReductionModifier : function (modifier) {
             if (this.get('threat_shout')) {
                 modifier *= (1 - 0.25);
             }
-            
+
             if (this.get('superstition')) {
                 modifier *= (1 - 0.20);
             }
-            
+
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
             }
-            
+
             return modifier;
         }
     });
@@ -474,55 +474,55 @@
             your_class: "wz",
             melee     : false,
             options   : {
-                energy_armor:            false,
-                prismatic:  false,
-                blur:                    false,
-                glass_cannon:            false,
-            },
+                energy_armor: false,
+                prismatic:    false,
+                blur:         false,
+                glass_cannon: false
+            }
         }),
-        
+
         modifyArmorModifier : function (armormodifier) {
             if (this.get('energy_armor')) {
-            	armormodifier += .65;
+                armormodifier += .65;
             }
-            
+
             if (this.get('glass_cannon')) {
-            	armormodifier -= .10;
+                armormodifier -= .10;
             }
-            
+
             return armormodifier;
         },
-        
+
         modifyResistModifier : function (resistmodifier) {
             if (this.get('prismatic')) {
-            	resistmodifier += .40;
+                resistmodifier += .40;
             }
-            
+
             if (this.get('glass_cannon')) {
-            	resistmodifier -= .10;
+                resistmodifier -= .10;
             }
-            
+
             return resistmodifier;
         },
-        
+
         modifyReductionModifierMelee : function (modifier) {
             if (this.get('blur')) {
                 modifier *= (1 - 0.20);
             }
-            
+
             return modifier;
         }
     });
-        
+
     var SimulationView = Backbone.View.extend({
         el: $('#ehp'),
-        
+
         events: {
             'change input':       'viewToModel',
             'change .your_class': 'changeClass',
             'click button.reset': 'viewToModel'
         },
-        
+
         fieldMap: {
             '.your_class':      'your_class',
             '.level':           'level',
@@ -531,7 +531,7 @@
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.base_dodge':      'base_dodge',
-            
+
             // BARBARIAN
             '.toughasnails':    'toughasnails',
             '.nervesofsteel':   'nervesofsteel',
@@ -541,13 +541,13 @@
             '.warcry_life':     'warcry_life',
             '.threat_shout':    'threat_shout',
             '.superstition':    'superstition',
-            
+
             // WIZARD
             '.energy_armor':    'energy_armor',
             '.prismatic':       'prismatic',
             '.blur':            'blur',
             '.glass_cannon':    'glass_cannon',
-            
+
             '.moblevel':        'moblevel',
 
             '.life':            'life',
@@ -555,14 +555,14 @@
             '.resist':          'resist',
             '.dodge':           'dodge',
             '.armor_reduc':     'armor_reduc',
-            '.resist_reduc':    'resist_reduc',  
-            
+            '.resist_reduc':    'resist_reduc',
+
             '.ehp':             'ehp',
             '.ehp_dodge':       'ehp_dodge',
             '.ehp_melee':       'ehp_melee',
-            '.ehp_dodge_melee': 'ehp_dodge_melee',
+            '.ehp_dodge_melee': 'ehp_dodge_melee'
         },
-        
+
         classFields: [
             'toughasnails',
             'nervesofsteel',
@@ -577,12 +577,12 @@
             'blur',
             'glass_cannon'
         ],
-        
-        initialize: function() {        	
+
+        initialize: function() {
             _.bindAll(this, 'render', 'modelToView', 'viewToModel', 'changeClass');
 
             this.template = _.template($('#simulation-template').html());
-            
+
             this.class_templates = {
                 "br": _.template($('#simulation-br-template').html()),
                 "dh": _.template($('#simulation-not-available-template').html()),
@@ -590,17 +590,17 @@
                 "wd": _.template($('#simulation-not-available-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
-            
+
             this.render();
             this.changeClass();
         },
-        
+
         viewToModel: function() {
-            _.each(this.fieldMap, function(field, selector) {   
+            _.each(this.fieldMap, function(field, selector) {
                 var $fieldObj = $(selector,  this.el);
-                
+
                 if ($fieldObj.is('span')) {
-                    // -- 
+                    // --
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     this.model.set(field, !!$fieldObj.prop('checked'), {silent: true});
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
@@ -609,19 +609,19 @@
                     this.model.set(field, $fieldObj.val(), {silent: true});
                 }
             }, this);
-            
+
             _.each(this.fieldMap, function(field, selector) {
                 this.model.change(field);
             }, this);
         },
-        
+
         modelToView: function() {
             $(this.el).find('.class_options').remove();
             $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
-            
+
             _.each(this.fieldMap, function(field, selector) {
                 var $fieldObj = $(selector,  this.el);
-                
+
                 if ($fieldObj.is('span')) {
                     $fieldObj.html(this.prepareVal(this.model.get(field)));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
@@ -632,17 +632,17 @@
                     $fieldObj.val(this.model.get(field));
                 }
             }, this);
-            
+
             var ehp = this.model.get('ehp');
             var ehp_melee = this.model.get('ehp_melee');
-            
+
             var alt_booleans = this.classFields;
-            
+
             _.each(alt_booleans, function(alt_field) {
                 var selector  = "." + alt_field +  "_alt_ehp";
                 var alt_val   = !this.model.get(alt_field);
                 var alt_model = this.model.clone();
-                
+
                 alt_model.set(alt_field, alt_val);
                 if($(selector, this.el).hasClass('melee_only')){
                     $(selector, this.el).html(this.prepareVal(alt_model.get('ehp_melee')) + " EHP melee; " + this.alternativePercentage(alt_model.get('ehp_melee'), ehp_melee, alt_val) + "% change");
@@ -651,47 +651,47 @@
                 }
             }, this);
         },
-        
-        changeClass: function(event) {        	
+
+        changeClass: function(event) {
             classname = $('.your_class', this.el).val();
-            
+
             this.model = getModelForClass(classname);
             this.model.on('change', this.modelToView, this);
 
             this.modelToView();
         },
-        
+
         alternativePercentage: function(alt_ehp, ehp, alt_val) {
             var val1 = ehp;
             var val2 = alt_ehp;
-            
+
             var relativeto = alt_val ? val1 : val2;
-            
+
             return this.prepareVal(((val2 - val1) / relativeto) * 100);
         },
-        
+
         prepareVal: function(val) {
             return this.roundNumber(val, 3);
         },
-        
+
         roundNumber: function(num, dec) {
             return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
         },
-        
+
         render: function() {
             $(this.template()).appendTo($(this.el));
-            
+
             var $classSelect = $('.your_class', this.el);
             $classSelect.children().remove();
-            
+
             _.each(classlist, function(info, shortname) {
-            	$('<option />').val(shortname).html(info[1]).appendTo($classSelect);
+                $('<option />').val(shortname).html(info[1]).appendTo($classSelect);
             }, this);
-            
+
             $classSelect.val(this.model.get('your_class'));
-        },
+        }
     });
-    
+
     var classlist = {
         'br': [Barbarian,   'Barbarian'],
         //'dh': [DemonHunter, 'Demon Hunter'],
@@ -699,32 +699,32 @@
         //'wd': [WitchDocter, 'Witch Docter'],
         'wz': [Wizard,      'Wizard']
     };
-    
+
     var getModelForClass = function(classname, forceNew) {
-    	var use_storage = !!localStorage;
-    	var storage_key = 'previous_' + VERSION + '_' + classname;
-    	var modelclass, 
-    	    model;
-    	
-    	if (classlist[classname]) {
-    		modelclass = classlist[classname][0];
-    	} else {
-    		// we should have some proper error here I think ...
-    	    console.log(classname);
-    	}
-    	
+        var use_storage = !!localStorage;
+        var storage_key = 'previous_' + VERSION + '_' + classname;
+        var modelclass,
+            model;
+
+        if (classlist[classname]) {
+            modelclass = classlist[classname][0];
+        } else {
+            // we should have some proper error here I think ...
+            console.log(classname);
+        }
+
         if (!forceNew && use_storage && localStorage.getItem(storage_key)) {
             model = new modelclass(JSON.parse(localStorage.getItem(storage_key)));
         } else {
             model = new modelclass();
         }
-        
+
         if (use_storage) {
             model.on('change', function(model) {
                 localStorage.setItem(storage_key, JSON.stringify(model));
             }, model);
         }
-        
+
         return model;
     }
 
@@ -732,7 +732,7 @@
 
     $(".auto_tooltip").tooltip();
     $("#dodge_ehp_explained").tooltip({
-        title: "<strong>keep in mind; dodge is random.</strong><br />" + 
+        title: "<strong>keep in mind; dodge is random.</strong><br />" +
                "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
     });
 })(jQuery);
