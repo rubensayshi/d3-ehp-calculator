@@ -213,6 +213,11 @@
                     <td><input type="checkbox" class="warcry_resist" value="1" /></td>
                     <td class="warcry_resist_alt_ehp"></td>
                 </tr>
+                <tr>
+                    <th title="+15% dodge">WarCry - Veteran's Warning</th>
+                    <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
+                    <td class="warcry_dodge_alt_ehp"></td>
+                </tr>
     
                   <tr>
                     <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
@@ -446,7 +451,7 @@ var gahandler = (function() {
         modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
         modifyBaseLife               : function (life)           { return life; },
         modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
-        modifyBaseDodge              : function (dodge)          { return dodge; },
+        modifyDodgeModifier          : function (dodgemodifier)  { return dodgemodifier; },
         modifyReductionModifier      : function (modifier)       {
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
@@ -468,15 +473,18 @@ var gahandler = (function() {
             // modify the base values (static increases)
             this.set('armor',  this.modifyBaseArmor(this.get('armor')));
             this.set('resist', this.modifyBaseResist(this.get('resist')));
-            this.set('dodge',  this.modifyBaseDodge(this.get('dodge')));
 
             // create and modify the armor modifier
-            armormodifier = 1;
+            var armormodifier = 1;
             armormodifier = this.modifyArmorModifier(armormodifier);
 
             // create and modify the resist modifier
-            resistmodifier = 1;
+            var resistmodifier = 1;
             resistmodifier = this.modifyResistModifier(resistmodifier);
+
+            // create and modify the resist modifier
+            var dodgemodifier = 1;
+            dodgemodifier = 1 - (1 - this.get('dodge')) * this.modifyDodgeModifier(dodgemodifier);
 
             // apply the modifiers to the base value (with their static increases already applied) for armor and resist
             this.set('armor',  this.get('armor')  * armormodifier);
@@ -525,9 +533,6 @@ var gahandler = (function() {
             // apply the life modifier
             this.set('life', this.get('life') * lifemodifier);
 
-            // create the dodge modifier
-            var dodgemodifier = (1 - this.get('dodge') / 100);
-
             // apply all modifiers
             var ehp             = this.get('life') / modifier;
             var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
@@ -559,6 +564,7 @@ var gahandler = (function() {
                 warcry:       false,
                 warcry_armor: false,
                 warcry_resist:false,
+                warcry_dodge: false,
                 threat_shout: false,
                 superstition: false
             }
@@ -574,7 +580,7 @@ var gahandler = (function() {
 
         modifyArmorModifier : function (armormodifier) {
             // any version of warcry gives 20%
-            if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life')) {
+            if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life') || this.get('warcry_dodge')) {
                 armormodifier += .2;
             }
             // warcry runed for armor gives an aditional 20%
@@ -623,7 +629,15 @@ var gahandler = (function() {
             }
 
             return modifier;
-        }
+        },
+        
+        modifyDodgeModifier          : function (dodgemodifier) {
+			if (this.get('warcry_dodge')) {
+				dodgemodifier *= (1 - 0.15);
+			}
+            
+            return dodgemodifier;
+        },
     });                
     var Wizard = Character.extend({
         defaults: _.extend({}, Character.prototype.defaults, {
@@ -699,15 +713,15 @@ var gahandler = (function() {
         },
         
 
-        modifyBaseDodge : function (dodge) {
-            if (this.get('mantra_of_evasion')) {
-                dodge += 15;
+        modifyDodgeModifier : function (dodgemodifier) {
+            if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
+            	dodgemodifier *= (1 - 0.15);
             }
             if (this.get('the_guardians_path')) {
-                dodge += 15;
+            	dodgemodifier *= (1 - 0.15);
             }
         	
-        	return dodge; 
+        	return dodgemodifier; 
         },
 
         modifyReductionModifier : function (modifier) {
@@ -746,6 +760,7 @@ var gahandler = (function() {
             '.warcry':          'warcry',
             '.warcry_armor':    'warcry_armor',
             '.warcry_resist':   'warcry_resist',
+            '.warcry_dodge':    'warcry_dodge',
             '.warcry_life':     'warcry_life',
             '.threat_shout':    'threat_shout',
             '.superstition':    'superstition',
@@ -788,6 +803,7 @@ var gahandler = (function() {
             'warcry',
             'warcry_armor',
             'warcry_resist',
+            'warcry_dodge',
             'warcry_life',
             'threat_shout',
             'superstition',
