@@ -517,11 +517,10 @@ var gahandler = (function() {
             var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
 
             // calculate life based on vit/level
-            if (this.get('level') < 35) {
-                this.set('life', (36 + (4 * this.get('level')) + (10 * this.get('vit'))));
-            } else {
-                this.set('life', (60 - 25) * this.get('vit'));
-            }
+            var lifemodbylvl = 60 - this.get('level');
+            lifemodebylvl = lifemodebylvl < 10 ? 10 : lifemodebylvl;
+
+            this.set('life', (36 + (4 * this.get('level')) + (lifemodebylvl * this.get('vit'))));
 
             // modify the base life (static increases)
             this.set('life', this.modifyBaseLife(this.get('life')));
