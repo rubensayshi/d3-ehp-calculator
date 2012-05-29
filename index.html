@@ -425,7 +425,7 @@ var gahandler = (function() {
             
             this.on('change', this.simulate);
 
-            this.simulate();
+            this.trigger('change');
         },
 
         getAllInputStats : function () {
@@ -470,6 +470,8 @@ var gahandler = (function() {
         modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
         simulate : function () {
+            this.off('change', this.simulate);
+            
             // grab the base values and set them so we can start modifying that value
             this.set('armor',  this.get('base_armor'));
             this.set('resist', this.get('base_resist'));
@@ -561,6 +563,8 @@ var gahandler = (function() {
             this.set('ehp_dodge_ranged',ehp_dodge_ranged);
             this.set('ehp_magic',       ehp_magic);
             this.set('ehp_dodge_magic', ehp_dodge_magic);
+            
+            this.on('change', this.simulate);
         }
     });
     var Barbarian = Character.extend({
@@ -851,16 +855,12 @@ var gahandler = (function() {
                 if ($fieldObj.is('span')) {
                     // --
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                    this.model.set(field, !!$fieldObj.prop('checked'), {silent: true});
+                    this.model.set(field, !!$fieldObj.prop('checked'));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
-                    this.model.set(field, parseInt($fieldObj.val()), {silent: true});
+                    this.model.set(field, parseInt($fieldObj.val()));
                 } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
-                    this.model.set(field, $fieldObj.val(), {silent: true});
+                    this.model.set(field, $fieldObj.val());
                 }
-            }, this);
-
-            _.each(this.fieldMap, function(field, selector) {
-                this.model.change(field);
             }, this);
         },
 
@@ -884,7 +884,7 @@ var gahandler = (function() {
 
             var ehp = this.model.get('ehp');
             var ehp_melee = this.model.get('ehp_melee');
-
+            
             var alt_booleans = this.classFields;
 
             _.each(alt_booleans, function(alt_field) {
@@ -956,7 +956,9 @@ var gahandler = (function() {
                 $('<option />').val(shortname).html(info[1]).appendTo($classSelect);
             }, this);
 
-            $classSelect.val(this.model.get('your_class'));
+            if (this.model) {
+                $classSelect.val(this.model.get('your_class'));
+            }
 
             $(".auto_tooltip").tooltip();
             $("#dodge_ehp_explained").tooltip({
@@ -1008,7 +1010,7 @@ var gahandler = (function() {
         return model;
     };
 
-    var simView = new SimulationView({'model': getModelForClass('br')});
+    var simView = new SimulationView();
 })(jQuery);
 </script>
 
