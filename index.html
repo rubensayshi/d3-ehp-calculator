@@ -457,7 +457,7 @@ var gahandler = (function() {
         modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
         modifyBaseLife               : function (life)           { return life; },
         modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
-        modifyDodgeModifier          : function (dodgemodifier)  { return dodgemodifier; },
+        modifyDodgeChance            : function (dodgechance)    { return dodgechance; },
         modifyReductionModifier      : function (modifier)       {
             if (this.get('melee')) {
                 modifier *= (1 - 0.30);
@@ -488,9 +488,13 @@ var gahandler = (function() {
             var resistmodifier = 1;
             resistmodifier = this.modifyResistModifier(resistmodifier);
 
-            // create and modify the resist modifier
-            var dodgemodifier = 1;
-            dodgemodifier = 1 - (1 - (this.get('dodge') / 100)) * this.modifyDodgeModifier(dodgemodifier);
+            // create and modify the dodge chance
+            var dodgechance = 1;
+            dodgechance *= (1-(this.get('dodge') / 100));
+            dodgechance = this.modifyDodgeChance(dodgechance);
+            dodgechance = 1 - dodgechance;
+                        
+            var dodgemodifier = 1 - dodgechance;
 
             // apply the modifiers to the base value (with their static increases already applied) for armor and resist
             this.set('armor',  this.get('armor')  * armormodifier);
@@ -636,12 +640,12 @@ var gahandler = (function() {
             return modifier;
         },
         
-        modifyDodgeModifier          : function (dodgemodifier) {
+        modifyDodgeChance : function (dodgechance) {
 			if (this.get('warcry_dodge')) {
-				dodgemodifier *= (1 - 0.15);
+				dodgechance *= (1 - 0.15);
 			}
             
-            return dodgemodifier;
+            return dodgechance;
         },
     });                
     var Wizard = Character.extend({
@@ -718,15 +722,15 @@ var gahandler = (function() {
         },
         
 
-        modifyDodgeModifier : function (dodgemodifier) {
+        modifyDodgeChance : function (dodgechance) {
             if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
-            	dodgemodifier *= (1 - 0.15);
+            	dodgechance *= (1 - 0.15);
             }
             if (this.get('the_guardians_path')) {
-            	dodgemodifier *= (1 - 0.15);
+            	dodgechance *= (1 - 0.15);
             }
         	
-        	return dodgemodifier; 
+        	return dodgechance; 
         },
 
         modifyReductionModifier : function (modifier) {
