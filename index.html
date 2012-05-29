@@ -89,7 +89,7 @@
                 <tr>
                     <th>+ Extra Life %</th>
                     <td><input type="text" class="extra_life" value="" /></td>
-                    <td></td>
+                    <td></td
                 </tr>
                 <tr>
                     <th>Armor</th>
@@ -517,7 +517,7 @@ var gahandler = (function() {
             var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
 
             // calculate life based on vit/level
-            var lifebylvl = 60 - this.get('level');
+            var lifebylvl = this.get('level') - 25;
             lifebylvl = lifebylvl < 10 ? 10 : lifebylvl;
 
             this.set('life', (36 + (4 * this.get('level')) + (lifebylvl * this.get('vit'))));
