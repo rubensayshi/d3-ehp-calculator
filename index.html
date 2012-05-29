@@ -55,7 +55,7 @@
                 <tr>
                     <th width="35%">Option</th>
                     <th>Choice</th>
-                    <th width="30%">&nbsp;</th>
+                    <th width="30%">Alternative</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +79,9 @@
                 <tr>
                     <th>VIT</th>
                     <td><input type="text" class="base_vit" value="" /></td>
-                    <td></td>
+                    <td>+1 VIT<br />
+                        <span class="base_vit_alt_ehp"></span>
+                    </td>
                 </tr>
                 <tr>
                     <th>DEX</th>
@@ -94,12 +96,16 @@
                 <tr>
                     <th>Armor</th>
                     <td><input type="text" class="base_armor" value="" />  <br /></td>
-                    <td></td>
+                    <td>+1 Armor<br />
+                        <span class="base_armor_alt_ehp"></span>
+                    </td>
                 </tr>
                 <tr>
                     <th>All Resistance</th>
                     <td><input type="text" class="base_resist" value="" /></td>
-                    <td></td>
+                    <td>+1 All Resist<br />
+                        <span class="base_resist_alt_ehp"></span>
+                    </td>
                 </tr>
                 <tr>
                     <th>Melee only Reduction</th>
@@ -888,6 +894,20 @@ var gahandler = (function() {
                 } else {
                     $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
                 }
+            }, this);
+            
+            var alt_stats = {
+                base_armor:      1,
+                base_vit:        1,
+                base_resist:     1,
+            };
+
+            _.each(alt_stats, function(alt_val, alt_field) {
+                var selector  = "." + alt_field +  "_alt_ehp";
+                var alt_model = this.model.clone();
+
+                alt_model.set(alt_field, alt_model.get(alt_field) + alt_val);
+                $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
             }, this);
         },
 
