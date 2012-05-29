@@ -484,7 +484,7 @@ var gahandler = (function() {
 
             // create and modify the resist modifier
             var dodgemodifier = 1;
-            dodgemodifier = 1 - (1 - this.get('dodge')) * this.modifyDodgeModifier(dodgemodifier);
+            dodgemodifier = 1 - (1 - (this.get('dodge') / 100)) * this.modifyDodgeModifier(dodgemodifier);
 
             // apply the modifiers to the base value (with their static increases already applied) for armor and resist
             this.set('armor',  this.get('armor')  * armormodifier);
