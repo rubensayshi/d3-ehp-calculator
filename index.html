@@ -89,6 +89,11 @@
                     <td></td>
                 </tr>
                 <tr>
+                    <th>INT</th>
+                    <td><input type="text" class="base_int" value="" /> <span title="Int is only used for skill effects (eg Witch Doctor passive), not in general for resis" class="label label-info auto_tooltip">?</span></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <th>+ Extra Life %</th>
                     <td><input type="text" class="extra_life" value="" /></td>
                     <td></td>
@@ -102,7 +107,7 @@
                 </tr>
                 <tr>
                     <th>All Resistance</th>
-                    <td><input type="text" class="base_resist" value="" /></td>
+                    <td><input type="text" class="base_resist" value="" /> <span title="Insert your most common value of resis from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!" class="label label-info auto_tooltip">?</span></td>
                     <td><strong>+1 All Resist</strong><br />
                         <span class="base_resist_alt_ehp"></span>
                     </td>
@@ -398,7 +403,7 @@
                 </tr>
                 <tr>
                     <th title="10% Int for every healthglobe collected">Gruesome Feast</th>
-                    <td><select class="gruesome_feast" >
+                    <td><select class="gruesome_feast input_select" >
                       <option value="0">0</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -426,7 +431,7 @@
                 <tr>
                     <th title="up to five stacks of +130 Int" >Soul Harvest <span class="label label-info auto_tooltip" title="note that you most likely will not have a 5 Stack / 100% uptime on this!">?</span></th>
                     <td>
-                      <select class="soul_harvest" >
+                      <select class="soul_harvest input_select" >
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -517,6 +522,7 @@ var gahandler = (function() {
             level:        60,
             base_vit:     1200,
             base_dex:     1200,
+            base_int:     1200,
             base_armor:   4000,
             base_resist:  300,
             base_dodge:   10,
@@ -562,6 +568,7 @@ var gahandler = (function() {
                 level:        this.get('level'),
                 base_vit:     this.get('base_vit'),
                 base_dex:     this.get('base_dex'),
+                base_int:     this.get('base_int'),                
                 base_armor:   this.get('base_armor'),
                 base_resist:  this.get('base_resist'),
                 base_dodge:   this.get('base_dodge'),
@@ -915,7 +922,6 @@ var gahandler = (function() {
             return modifier;
         }
     });
-
     var WitchDoctor = Character.extend({
         defaults: _.extend({}, Character.prototype.defaults, {
             your_class: "wd",
@@ -934,8 +940,17 @@ var gahandler = (function() {
             return armor;
         },
         
-        modifyResistModifier : function (resistmodifier) { 	
-          return resistmodifier;
+        modifyBaseResist : function (resis) { 	
+          if (this.get('soul_harvest') > 0) {
+             // (130 Int for every soul harvested up to 5) * resis per Int
+             resis += (this.get('soul_harvest')*130) * 0.1
+          }
+          if (this.get('gruesome_feast') > 0) {
+             // (10% Int for every healtglobe consumed up to 5) * resis per Int
+             resis += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1
+          }
+          
+          return resis;
         },
         
         modifyLifeModifier : function (lifemodifier) {
@@ -977,6 +992,7 @@ var gahandler = (function() {
 
         events: {
             'change input':       'viewToModel',
+            'change .input_select': 'viewToModel',
             'change .your_class': 'changeClass',
             'click button.reset': 'viewToModel'
         },
@@ -987,6 +1003,7 @@ var gahandler = (function() {
             '.extra_life':      'extra_life',
             '.base_vit':        'base_vit',
             '.base_dex':        'base_dex',
+            '.base_int':        'base_int',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.base_dodge':      'base_dodge',
