@@ -232,16 +232,26 @@
                     <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
                     <td class="warcry_dodge_alt_ehp"></td>
                 </tr>
-    
-                  <tr>
-                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                    <td class="threat_shout_alt_ehp"></td>
-                </tr>
                   <tr>
                     <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
                     <td><input type="checkbox" class="superstition" value="1" /></td>
-                    <td class="superstition_alt_ehp"></td>
+                    <td class="superstition_alt_ehp magic_only"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Barbarian Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
+                    <td class="threat_shout_alt_ehp"></td>
                 </tr>
             </tbody>
         </table>
@@ -971,9 +981,6 @@ var gahandler = (function() {
                     $fieldObj.val(this.model.get(field));
                 }
             }, this);
-
-            var ehp = this.model.get('ehp');
-            var ehp_melee = this.model.get('ehp_melee');
             
             var alt_booleans = this.classFields;
 
@@ -983,11 +990,18 @@ var gahandler = (function() {
                 var alt_model = this.model.clone();
 
                 alt_model.set(alt_field, alt_val);
-                if($(selector, this.el).hasClass('melee_only')){
-                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp_melee')) + " EHP melee; " + this.alternativePercentage(alt_model.get('ehp_melee'), ehp_melee, alt_val) + "% change");
-                } else {
-                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
+
+                var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
+                
+                if($(selector, this.el).hasClass('melee_only')) {
+                    alt_ehp_title = "EHP melee";
+                    alt_ehp_field = "ehp_melee";
+                } else if($(selector, this.el).hasClass('magic_only')) {
+                    alt_ehp_title = "EHP magic";
+                    alt_ehp_field = "ehp_magic";
                 }
+                
+                $(selector, this.el).html(this.prepareVal(alt_model.get(alt_ehp_field)) + " " + alt_ehp_title + "; " + this.alternativePercentage(alt_model.get(alt_ehp_field), this.model.get(alt_ehp_field), alt_val) + "% change");
             }, this);
             
             var alt_stats = {
@@ -1001,7 +1015,11 @@ var gahandler = (function() {
                 var alt_model = this.model.clone();
 
                 alt_model.set(alt_field, alt_model.get(alt_field) + alt_val);
-                $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
+                
+
+                var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
+                
+                $(selector, this.el).html(this.prepareVal(alt_model.get(alt_ehp_field)) + " " + alt_ehp_title + "; " + this.alternativePercentage(alt_model.get(alt_ehp_field), this.model.get(alt_ehp_field), alt_val) + "% change");
             }, this);
         },
 
