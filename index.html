@@ -372,6 +372,11 @@
                     <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
                     <td></td>
                 </tr>
+                <tr>
+                    <th>Fists of Thunder - Lightning Flash <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="fists_of_thunder_flash" value="1" /></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -771,7 +776,8 @@ var gahandler = (function() {
                 mantra_of_evasion_armor:  false,
                 mantra_of_healing_time:   false,
                 deadly_reach_keen_eye:    false,
-                crippling_wave_concussion:false
+                crippling_wave_concussion:false,
+                fists_of_thunder_flash:   false
             }
         }),
 
@@ -816,8 +822,13 @@ var gahandler = (function() {
             if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
             	dodgechance *= (1 - 0.15);
             }
+            
             if (this.get('the_guardians_path')) {
             	dodgechance *= (1 - 0.15);
+            }
+            
+            if (this.get('fists_of_thunder_flash')) {
+                dodgechance *= (1 - 0.16);
             }
         	
         	return dodgechance; 
@@ -885,6 +896,7 @@ var gahandler = (function() {
             '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
             '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
             '.crippling_wave_concussion': 'crippling_wave_concussion',
+            '.fists_of_thunder_flash':    'fists_of_thunder_flash',
 
             '.moblevel':        'moblevel',
 
@@ -928,7 +940,8 @@ var gahandler = (function() {
             'mantra_of_healing_time',
             'mantra_of_healing_heavenly',
             'deadly_reach_keen_eye',
-            'crippling_wave_concussion'
+            'crippling_wave_concussion',
+            'fists_of_thunder_flash'
         ],
 
         initialize: function() {
