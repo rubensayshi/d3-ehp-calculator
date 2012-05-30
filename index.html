@@ -89,6 +89,11 @@
                     <td></td>
                 </tr>
                 <tr>
+                    <th>INT</th>
+                    <td><input type="text" class="base_int" value="" /> <span title="Int is only used for skill effects (eg Witch Doctor passive), not in general for resis" class="label label-info auto_tooltip">?</span></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <th>+ Extra Life %</th>
                     <td><input type="text" class="extra_life" value="" /></td>
                     <td></td>
@@ -102,7 +107,7 @@
                 </tr>
                 <tr>
                     <th>All Resistance</th>
-                    <td><input type="text" class="base_resist" value="" /></td>
+                    <td><input type="text" class="base_resist" value="" /> <span title="Insert your most common value of resis from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!" class="label label-info auto_tooltip">?</span></td>
                     <td><strong>+1 All Resist</strong><br />
                         <span class="base_resist_alt_ehp"></span>
                     </td>
@@ -381,6 +386,75 @@
         </table>
     </div>
 
+    <div id="simulation-wd-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Witch Doctor Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-20% damage to your and your pets">Jungle Fortitude </th>
+                    <td><input type="checkbox" class="jungle_fortitude" value="1" /></td>
+                    <td class="jungle_fortitude_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="10% Int for every healthglobe collected">Gruesome Feast</th>
+                    <td><select class="gruesome_feast input_select" >
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th title="-20% damage if did poison damage to">Bad Medicine</th>
+                    <td><input type="checkbox" class="bad_medicine" value="1" /></td>
+                    <td class="bad_medicine_alt_ehp"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Witch Doctor Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+                <tr>
+                    <th title="up to five stacks of +130 Int" >Soul Harvest <span class="label label-info auto_tooltip" title="note that you most likely will not have a 5 Stack / 100% uptime on this!">?</span></th>
+                    <td>
+                      <select class="soul_harvest input_select" >
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                      </select></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th title="your dogs take 10% of the damage done to you">Zombie Dogs - Life Link<span class="label label-info auto_tooltip" title="of course this will only work if you have zombie dogs alive">?</span></th>
+                    <td><input type="checkbox" class="zombie_dogs_life_link" value="0" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th title="+100% Armor for 8 seconds after casting this spell">Horrify - Frightening Aspect<span class="label label-info auto_tooltip" title="you will gain 100% Armor after casting this spell. However, this only lasts 8 secounds whereas the cooldown is 20 secs. So you will not get more than 2/5 uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="horrify_frightening_aspect" value="0" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>    
+
     <div id="simulation-not-available-template">
         <table class="table table-bordered class_options table-striped table-condensed">
             <thead>
@@ -448,6 +522,7 @@ var gahandler = (function() {
             level:        60,
             base_vit:     1200,
             base_dex:     1200,
+            base_int:     1200,
             base_armor:   4000,
             base_resist:  300,
             base_dodge:   10,
@@ -493,6 +568,7 @@ var gahandler = (function() {
                 level:        this.get('level'),
                 base_vit:     this.get('base_vit'),
                 base_dex:     this.get('base_dex'),
+                base_int:     this.get('base_int'),                
                 base_armor:   this.get('base_armor'),
                 base_resist:  this.get('base_resist'),
                 base_dodge:   this.get('base_dodge'),
@@ -846,12 +922,77 @@ var gahandler = (function() {
             return modifier;
         }
     });
+    var WitchDoctor = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "wd",
+            melee     : false,
+            options   : {
+                jungle_fortitude:         false,
+                gruesome_feast:           0,
+                bad_medicine:             false,
+                soul_harvest:             0,
+                zombie_dogs_life_link:    false,
+                horrify_frightening_aspect:false
+            }
+        }),
+
+        modifyBaseArmor : function (armor) {
+            return armor;
+        },
+        
+        modifyBaseResist : function (resis) { 	
+          if (this.get('soul_harvest') > 0) {
+             // (130 Int for every soul harvested up to 5) * resis per Int
+             resis += (this.get('soul_harvest')*130) * 0.1
+          }
+          if (this.get('gruesome_feast') > 0) {
+             // (10% Int for every healtglobe consumed up to 5) * resis per Int
+             resis += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1
+          }
+          
+          return resis;
+        },
+        
+        modifyLifeModifier : function (lifemodifier) {
+          return lifemodifier;
+        },
+
+        modifyArmorModifier : function (armormodifier) {
+          if (this.get('horrify_frightening_aspect')) {
+              // +100% Armor are Armor*2, right?
+              armormodifier *= 2;
+          }
+            return armormodifier;
+        },
+        
+
+        modifyDodgeChance : function (dodgechance) {
+            return dodgechance; 
+        },
+
+        modifyReductionModifier : function (modifier) {
+            if (this.get('jungle_fortitude')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('bad_medicine')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('zombie_dogs_life_link')) {
+                modifier *= (1 - 0.10);
+            }            
+            
+            return modifier;
+        }
+    });
 
     var SimulationView = Backbone.View.extend({
         el: $('#ehp'),
 
         events: {
             'change input':       'viewToModel',
+            'change .input_select': 'viewToModel',
             'change .your_class': 'changeClass',
             'click button.reset': 'viewToModel'
         },
@@ -862,6 +1003,7 @@ var gahandler = (function() {
             '.extra_life':      'extra_life',
             '.base_vit':        'base_vit',
             '.base_dex':        'base_dex',
+            '.base_int':        'base_int',
             '.base_armor':      'base_armor',
             '.base_resist':     'base_resist',
             '.base_dodge':      'base_dodge',
@@ -897,6 +1039,14 @@ var gahandler = (function() {
             '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
             '.crippling_wave_concussion': 'crippling_wave_concussion',
             '.fists_of_thunder_flash':    'fists_of_thunder_flash',
+            
+            // WITCH DOCTOR
+            '.jungle_fortitude':      'jungle_fortitude',
+            '.gruesome_feast':        'gruesome_feast',
+            '.bad_medicine':          'bad_medicine',
+            '.soul_harvest':          'soul_harvest',
+            '.zombie_dogs_life_link': 'zombie_dogs_life_link',
+            '.horrify_frightening_aspect': 'horrify_frightening_aspect',
 
             '.moblevel':        'moblevel',
 
@@ -953,7 +1103,7 @@ var gahandler = (function() {
                 "br": _.template($('#simulation-br-template').html()),
                 "dh": _.template($('#simulation-not-available-template').html()),
                 "mn": _.template($('#simulation-mn-template').html()),
-                "wd": _.template($('#simulation-not-available-template').html()),
+                "wd": _.template($('#simulation-wd-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
 
@@ -1126,7 +1276,7 @@ var gahandler = (function() {
         'br': [Barbarian,   'Barbarian'],
         //'dh': [DemonHunter, 'Demon Hunter'],
         'mn': [Monk,        'Monk'],
-        //'wd': [WitchDocter, 'Witch Docter'],
+        'wd': [WitchDoctor, 'Witch Docter'],
         'wz': [Wizard,      'Wizard']
     };
 
