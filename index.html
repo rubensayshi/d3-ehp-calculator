@@ -970,7 +970,27 @@ var gahandler = (function() {
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     this.model.set(field, !!$fieldObj.prop('checked'));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
-                    this.model.set(field, parseInt($fieldObj.val()));
+                    var val = $fieldObj.val();
+                    
+                    var normalizeFloat = function(val, alertOnError) {
+                        var res = parseFloat(val);
+   
+                        if (isNaN(res) || (res != val && res == parseInt(val))) {
+                            if (alertOnError) {
+                                alert("We failed to properly parse the value for [" + field + "]");
+                                
+                                return 0;
+                            } else {                  
+                                return normalizeFloat(val.replace(",", "."), true);
+                            }
+                        }
+                        
+                        return res;
+                    };
+
+                    val = normalizeFloat(val);
+                    
+                    this.model.set(field, parseFloat($fieldObj.val()));
                 } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
                     this.model.set(field, $fieldObj.val());
                 }
@@ -1038,7 +1058,7 @@ var gahandler = (function() {
                 var ehp_change   = alt_ehp - ehp;
                 var ehp_change_p = (ehp_change / (reltosource ? ehp : alt_ehp));
 
-                ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change))         : this.prepareVal(ehp_change);
+                ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change, '', 0))  : this.prepareVal(ehp_change, '', 0);
                 ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
                 
                 var html = "" + ehp_change + " " + alt_ehp_title + "; " + ehp_change_p;
@@ -1061,15 +1081,18 @@ var gahandler = (function() {
             }
         },
 
-        prepareVal: function(val, field) {
+        prepareVal: function(val, field, dec) {
         	if (field == 'armor_reduc' || field == 'resist_reduc' || field == '%') {
+        	    dec = dec != undefined ? dec : 2;
+        	    
         		val *= 100;
-        		val = this.roundNumber(val, 2);
+        		val = this.roundNumber(val, dec);
         		val = ""+val+"%";
         		
         		return val;
         	} else {
-        		return this.roundNumber(val, 0);
+                dec = dec != undefined ? dec : 2;
+        		return this.roundNumber(val, dec);
         	}
         },
 
