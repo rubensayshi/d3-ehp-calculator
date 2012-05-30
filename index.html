@@ -332,14 +332,24 @@
                     <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
                     <td class="mantra_of_evasion_armor_alt_ehp"></td>
                 </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
                 <tr>
-                    <th>TODO: Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="Need to figure out what would be a good uptime">?</span></th>
-                    <td></td>
+                    <th width="35%">Monk Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+                <tr>
+                    <th>Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="deadly_reach_keen_eye" value="1" /></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <th>TODO: Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="Need to figure out what would be a good uptime">?</span></th>
-                    <td></td>
+                    <th>Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
                     <td></td>
                 </tr>
             </tbody>
@@ -734,11 +744,13 @@ var gahandler = (function() {
             your_class: "mn",
             melee     : true,
             options   : {
-                resolve:                false,
-                seize_the_initiative:   false,
-                the_guardians_path:     false,
-                mantra_of_evasion:      false,
-                mantra_of_evasion_armor:false
+                resolve:                  false,
+                seize_the_initiative:     false,
+                the_guardians_path:       false,
+                mantra_of_evasion:        false,
+                mantra_of_evasion_armor:  false,
+                deadly_reach_keen_eye:    false,
+                crippling_wave_concussion:false
             }
         }),
 
@@ -753,6 +765,10 @@ var gahandler = (function() {
         modifyArmorModifier : function (armormodifier) {
             if (this.get('mantra_of_evasion_armor')) {
                 armormodifier += .20;
+            }
+            
+            if (this.get('deadly_reach_keen_eye')) {
+            	armormodifier += .50;
             }
 
             return armormodifier;
@@ -773,6 +789,10 @@ var gahandler = (function() {
         modifyReductionModifier : function (modifier) {
             if (this.get('resolve')) {
                 modifier *= (1 - 0.25);
+            }
+            
+            if (this.get('crippling_wave_concussion')) {
+                modifier *= (1 - 0.20);
             }
 
             return modifier;
@@ -819,11 +839,13 @@ var gahandler = (function() {
             '.archon':          'archon',
 
             // MONK
-            '.resolve':                 'resolve',
-            '.seize_the_initiative':    'seize_the_initiative',
-            '.the_guardians_path':      'the_guardians_path',
-            '.mantra_of_evasion':       'mantra_of_evasion',
-            '.mantra_of_evasion_armor': 'mantra_of_evasion_armor',
+            '.resolve':                  'resolve',
+            '.seize_the_initiative':     'seize_the_initiative',
+            '.the_guardians_path':       'the_guardians_path',
+            '.mantra_of_evasion':        'mantra_of_evasion',
+            '.mantra_of_evasion_armor':  'mantra_of_evasion_armor',
+            '.deadly_reach_keen_eye':    'deadly_reach_keen_eye',
+            '.crippling_wave_concussion':'crippling_wave_concussion',
 
             '.moblevel':        'moblevel',
 
@@ -858,11 +880,14 @@ var gahandler = (function() {
             'prismatic',
             'blur',
             'glass_cannon',
+            'archon',
             'resolve',
             'seize_the_initiative',
             'the_guardians_path',
             'mantra_of_evasion',
-            'mantra_of_evasion_armor'
+            'mantra_of_evasion_armor',
+            'deadly_reach_keen_eye',
+            'crippling_wave_concussion'
         ],
 
         initialize: function() {
