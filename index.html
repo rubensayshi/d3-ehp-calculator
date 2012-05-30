@@ -366,6 +366,75 @@
         </table>
     </div>
 
+    <div id="simulation-wd-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Witch Doctor Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-20% damage to your and your pets">Jungle Fortitude </th>
+                    <td><input type="checkbox" class="jungle_fortitude" value="1" /></td>
+                    <td class="jungle_fortitude_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="10% Int for every healthglobe collected">Gruesome Feast</th>
+                    <td><select class="gruesome_feast" >
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select></td>
+                    <td class="gruesome_feast_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="-20% damage if did poison damage to">Bad Medicine</th>
+                    <td><input type="checkbox" class="bad_medicine" value="1" /></td>
+                    <td class="bad_medicine_alt_ehp"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Witch Doctor Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+                <tr>
+                    <th title="up to five stacks of +130 Int" >Soul Harvest <span class="label label-info auto_tooltip" title="note that you most likely will not have a 5 Stack / 100% uptime on this!">?</span></th>
+                    <td>
+                      <select class="soul_harvest" >
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                      </select></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th title="your dogs take 10% of the damage done to you">Zombie Dogs - Life Link<span class="label label-info auto_tooltip" title="of course this will only work if you have zombie dogs alive">?</span></th>
+                    <td><input type="checkbox" class="zombie_dogs_life_link" value="0" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th title="+100% Armor for 8 seconds after casting this spell">Horrify - Frightening Aspect<span class="label label-info auto_tooltip" title="you will gain 100% Armor after casting this spell. However, this only lasts 8 secounds whereas the cooldown is 20 secs. So you will not get more than 2/5 uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="horrify_frightening_aspect" value="0" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>    
+
     <div id="simulation-not-available-template">
         <table class="table table-bordered class_options table-striped table-condensed">
             <thead>
@@ -826,6 +895,62 @@ var gahandler = (function() {
         }
     });
 
+    var WitchDoctor = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "wd",
+            melee     : false,
+            options   : {
+                jungle_fortitude:         false,
+                gruesome_feast:           false,
+                bad_medicine:             false,
+                soul_harvest:             0,
+                zombie_dogs_life_link:    false,
+                horrify_frightening_aspect:false
+            }
+        }),
+
+        modifyBaseArmor : function (armor) {
+          if (this.get('horrify_frightening_aspect')) {
+              // +100% Armor are Armor*2, right?
+              armor *= 2;
+          }
+            return armor;
+        },
+        
+        modifyResistModifier : function (resistmodifier) { 	
+          return resistmodifier;
+        },
+        
+        modifyLifeModifier : function (lifemodifier) {
+          return lifemodifier;
+        },
+
+        modifyArmorModifier : function (armormodifier) {
+            return armormodifier;
+        },
+        
+
+        modifyDodgeChance : function (dodgechance) {
+            return dodgechance; 
+        },
+
+        modifyReductionModifier : function (modifier) {
+            if (this.get('jungle_fortitude')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('bad_medicine')) {
+                modifier *= (1 - 0.20);
+            }
+            
+            if (this.get('zombie_dogs_life_link')) {
+                modifier *= (1 - 0.10);
+            }            
+            
+            return modifier;
+        }
+    });
+
     var SimulationView = Backbone.View.extend({
         el: $('#ehp'),
 
@@ -875,6 +1000,14 @@ var gahandler = (function() {
             '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
             '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
             '.crippling_wave_concussion': 'crippling_wave_concussion',
+            
+            // WITCH DOCTOR
+            '.jungle_fortitude':      'jungle_fortitude',
+            '.gruesome_feast':        'gruesome_feast',
+            '.bad_medicine':          'bad_medicine',
+            '.soul_harvest':          'soul_harvest',
+            '.zombie_dogs_life_link': 'zombie_dogs_life_link',
+            '.horrify_frightening_aspect': 'horrify_frightening_aspect',
 
             '.moblevel':        'moblevel',
 
@@ -930,7 +1063,7 @@ var gahandler = (function() {
                 "br": _.template($('#simulation-br-template').html()),
                 "dh": _.template($('#simulation-not-available-template').html()),
                 "mn": _.template($('#simulation-mn-template').html()),
-                "wd": _.template($('#simulation-not-available-template').html()),
+                "wd": _.template($('#simulation-wd-template').html()),
                 "wz": _.template($('#simulation-wz-template').html())
             };
 
@@ -1070,7 +1203,7 @@ var gahandler = (function() {
         'br': [Barbarian,   'Barbarian'],
         //'dh': [DemonHunter, 'Demon Hunter'],
         'mn': [Monk,        'Monk'],
-        //'wd': [WitchDocter, 'Witch Docter'],
+        'wd': [WitchDoctor, 'Witch Docter (experimental!)'],
         'wz': [Wizard,      'Wizard']
     };
 
