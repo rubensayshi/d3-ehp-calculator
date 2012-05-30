@@ -1,383 +1,1157 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Diablo3 Effective Health Pool Calculator</title>
+<head>
+    <title>Diablo3 Effective Health Pool Calculator</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
+
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
+
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" />
+    <style>
+         .templates {
+            display: none;
+         }
+
+         .highlighted-row th, .highlighted-row td {
+            border-bottom: 1px solid black;
+         }
+         table {
+            width: 780px;
+         }
+         thead th {
+            border-bottom: 1px solid black;
+         }
+
+         td .label, th .label {
+            float: right;
+            margin-right: 5px;
+         }
+         
+         td input, td select {
+            margin-bottom: 0px;
+         }
+
+    </style>
+</head>
+<div class="container">
+    <div class="row">
+      <div id="ehp" class="offset1 span10"></div>
+    </div>
+</div>
+
+<div class="templates">
+    <div id="simulation-template">
+        <table id="options" class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Option</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Your Class</th>
+                    <td>
+                        <select class="your_class"></select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Your level</th>
+                    <td><input type="text" class="level" value="" /></td>
+                    <td></td>
+                 </tr>
+                <tr>
+                    <th>Mob level</th>
+                    <td><input type="text" class="moblevel" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>VIT</th>
+                    <td><input type="text" class="base_vit" value="" /></td>
+                    <td><strong>+1 VIT</strong><br />
+                        <span class="base_vit_alt_ehp"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>DEX</th>
+                    <td><input type="text" class="base_dex" value="" /> <span title="Dex is only used for skill effects (eg monk passive), not for dodge" class="label label-info auto_tooltip">?</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>+ Extra Life %</th>
+                    <td><input type="text" class="extra_life" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Armor</th>
+                    <td><input type="text" class="base_armor" value="" />  <br /></td>
+                    <td><strong>+10 Armor</strong><br />
+                        <span class="base_armor_alt_ehp"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>All Resistance</th>
+                    <td><input type="text" class="base_resist" value="" /></td>
+                    <td><strong>+1 All Resist</strong><br />
+                        <span class="base_resist_alt_ehp"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Melee only Reduction</th>
+                    <td><input type="text" class="base_melee_reduc" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Ranged only Reduction</th>
+                    <td><input type="text" class="base_ranged_reduc" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Dodge %</th>
+                    <td><input type="text" class="base_dodge" value="" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <table id="results" class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Buffed Stats</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="highlighted-row">
+                    <th>Buffed Life</th>
+                    <td><input type="text" readonly=true class="life" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>Buffed Armor</th>
+                    <td><input type="text" readonly=true class="armor" value="" /></td>
+                    <td class="armor_reduc"></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>Buffed Resistance</th>
+                    <td><input type="text" readonly=true class="resist" value="" /></td>
+                    <td class="resist_reduc"></td>
+                </tr>
+            </tbody>
+        <table id="results" class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Results</th>
+                    <th>EHP without dodge</th>
+                    <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="highlighted-row">
+                    <th>EHP</th>
+                    <td><input type="text" readonly=true class="ehp" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>EHP melee</th>
+                    <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>EHP ranged</th>
+                    <td><input type="text" readonly=true class="ehp_ranged" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_ranged" value="" /></td>
+                </tr>
+                <tr class="highlighted-row">
+                    <th>EHP magic</th>
+                    <td><input type="text" readonly=true class="ehp_magic" value="" /></td>
+                    <td><input type="text" readonly=true class="ehp_dodge_magic" value="" /></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td><button class="reset btn btn-primary">refresh</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-        <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
-        <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
-        <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
+    <div id="simulation-br-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Barbarian Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="+10% life">War Cry - Invigorate</th>
+                    <td><input type="checkbox" class="warcry_life" value="1" /></td>
+                    <td class="warcry_life_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+25% armor">Tough As Nails</th>
+                    <td><input type="checkbox" class="toughasnails" value="1" /></td>
+                    <td class="toughasnails_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="100% of your vit as armor">Nerves Of Steel</th>
+                    <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
+                    <td class="nervesofsteel_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="+20% armor">War Cry - No Rune</th>
+                    <td><input type="checkbox" class="warcry" value="1" /></td>
+                    <td class="warcry_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
+                    <td><input type="checkbox" class="warcry_armor" value="1" /></td>
+                    <td class="warcry_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+50% to all your resistance stats">WarCry - Impunity</th>
+                    <td><input type="checkbox" class="warcry_resist" value="1" /></td>
+                    <td class="warcry_resist_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">WarCry - Veteran's Warning</th>
+                    <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
+                    <td class="warcry_dodge_alt_ehp"></td>
+                </tr>
+                  <tr>
+                    <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
+                    <td><input type="checkbox" class="superstition" value="1" /></td>
+                    <td class="superstition_alt_ehp magic_only"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Barbarian Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
+                    <td class="threat_shout_alt_ehp"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="simulation-wz-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Wizard Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-20% melee dmg taken">Blur</th>
+                    <td><input type="checkbox" class="blur" value="1" /></td>
+                    <td class="blur_alt_ehp melee_only"></td>
+                </tr>
+                <tr>
+                    <th title="+65% armor">Energy Armor</th>
+                    <td><input type="checkbox" class="energy_armor" value="1" /></td>
+                    <td class="energy_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+40% to all resistance stats">Energy Armor - Prismatic</th>
+                    <td><input type="checkbox" class="prismatic" value="1" /></td>
+                    <td class="prismatic_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="-10% armor/resistance for 15% dmg">Glass Cannon</th>
+                    <td><input type="checkbox" class="glass_cannon" value="1" /></td>
+                    <td class="glass_cannon_alt_ehp"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Wizard Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="+40% armor and resistance">Archon <span class="label label-info auto_tooltip" title="note that this will only be for 15 seconds!">?</span></th>
+                    <td><input type="checkbox" class="archon" value="1" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="simulation-mn-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Monk Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-25% damage taken from mobs you've hit">Resolve <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="resolve" value="1" /></td>
+                    <td class="resolve_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="100% of your dex as armor">Seize the Initiative</th>
+                    <td><input type="checkbox" class="seize_the_initiative" value="1" /></td>
+                    <td class="seize_the_initiative_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">The Guardian's Path <span class="label label-info auto_tooltip" title="note only if you are dualwielding!!">?</span></th>
+                    <td><input type="checkbox" class="the_guardians_path" value="1" /></td>
+                    <td class="the_guardians_path_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">Matra of Evasion <span class="label label-info auto_tooltip" title="can't include the activation bonus properly at this time">?</span></th>
+                    <td><input type="checkbox" class="mantra_of_evasion" value="1" /></td>
+                    <td class="mantra_of_evasion_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="an extra +20% armor (and the +15% dodge from the mantra itself)">Matra of Evasion - Hard Target</th>
+                    <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
+                    <td class="mantra_of_evasion_armor_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+20% to all resistance">Matra of Healing - Time of Need</th>
+                    <td><input type="checkbox" class="mantra_of_healing_time" value="1" /></td>
+                    <td class="mantra_of_healing_time_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">Matra of Healing - Heavenly Body</th>
+                    <td><input type="checkbox" class="mantra_of_healing_heavenly" value="1" /></td>
+                    <td class="mantra_of_healing_heavenly_alt_ehp"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Monk Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+                <tr>
+                    <th>Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="deadly_reach_keen_eye" value="1" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Fists of Thunder - Lightning Flash <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="fists_of_thunder_flash" value="1" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="simulation-not-available-template">
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Class Options Not Supported</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">&nbsp;</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-32071149-1']);
+
+var gahandler = (function() {
+    var classname = '/_none/';
+    var timer;
     
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-transition.js"></script>
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-alert.js"></script>
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
-        <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
+    var keepAlive = function() {
+        _gaq.push(['_trackEvent', classname, 'keepalive']);
+    };
     
-        <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" />
-        <link href="css/style.css" rel="stylesheet" />
-    </head>
-    <body>
-        <div class="container">
-            <div class="row">
-              <div id="ehp" class="offset1 span10"></div>
-            </div>
-        </div>
+    var exit = function() {
+        _gaq.push(['_trackPageview', '/exit/']);
+    };
+    
+    var changeClass = function(_classname) {
+        classname = _classname;
+
+        _gaq.push(['_trackPageview', '/' + classname + '/']);
         
-        <div class="templates">
-            <div id="simulation-template">
-                <table id="options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>Your Class</th>
-                            <td>
-                                <select class="your_class"></select>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Your level</th>
-                            <td><input type="text" class="level" value="" /></td>
-                            <td></td>
-                         </tr>
-                        <tr>
-                            <th>Mob level</th>
-                            <td><input type="text" class="moblevel" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>VIT</th>
-                            <td><input type="text" class="base_vit" value="" /></td>
-                            <td><strong>+1 VIT</strong><br />
-                                <span class="base_vit_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>DEX</th>
-                            <td><input type="text" class="base_dex" value="" /> <span title="Dex is only used for skill effects (eg monk passive), not for dodge" class="label label-info auto_tooltip">?</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>+ Extra Life %</th>
-                            <td><input type="text" class="extra_life" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Armor</th>
-                            <td><input type="text" class="base_armor" value="" />  <br /></td>
-                            <td><strong>+10 Armor</strong><br />
-                                <span class="base_armor_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>All Resistance</th>
-                            <td><input type="text" class="base_resist" value="" /></td>
-                            <td><strong>+1 All Resist</strong><br />
-                                <span class="base_resist_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Melee only Reduction</th>
-                            <td><input type="text" class="base_melee_reduc" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Ranged only Reduction</th>
-                            <td><input type="text" class="base_ranged_reduc" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Dodge %</th>
-                            <td><input type="text" class="base_dodge" value="" /></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table id="results" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Buffed Stats</th>
-                            <th>&nbsp;</th>
-                            <th width="30%">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>Buffed Life</th>
-                            <td><input type="text" readonly=true class="life" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Armor</th>
-                            <td><input type="text" readonly=true class="armor" value="" /></td>
-                            <td class="armor_reduc"></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Resistance</th>
-                            <td><input type="text" readonly=true class="resist" value="" /></td>
-                            <td class="resist_reduc"></td>
-                        </tr>
-                    </tbody>
-                <table id="results" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Results</th>
-                            <th>EHP without dodge</th>
-                            <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>EHP</th>
-                            <td><input type="text" readonly=true class="ehp" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP melee</th>
-                            <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP ranged</th>
-                            <td><input type="text" readonly=true class="ehp_ranged" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_ranged" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP magic</th>
-                            <td><input type="text" readonly=true class="ehp_magic" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_magic" value="" /></td>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <td></td>
-                            <td><button class="reset btn btn-primary">refresh</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        reset();
+    }
+    
+    var reset = function() {
+    	keepAlive();
+        timer = setInterval(keepAlive, 10/*sec*/ * 1000/*milisec*/);
+    };
+    
+    $(window).on('unload', function() {
+    	exit();    	
+    });
+    
+    return {
+        changeClass: changeClass
+    };
+})();
+</script>
+
+<script>
+(function($) {
+    /*
+     * version string is used to store data in localcache
+     * when the code is changed in such a way that the cached data has become invalid
+     * we can update the version string to invalidate the old cache
+     */
+    var VERSION = "b2412f9da4fb434e9ac8e87fbbc49bdc604ad23e";
+
+    var Character = Backbone.Model.extend({
+        defaults : {
+            level:        60,
+            base_vit:     1200,
+            base_dex:     1200,
+            base_armor:   4000,
+            base_resist:  300,
+            base_dodge:   10,
+            base_dodge:   10,
+            extra_life:   12,
+            base_melee_reduc:   0,
+            base_ranged_reduc:  0,
+
+            melee:        false,
+
+            moblevel:     63,
+
+            vit:          null,
+            dex:          null,
+            life:         null,
+            armor:        null,
+            resist:       null,
+            dodge:        null,
+            armor_reduc:  null,
+            resist_reduc: null,
             
-            <div id="simulation-br-template">
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Barbarian Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th title="+10% life">War Cry - Invigorate</th>
-                            <td><input type="checkbox" class="warcry_life" value="1" /></td>
-                            <td class="warcry_life_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+25% armor">Tough As Nails</th>
-                            <td><input type="checkbox" class="toughasnails" value="1" /></td>
-                            <td class="toughasnails_alt_ehp"></td>
-                        </tr>
-                          <tr>
-                            <th title="100% of your vit as armor">Nerves Of Steel</th>
-                            <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
-                            <td class="nervesofsteel_alt_ehp"></td>
-                        </tr>
-                          <tr>
-                            <th title="+20% armor">War Cry - No Rune</th>
-                            <td><input type="checkbox" class="warcry" value="1" /></td>
-                            <td class="warcry_alt_ehp"></td>
-                        </tr>
-                          <tr>
-                            <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
-                            <td><input type="checkbox" class="warcry_armor" value="1" /></td>
-                            <td class="warcry_armor_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+50% to all your resistance stats">WarCry - Impunity</th>
-                            <td><input type="checkbox" class="warcry_resist" value="1" /></td>
-                            <td class="warcry_resist_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+15% dodge">WarCry - Veteran's Warning</th>
-                            <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
-                            <td class="warcry_dodge_alt_ehp"></td>
-                        </tr>
-                          <tr>
-                            <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
-                            <td><input type="checkbox" class="superstition" value="1" /></td>
-                            <td class="superstition_alt_ehp magic_only"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Barbarian Extra Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                            <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                            <td class="threat_shout_alt_ehp"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            options:      {}
+        },
+
+        initialize : function () {
+        	// ensure there's always an options collection
+        	if (!this.get('options')) {
+        		this.set('options', {});
+        	}
+        	
+            _.each(this.get('options'), function(o_default, o_name) {
+                if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
+            }, this);
+            
+            this.on('change', this.simulate);
+
+            this.trigger('change');
+        },
+
+        getAllInputStats : function () {
+            return _.extend({}, {
+                your_class:   this.get('your_class'),
+                level:        this.get('level'),
+                base_vit:     this.get('base_vit'),
+                base_dex:     this.get('base_dex'),
+                base_armor:   this.get('base_armor'),
+                base_resist:  this.get('base_resist'),
+                base_dodge:   this.get('base_dodge'),
+                extra_life:   this.get('extra_life'),
+                base_melee_reduc:   this.get('base_melee_reduc'),
+                base_ranged_reduc:  this.get('base_ranged_reduc'),
+                moblevel:     this.get('moblevel'),
+            }, this.get('options'));
+        },
+
+        /*
+         * these modify methods should be implemented by specific class classes
+         *  the modifyBase* methods will modify the base stat before the modifier is applied
+         *  the modify*Modifier methods will modify the modifier (most of the time that starts on 1) and is applied to the base afterwards
+         *
+         * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
+         */
+        modifyBaseArmor              : function (armor)          { return armor; },
+        modifyArmorModifier          : function (armormodifier)  { return armormodifier; },
+        modifyBaseResist             : function (resist)         { return resist; },
+        modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
+        modifyBaseLife               : function (life)           { return life; },
+        modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
+        modifyDodgeChance            : function (dodgechance)    { return dodgechance; },
+        modifyReductionModifier      : function (modifier)       {
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+
+            return modifier;
+        },
+        modifyReductionModifierMelee  : function (modifier)       { return modifier; },
+        modifyReductionModifierRanged : function (modifier)       { return modifier; },
+        modifyReductionModifierMagic  : function (modifier)       { return modifier; },
+
+        simulate : function () {
+            this.off('change', this.simulate);
+            
+            // grab the base values and set them so we can start modifying that value
+            this.set('armor',  this.get('base_armor'));
+            this.set('resist', this.get('base_resist'));
+            this.set('vit',    this.get('base_vit'));
+            this.set('dodge',  this.get('base_dodge'));
+
+            // modify the base values (static increases)
+            this.set('armor',  this.modifyBaseArmor(this.get('armor')));
+            this.set('resist', this.modifyBaseResist(this.get('resist')));
+
+            // create and modify the armor modifier
+            var armormodifier = 1;
+            armormodifier = this.modifyArmorModifier(armormodifier);
+
+            // create and modify the resist modifier
+            var resistmodifier = 1;
+            resistmodifier = this.modifyResistModifier(resistmodifier);
+
+            // create and modify the dodge chance
+            var dodgechance = 1;
+            dodgechance *= (1-(this.get('dodge') / 100));
+            dodgechance = this.modifyDodgeChance(dodgechance);
+            dodgechance = 1 - dodgechance;
+                        
+            var dodgemodifier = 1 - dodgechance;
+
+            // apply the modifiers to the base value (with their static increases already applied) for armor and resist
+            this.set('armor',  this.get('armor')  * armormodifier);
+            this.set('resist', this.get('resist') * resistmodifier);
+
+            // calculate the actual reduction for armor and resist
+            this.set('armor_reduc',  this.get('armor') /  (50 * this.get('moblevel') + this.get('armor')));
+            this.set('resist_reduc', this.get('resist') / (5  * this.get('moblevel') + this.get('resist')));
+
+            // stack the modifiers
+            var modifier = 1;
+            modifier *= (1 - this.get('armor_reduc'));
+            modifier *= (1 - this.get('resist_reduc'));
+
+            // add more modifiers
+            modifier = this.modifyReductionModifier(modifier);
+
+            // add melee only modifiers
+            var modifier_melee = modifier;
+            modifier_melee *= (1 - (this.get('base_melee_reduc') / 100));
+            modifier_melee = this.modifyReductionModifierMelee(modifier_melee);
+
+            // add ranged only modifiers
+            var modifier_ranged = modifier;
+            modifier_ranged *= (1 - (this.get('base_ranged_reduc') / 100));
+            var modifier_ranged = this.modifyReductionModifierRanged(modifier_ranged);
+            
+            // add magic only modifiers
+            var modifier_magic = modifier;
+            var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
+
+            // calculate life based on vit/level
+            var lifebylvl = this.get('level') - 25;
+            lifebylvl = lifebylvl < 10 ? 10 : lifebylvl;
+
+            this.set('life', (36 + (4 * this.get('level')) + (lifebylvl * this.get('vit'))));
+
+            // modify the base life (static increases)
+            this.set('life', this.modifyBaseLife(this.get('life')));
+
+            // create and modify the armor modifier
+            var lifemodifier = 1 + (this.get('extra_life') / 100);
+            lifemodifier = this.modifyLifeModifier(lifemodifier);
+
+            // apply the life modifier
+            this.set('life', this.get('life') * lifemodifier);
+
+            // apply all modifiers
+            var ehp             = this.get('life') / modifier;
+            var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
+            var ehp_melee       = this.get('life') / modifier_melee;
+            var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
+            var ehp_ranged      = this.get('life') / modifier_ranged;
+            var ehp_dodge_ranged= this.get('life') / modifier_ranged / dodgemodifier;
+            var ehp_magic       = this.get('life') / modifier_magic;
+            var ehp_dodge_magic = this.get('life') / modifier_magic / dodgemodifier;
+
+            // set the final properties
+            this.set('ehp',             ehp);
+            this.set('ehp_dodge',       ehp_dodge);
+            this.set('ehp_melee',       ehp_melee);
+            this.set('ehp_dodge_melee', ehp_dodge_melee);
+            this.set('ehp_ranged',      ehp_ranged);
+            this.set('ehp_dodge_ranged',ehp_dodge_ranged);
+            this.set('ehp_magic',       ehp_magic);
+            this.set('ehp_dodge_magic', ehp_dodge_magic);
+            
+            this.on('change', this.simulate);
+        }
+    });
+    var Barbarian = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "br",
+            melee     : true,
+            options   : {
+                toughasnails: false,
+                nervesofsteel:false,
+                warcry:       false,
+                warcry_armor: false,
+                warcry_resist:false,
+                warcry_dodge: false,
+                threat_shout: false,
+                superstition: false
+            }
+        }),
+
+        modifyBaseArmor : function (armor) {
+            if (this.get('nervesofsteel')) {
+                armor += this.get('vit');
+            }
+
+            return armor
+        },
+
+        modifyArmorModifier : function (armormodifier) {
+            // any version of warcry gives 20%
+            if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life') || this.get('warcry_dodge')) {
+                armormodifier += .2;
+            }
+            // warcry runed for armor gives an aditional 20%
+            if (this.get('warcry_armor')) {
+                armormodifier += .2;
+            }
+
+            if (this.get('toughasnails')) {
+                armormodifier += .25;
+            }
+
+            return armormodifier;
+        },
+
+        modifyResistModifier : function (resistmodifier) {
+            if (this.get('warcry_resist')) {
+                resistmodifier += .50;
+            }
+
+            return resistmodifier;
+        },
+
+        modifyLifeModifier : function (lifemodifier) {
+            if (this.get('warcry_life')) {
+                lifemodifier += 0.10;
+            }
+
+            return lifemodifier;
+        },
+
+        modifyReductionModifier : function (modifier) {
+            if (this.get('threat_shout')) {
+                modifier *= (1 - 0.25);
+            }
+
+            if (this.get('melee')) {
+                modifier *= (1 - 0.30);
+            }
+
+            return modifier;
+        },
+
+        modifyReductionModifierMagic : function (modifier) {
+            if (this.get('superstition')) {
+                modifier *= (1 - 0.20);
+            }
+
+            return modifier;
+        },
         
-            <div id="simulation-wz-template">
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Wizard Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th title="-20% melee dmg taken">Blur</th>
-                            <td><input type="checkbox" class="blur" value="1" /></td>
-                            <td class="blur_alt_ehp melee_only"></td>
-                        </tr>
-                        <tr>
-                            <th title="+65% armor">Energy Armor</th>
-                            <td><input type="checkbox" class="energy_armor" value="1" /></td>
-                            <td class="energy_armor_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+40% to all resistance stats">Energy Armor - Prismatic</th>
-                            <td><input type="checkbox" class="prismatic" value="1" /></td>
-                            <td class="prismatic_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="-10% armor/resistance for 15% dmg">Glass Cannon</th>
-                            <td><input type="checkbox" class="glass_cannon" value="1" /></td>
-                            <td class="glass_cannon_alt_ehp"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Wizard Extra Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th title="+40% armor and resistance">Archon <span class="label label-info auto_tooltip" title="note that this will only be for 15 seconds!">?</span></th>
-                            <td><input type="checkbox" class="archon" value="1" /></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        modifyDodgeChance : function (dodgechance) {
+			if (this.get('warcry_dodge')) {
+				dodgechance *= (1 - 0.15);
+			}
+            
+            return dodgechance;
+        },
+    });                
+    var Wizard = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "wz",
+            melee     : false,
+            options   : {
+                energy_armor: false,
+                prismatic:    false,
+                blur:         false,
+                glass_cannon: false,
+                archon:       false
+            }
+        }),
+
+        modifyArmorModifier : function (armormodifier) {
+            if (this.get('energy_armor')) {
+                armormodifier += .65;
+            }
+
+            if (this.get('glass_cannon')) {
+                armormodifier -= .10;
+            }
+            
+            if (this.get('archon')) {
+            	armormodifier += .40;
+            }
+
+            return armormodifier;
+        },
+
+        modifyResistModifier : function (resistmodifier) {
+            if (this.get('prismatic')) {
+                resistmodifier += .40;
+            }
+
+            if (this.get('glass_cannon')) {
+                resistmodifier -= .10;
+            }
+            
+            if (this.get('archon')) {
+            	resistmodifier += .40;
+            }
+
+            return resistmodifier;
+        },
+
+        modifyReductionModifierMelee : function (modifier) {
+            if (this.get('blur')) {
+                modifier *= (1 - 0.20);
+            }
+
+            return modifier;
+        }
+    });
+    var Monk = Character.extend({
+        defaults: _.extend({}, Character.prototype.defaults, {
+            your_class: "mn",
+            melee     : true,
+            options   : {
+                resolve:                  false,
+                seize_the_initiative:     false,
+                the_guardians_path:       false,
+                mantra_of_evasion:        false,
+                mantra_of_evasion_armor:  false,
+                mantra_of_healing_time:   false,
+                deadly_reach_keen_eye:    false,
+                crippling_wave_concussion:false,
+                fists_of_thunder_flash:   false
+            }
+        }),
+
+        modifyBaseArmor : function (armor) {
+        	if (this.get('seize_the_initiative')) {
+        		   armor += this.get('base_dex');
+            }
+
+            return armor;
+        },
         
-            <div id="simulation-mn-template">
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Monk Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th title="-25% damage taken from mobs you've hit">Resolve <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                            <td><input type="checkbox" class="resolve" value="1" /></td>
-                            <td class="resolve_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="100% of your dex as armor">Seize the Initiative</th>
-                            <td><input type="checkbox" class="seize_the_initiative" value="1" /></td>
-                            <td class="seize_the_initiative_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+15% dodge">The Guardian's Path <span class="label label-info auto_tooltip" title="note only if you are dualwielding!!">?</span></th>
-                            <td><input type="checkbox" class="the_guardians_path" value="1" /></td>
-                            <td class="the_guardians_path_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+15% dodge">Matra of Evasion <span class="label label-info auto_tooltip" title="can't include the activation bonus properly at this time">?</span></th>
-                            <td><input type="checkbox" class="mantra_of_evasion" value="1" /></td>
-                            <td class="mantra_of_evasion_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="an extra +20% armor (and the +15% dodge from the mantra itself)">Matra of Evasion - Hard Target</th>
-                            <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
-                            <td class="mantra_of_evasion_armor_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+20% to all resistance">Matra of Healing - Time of Need</th>
-                            <td><input type="checkbox" class="mantra_of_healing_time" value="1" /></td>
-                            <td class="mantra_of_healing_time_alt_ehp"></td>
-                        </tr>
-                        <tr>
-                            <th title="+15% dodge">Matra of Healing - Heavenly Body</th>
-                            <td><input type="checkbox" class="mantra_of_healing_heavenly" value="1" /></td>
-                            <td class="mantra_of_healing_heavenly_alt_ehp"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Monk Extra Options</th>
-                            <th>Choice</th>
-                            <th width="30%">Alternative</th>
-                        </tr>
-                    </thead>
-                        <tr>
-                            <th>Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                            <td><input type="checkbox" class="deadly_reach_keen_eye" value="1" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                            <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Fists of Thunder - Lightning Flash <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                            <td><input type="checkbox" class="fists_of_thunder_flash" value="1" /></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        modifyResistModifier : function (resistmodifier) {
+        	if (this.get('mantra_of_healing_time')) {
+        		resistmodifier += .20;
+        	}
+        	
+        	return resistmodifier;
+        },
         
-            <div id="simulation-not-available-template">
-                <table class="table table-bordered class_options table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Class Options Not Supported</th>
-                            <th>&nbsp;</th>
-                            <th width="30%">&nbsp;</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
+        modifyLifeModifier : function (lifemodifier) {
+        	if (this.get('mantra_of_healing_heavenly')) {
+        		lifemodifier += .10;
+        	}
+        	
+        	return lifemodifier;
+        },
+
+        modifyArmorModifier : function (armormodifier) {
+            if (this.get('mantra_of_evasion_armor')) {
+                armormodifier += .20;
+            }
+            
+            if (this.get('deadly_reach_keen_eye')) {
+            	armormodifier += .50;
+            }
+
+            return armormodifier;
+        },
+        
+
+        modifyDodgeChance : function (dodgechance) {
+            if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
+            	dodgechance *= (1 - 0.15);
+            }
+            
+            if (this.get('the_guardians_path')) {
+            	dodgechance *= (1 - 0.15);
+            }
+            
+            if (this.get('fists_of_thunder_flash')) {
+                dodgechance *= (1 - 0.16);
+            }
+        	
+        	return dodgechance; 
+        },
+
+        modifyReductionModifier : function (modifier) {
+            if (this.get('resolve')) {
+                modifier *= (1 - 0.25);
+            }
+            
+            if (this.get('crippling_wave_concussion')) {
+                modifier *= (1 - 0.20);
+            }
+
+            return modifier;
+        }
+    });
+
+    var SimulationView = Backbone.View.extend({
+        el: $('#ehp'),
+
+        events: {
+            'change input':       'viewToModel',
+            'change .your_class': 'changeClass',
+            'click button.reset': 'viewToModel'
+        },
+
+        fieldMap: {
+            '.your_class':      'your_class',
+            '.level':           'level',
+            '.extra_life':      'extra_life',
+            '.base_vit':        'base_vit',
+            '.base_dex':        'base_dex',
+            '.base_armor':      'base_armor',
+            '.base_resist':     'base_resist',
+            '.base_dodge':      'base_dodge',
+            '.base_melee_reduc': 'base_melee_reduc',
+            '.base_ranged_reduc':'base_ranged_reduc',
+
+            // BARBARIAN
+            '.toughasnails':    'toughasnails',
+            '.nervesofsteel':   'nervesofsteel',
+            '.warcry':          'warcry',
+            '.warcry_armor':    'warcry_armor',
+            '.warcry_resist':   'warcry_resist',
+            '.warcry_dodge':    'warcry_dodge',
+            '.warcry_life':     'warcry_life',
+            '.threat_shout':    'threat_shout',
+            '.superstition':    'superstition',
+
+            // WIZARD
+            '.energy_armor':    'energy_armor',
+            '.prismatic':       'prismatic',
+            '.blur':            'blur',
+            '.glass_cannon':    'glass_cannon',
+            '.archon':          'archon',
+
+            // MONK
+            '.resolve':                   'resolve',
+            '.seize_the_initiative':      'seize_the_initiative',
+            '.the_guardians_path':        'the_guardians_path',
+            '.mantra_of_evasion':         'mantra_of_evasion',
+            '.mantra_of_evasion_armor':   'mantra_of_evasion_armor',
+            '.mantra_of_healing_time':    'mantra_of_healing_time',
+            '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
+            '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
+            '.crippling_wave_concussion': 'crippling_wave_concussion',
+            '.fists_of_thunder_flash':    'fists_of_thunder_flash',
+
+            '.moblevel':        'moblevel',
+
+            '.life':            'life',
+            '.armor':           'armor',
+            '.resist':          'resist',
+            '.dodge':           'dodge',
+            '.armor_reduc':     'armor_reduc',
+            '.resist_reduc':    'resist_reduc',
+
+            '.ehp':             'ehp',
+            '.ehp_dodge':       'ehp_dodge',
+            '.ehp_melee':       'ehp_melee',
+            '.ehp_dodge_melee': 'ehp_dodge_melee',
+            '.ehp_ranged':      'ehp_ranged',
+            '.ehp_dodge_ranged':'ehp_dodge_ranged',
+            '.ehp_magic':       'ehp_magic',
+            '.ehp_dodge_magic': 'ehp_dodge_magic'
+        },
+
+        classFields: [
+            'toughasnails',
+            'nervesofsteel',
+            'warcry',
+            'warcry_armor',
+            'warcry_resist',
+            'warcry_dodge',
+            'warcry_life',
+            'threat_shout',
+            'superstition',
+            'energy_armor',
+            'prismatic',
+            'blur',
+            'glass_cannon',
+            'archon',
+            'resolve',
+            'seize_the_initiative',
+            'the_guardians_path',
+            'mantra_of_evasion',
+            'mantra_of_evasion_armor',
+            'mantra_of_healing_time',
+            'mantra_of_healing_heavenly',
+            'deadly_reach_keen_eye',
+            'crippling_wave_concussion',
+            'fists_of_thunder_flash'
+        ],
+
+        initialize: function() {
+            _.bindAll(this, 'render', 'modelToView', 'viewToModel', 'changeClass');
+
+            this.template = _.template($('#simulation-template').html());
+
+            this.class_templates = {
+                "br": _.template($('#simulation-br-template').html()),
+                "dh": _.template($('#simulation-not-available-template').html()),
+                "mn": _.template($('#simulation-mn-template').html()),
+                "wd": _.template($('#simulation-not-available-template').html()),
+                "wz": _.template($('#simulation-wz-template').html())
+            };
+
+            this.render();
+            this.changeClass();
+        },
+
+        viewToModel: function() {
+            _.each(this.fieldMap, function(field, selector) {
+                var $fieldObj = $(selector,  this.el);
+
+                if ($fieldObj.is('span') || $fieldObj.is('td')) {
+                    // --
+                } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
+                    this.model.set(field, !!$fieldObj.prop('checked'));
+                } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
+                    this.model.set(field, parseInt($fieldObj.val()));
+                } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
+                    this.model.set(field, $fieldObj.val());
+                }
+            }, this);
+        },
+
+        modelToView: function() {
+            $(this.el).find('.class_options').remove();
+            $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
+
+            _.each(this.fieldMap, function(field, selector) {
+                var $fieldObj = $(selector,  this.el);
+
+                if ($fieldObj.is('span') || $fieldObj.is('td')) {
+                	$fieldObj.html(this.prepareVal(this.model.get(field), field));
+                } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
+                    $fieldObj.prop('checked', !!this.model.get(field));
+                } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
+                    $fieldObj.val(this.prepareVal(this.model.get(field), field));
+                } else if ($fieldObj.is('select')) {
+                    $fieldObj.val(this.model.get(field));
+                }
+            }, this);
+            
+            var alt_booleans = this.classFields;
+            var alt_stats = {
+                base_armor:      10,
+                base_vit:        1,
+                base_resist:     1,
+            };
+            
+            var alternatives = {};
+            _.each(alt_booleans, function(alt_field) {
+            	alternatives[alt_field] = [{/* this should contain stat changes */}, !this.model.get(alt_field)];
+            	// set the stat change
+            	alternatives[alt_field][0][alt_field] = !this.model.get(alt_field);
+            }, this);
+            _.each(alt_stats, function(alt_val, alt_field) {
+                alternatives[alt_field] = [{/* this should contain stat changes */}, true];
+                // set the stat change
+                alternatives[alt_field][0][alt_field] = this.model.get(alt_field) + alt_val;
+            }, this);
+            
+            _.each(alternatives, function(alt, alt_field) {
+                var alt_stats   = alt[0];
+                var reltosource = alt[1];
+                var selector    = "." + alt_field +  "_alt_ehp";
+                var alt_model   = this.model.clone();
+                
+                alt_model.set(alt_stats);
+
+                var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
+                
+                if($(selector, this.el).hasClass('melee_only')) {
+                    alt_ehp_title = "EHP melee";
+                    alt_ehp_field = "ehp_melee";
+                } else if($(selector, this.el).hasClass('magic_only')) {
+                    alt_ehp_title = "EHP magic";
+                    alt_ehp_field = "ehp_magic";
+                }
+                
+                var ehp     = this.model.get(alt_ehp_field);
+                var alt_ehp = alt_model.get(alt_ehp_field);
+                
+                var ehp_change   = alt_ehp - ehp;
+                var ehp_change_p = (ehp_change / (reltosource ? ehp : alt_ehp));
+
+                ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change))         : this.prepareVal(ehp_change);
+                ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
+                
+                var html = "" + ehp_change + " " + alt_ehp_title + "; " + ehp_change_p;
+                
+                $(selector, this.el).html(html);
+            }, this);
+        },
+
+        changeClass: function(event) {
+            classname = $('.your_class', this.el).val();
+
+            this.model = getModelForClass(classname);
+            this.model.on('change', this.modelToView, this);
+
+            this.modelToView();
+            $(".auto_tooltip").tooltip();
+            
+            if (gahandler) {
+                gahandler.changeClass(classname)
+            }
+        },
+
+        prepareVal: function(val, field) {
+        	if (field == 'armor_reduc' || field == 'resist_reduc' || field == '%') {
+        		val *= 100;
+        		val = this.roundNumber(val, 2);
+        		val = ""+val+"%";
+        		
+        		return val;
+        	} else {
+        		return this.roundNumber(val, 0);
+        	}
+        },
+
+        roundNumber: function(num, dec) {
+            return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+        },
+
+        render: function() {
+            $(this.template()).appendTo($(this.el));
+
+            var $classSelect = $('.your_class', this.el);
+            $classSelect.children().remove();
+
+            _.each(classlist, function(info, shortname) {
+                $('<option />').val(shortname).html(info[1]).appendTo($classSelect);
+            }, this);
+
+            if (this.model) {
+                $classSelect.val(this.model.get('your_class'));
+            }
+
+            $(".auto_tooltip").tooltip();
+            $("#dodge_ehp_explained").tooltip({
+                title: "<strong>keep in mind; dodge is random.</strong><br />" +
+                       "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
+            });
+        }
+    });
+
+    var classlist = {
+        'br': [Barbarian,   'Barbarian'],
+        //'dh': [DemonHunter, 'Demon Hunter'],
+        'mn': [Monk,        'Monk'],
+        //'wd': [WitchDocter, 'Witch Docter'],
+        'wz': [Wizard,      'Wizard']
+    };
+
+    var getClassInfo = function(shortname) {
+        return (classlist[shortname]) ? modelclass = classlist[shortname] : [];
+    };
     
-        <script src="js/Model/Character.js" type="text/javascript"></script>
-        <script src="js/Model/Barbarian.js" type="text/javascript"></script>
-        <script src="js/Model/Monk.js" type="text/javascript"></script>
-        <script src="js/Model/Wizard.js" type="text/javascript"></script>
-        <script src="js/View/SimulationView.js" type="text/javascript"></script>
-        <script src="js/gahandler.js" type="text/javascript"></script>
-        <script src="js/main.js" type="text/javascript"></script>
-        <script src="js/gaq.js" type="text/javascript"></script>
-    </body>
+    var getModelForClass = function(classname, forceNew) {
+        var use_storage = !!localStorage;
+        var storage_key = 'previous_' + VERSION + '_' + classname;
+        var modelclass,
+            model;
+
+        if (getClassInfo(classname)) {
+            modelclass = getClassInfo(classname)[0];
+        } else {
+            // we should have some proper error here I think ...
+            alert("you somehow selected a class which we do not recognise [" + classname + "]. \nApplication will now crash, we will refresh the page for you ;).");
+            window.location.reload(true);
+            return;
+        }
+
+        if (!forceNew && use_storage && localStorage.getItem(storage_key)) {
+            model = new modelclass(JSON.parse(localStorage.getItem(storage_key)));
+        } else {
+            model = new modelclass();
+        }
+
+        if (use_storage) {
+            model.on('change', function(model) {
+                localStorage.setItem(storage_key, JSON.stringify(model));
+            }, model);
+        }
+
+        return model;
+    };
+
+    var simView = new SimulationView();
+})(jQuery);
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
 </html>
