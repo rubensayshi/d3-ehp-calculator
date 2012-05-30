@@ -79,7 +79,7 @@
                 <tr>
                     <th>VIT</th>
                     <td><input type="text" class="base_vit" value="" /></td>
-                    <td>+1 VIT<br />
+                    <td><strong>+1 VIT</strong><br />
                         <span class="base_vit_alt_ehp"></span>
                     </td>
                 </tr>
@@ -96,14 +96,14 @@
                 <tr>
                     <th>Armor</th>
                     <td><input type="text" class="base_armor" value="" />  <br /></td>
-                    <td>+10 Armor<br />
+                    <td><strong>+10 Armor</strong><br />
                         <span class="base_armor_alt_ehp"></span>
                     </td>
                 </tr>
                 <tr>
                     <th>All Resistance</th>
                     <td><input type="text" class="base_resist" value="" /></td>
-                    <td>+1 All Resist<br />
+                    <td><strong>+1 All Resist</strong><br />
                         <span class="base_resist_alt_ehp"></span>
                     </td>
                 </tr>
@@ -232,16 +232,26 @@
                     <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
                     <td class="warcry_dodge_alt_ehp"></td>
                 </tr>
-    
-                  <tr>
-                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                    <td class="threat_shout_alt_ehp"></td>
-                </tr>
                   <tr>
                     <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
                     <td><input type="checkbox" class="superstition" value="1" /></td>
-                    <td class="superstition_alt_ehp"></td>
+                    <td class="superstition_alt_ehp magic_only"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Barbarian Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
+                    <td><input type="checkbox" class="threat_shout" value="1" /></td>
+                    <td class="threat_shout_alt_ehp"></td>
                 </tr>
             </tbody>
         </table>
@@ -360,6 +370,11 @@
                 <tr>
                     <th>Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
                     <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Fists of Thunder - Lightning Flash <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
+                    <td><input type="checkbox" class="fists_of_thunder_flash" value="1" /></td>
                     <td></td>
                 </tr>
             </tbody>
@@ -830,7 +845,8 @@ var gahandler = (function() {
                 mantra_of_evasion_armor:  false,
                 mantra_of_healing_time:   false,
                 deadly_reach_keen_eye:    false,
-                crippling_wave_concussion:false
+                crippling_wave_concussion:false,
+                fists_of_thunder_flash:   false
             }
         }),
 
@@ -875,8 +891,13 @@ var gahandler = (function() {
             if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
             	dodgechance *= (1 - 0.15);
             }
+            
             if (this.get('the_guardians_path')) {
             	dodgechance *= (1 - 0.15);
+            }
+            
+            if (this.get('fists_of_thunder_flash')) {
+                dodgechance *= (1 - 0.16);
             }
         	
         	return dodgechance; 
@@ -1000,6 +1021,7 @@ var gahandler = (function() {
             '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
             '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
             '.crippling_wave_concussion': 'crippling_wave_concussion',
+            '.fists_of_thunder_flash':    'fists_of_thunder_flash',
             
             // WITCH DOCTOR
             '.jungle_fortitude':      'jungle_fortitude',
@@ -1051,7 +1073,8 @@ var gahandler = (function() {
             'mantra_of_healing_time',
             'mantra_of_healing_heavenly',
             'deadly_reach_keen_eye',
-            'crippling_wave_concussion'
+            'crippling_wave_concussion',
+            'fists_of_thunder_flash'
         ],
 
         initialize: function() {
@@ -1104,37 +1127,56 @@ var gahandler = (function() {
                     $fieldObj.val(this.model.get(field));
                 }
             }, this);
-
-            var ehp = this.model.get('ehp');
-            var ehp_melee = this.model.get('ehp_melee');
             
             var alt_booleans = this.classFields;
-
-            _.each(alt_booleans, function(alt_field) {
-                var selector  = "." + alt_field +  "_alt_ehp";
-                var alt_val   = !this.model.get(alt_field);
-                var alt_model = this.model.clone();
-
-                alt_model.set(alt_field, alt_val);
-                if($(selector, this.el).hasClass('melee_only')){
-                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp_melee')) + " EHP melee; " + this.alternativePercentage(alt_model.get('ehp_melee'), ehp_melee, alt_val) + "% change");
-                } else {
-                    $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
-                }
-            }, this);
-            
             var alt_stats = {
                 base_armor:      10,
                 base_vit:        1,
                 base_resist:     1,
             };
-
+            
+            var alternatives = {};
+            _.each(alt_booleans, function(alt_field) {
+            	alternatives[alt_field] = [{/* this should contain stat changes */}, !this.model.get(alt_field)];
+            	// set the stat change
+            	alternatives[alt_field][0][alt_field] = !this.model.get(alt_field);
+            }, this);
             _.each(alt_stats, function(alt_val, alt_field) {
-                var selector  = "." + alt_field +  "_alt_ehp";
-                var alt_model = this.model.clone();
+                alternatives[alt_field] = [{/* this should contain stat changes */}, true];
+                // set the stat change
+                alternatives[alt_field][0][alt_field] = this.model.get(alt_field) + alt_val;
+            }, this);
+            
+            _.each(alternatives, function(alt, alt_field) {
+                var alt_stats   = alt[0];
+                var reltosource = alt[1];
+                var selector    = "." + alt_field +  "_alt_ehp";
+                var alt_model   = this.model.clone();
+                
+                alt_model.set(alt_stats);
 
-                alt_model.set(alt_field, alt_model.get(alt_field) + alt_val);
-                $(selector, this.el).html(this.prepareVal(alt_model.get('ehp')) + " EHP; " + this.alternativePercentage(alt_model.get('ehp'), ehp, alt_val) + "% change");
+                var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
+                
+                if($(selector, this.el).hasClass('melee_only')) {
+                    alt_ehp_title = "EHP melee";
+                    alt_ehp_field = "ehp_melee";
+                } else if($(selector, this.el).hasClass('magic_only')) {
+                    alt_ehp_title = "EHP magic";
+                    alt_ehp_field = "ehp_magic";
+                }
+                
+                var ehp     = this.model.get(alt_ehp_field);
+                var alt_ehp = alt_model.get(alt_ehp_field);
+                
+                var ehp_change   = alt_ehp - ehp;
+                var ehp_change_p = (ehp_change / (reltosource ? ehp : alt_ehp));
+
+                ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change))         : this.prepareVal(ehp_change);
+                ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
+                
+                var html = "" + ehp_change + " " + alt_ehp_title + "; " + ehp_change_p;
+                
+                $(selector, this.el).html(html);
             }, this);
         },
 
@@ -1152,24 +1194,15 @@ var gahandler = (function() {
             }
         },
 
-        alternativePercentage: function(alt_ehp, ehp, alt_val) {
-            var val1 = ehp;
-            var val2 = alt_ehp;
-
-            var relativeto = alt_val ? val1 : val2;
-
-            return this.prepareVal(((val2 - val1) / relativeto) * 100);
-        },
-
         prepareVal: function(val, field) {
-        	if (field == 'armor_reduc' || field == 'resist_reduc') {
+        	if (field == 'armor_reduc' || field == 'resist_reduc' || field == '%') {
         		val *= 100;
-        		val = this.roundNumber(val, 1);
+        		val = this.roundNumber(val, 2);
         		val = ""+val+"%";
         		
         		return val;
         	} else {
-        		return this.roundNumber(val, 3);
+        		return this.roundNumber(val, 0);
         	}
         },
 
