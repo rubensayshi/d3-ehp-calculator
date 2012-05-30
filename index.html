@@ -127,9 +127,9 @@
         <table id="results" class="table table-bordered table-striped table-condensed">
             <thead>
                 <tr>
-                    <th width="35%">Results</th>
-                    <th>EHP without dodge</th>
-                    <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                    <th width="35%">Buffed Stats</th>
+                    <th>&nbsp;</th>
+                    <th width="30%">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,7 +149,15 @@
                     <td class="resist_reduc"></td>
                 </tr>
             </tbody>
-            <tfoot>
+        <table id="results" class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Results</th>
+                    <th>EHP without dodge</th>
+                    <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                </tr>
+            </thead>
+            <tbody>
                 <tr class="highlighted-row">
                     <th>EHP</th>
                     <td><input type="text" readonly=true class="ehp" value="" /></td>
@@ -175,7 +183,7 @@
                     <td></td>
                     <td><button class="reset btn btn-primary">refresh</button></td>
                 </tr>
-            </tfoot>
+            </tbody>
         </table>
     </div>
     
@@ -852,7 +860,7 @@ var gahandler = (function() {
             _.each(this.fieldMap, function(field, selector) {
                 var $fieldObj = $(selector,  this.el);
 
-                if ($fieldObj.is('span')) {
+                if ($fieldObj.is('span') || $fieldObj.is('td')) {
                     // --
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     this.model.set(field, !!$fieldObj.prop('checked'));
@@ -871,12 +879,12 @@ var gahandler = (function() {
             _.each(this.fieldMap, function(field, selector) {
                 var $fieldObj = $(selector,  this.el);
 
-                if ($fieldObj.is('span')) {
-                    $fieldObj.html(this.prepareVal(this.model.get(field)));
+                if ($fieldObj.is('span') || $fieldObj.is('td')) {
+                	$fieldObj.html(this.prepareVal(this.model.get(field), field));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                     $fieldObj.prop('checked', !!this.model.get(field));
                 } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                    $fieldObj.val(this.prepareVal(this.model.get(field)));
+                    $fieldObj.val(this.prepareVal(this.model.get(field), field));
                 } else if ($fieldObj.is('select')) {
                     $fieldObj.val(this.model.get(field));
                 }
@@ -938,8 +946,16 @@ var gahandler = (function() {
             return this.prepareVal(((val2 - val1) / relativeto) * 100);
         },
 
-        prepareVal: function(val) {
-            return this.roundNumber(val, 3);
+        prepareVal: function(val, field) {
+        	if (field == 'armor_reduc' || field == 'resist_reduc') {
+        		val *= 100;
+        		val = this.roundNumber(val, 1);
+        		val = ""+val+"%";
+        		
+        		return val;
+        	} else {
+        		return this.roundNumber(val, 3);
+        	}
         },
 
         roundNumber: function(num, dec) {
