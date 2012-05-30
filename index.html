@@ -279,6 +279,22 @@
                 </tr>
             </tbody>
         </table>
+        <table class="table table-bordered class_options table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th width="35%">Wizard Extra Options</th>
+                    <th>Choice</th>
+                    <th width="30%">Alternative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th title="+40% armor and resistance">Archon <span class="label label-info auto_tooltip" title="note that this will only be for 15 seconds!">?</span></th>
+                    <td><input type="checkbox" class="archon" value="1" /></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div id="simulation-mn-template">
@@ -668,7 +684,8 @@ var gahandler = (function() {
                 energy_armor: false,
                 prismatic:    false,
                 blur:         false,
-                glass_cannon: false
+                glass_cannon: false,
+                archon:       false
             }
         }),
 
@@ -679,6 +696,10 @@ var gahandler = (function() {
 
             if (this.get('glass_cannon')) {
                 armormodifier -= .10;
+            }
+            
+            if (this.get('archon')) {
+            	armormodifier += .40;
             }
 
             return armormodifier;
@@ -691,6 +712,10 @@ var gahandler = (function() {
 
             if (this.get('glass_cannon')) {
                 resistmodifier -= .10;
+            }
+            
+            if (this.get('archon')) {
+            	resistmodifier += .40;
             }
 
             return resistmodifier;
@@ -791,6 +816,7 @@ var gahandler = (function() {
             '.prismatic':       'prismatic',
             '.blur':            'blur',
             '.glass_cannon':    'glass_cannon',
+            '.archon':          'archon',
 
             // MONK
             '.resolve':                 'resolve',
