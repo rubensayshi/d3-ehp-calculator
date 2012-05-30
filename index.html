@@ -332,6 +332,16 @@
                     <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
                     <td class="mantra_of_evasion_armor_alt_ehp"></td>
                 </tr>
+                <tr>
+                    <th title="+20% to all resistance">Matra of Healing - Time of Need</th>
+                    <td><input type="checkbox" class="mantra_of_healing_time" value="1" /></td>
+                    <td class="mantra_of_healing_time_alt_ehp"></td>
+                </tr>
+                <tr>
+                    <th title="+15% dodge">Matra of Healing - Heavenly Body</th>
+                    <td><input type="checkbox" class="mantra_of_healing_heavenly" value="1" /></td>
+                    <td class="mantra_of_healing_heavenly_alt_ehp"></td>
+                </tr>
             </tbody>
         </table>
         <table class="table table-bordered class_options table-striped table-condensed">
@@ -749,6 +759,7 @@ var gahandler = (function() {
                 the_guardians_path:       false,
                 mantra_of_evasion:        false,
                 mantra_of_evasion_armor:  false,
+                mantra_of_healing_time:   false,
                 deadly_reach_keen_eye:    false,
                 crippling_wave_concussion:false
             }
@@ -760,6 +771,22 @@ var gahandler = (function() {
             }
 
             return armor;
+        },
+        
+        modifyResistModifier : function (resistmodifier) {
+        	if (this.get('mantra_of_healing_time')) {
+        		resistmodifier += .20;
+        	}
+        	
+        	return resistmodifier;
+        },
+        
+        modifyLifeModifier : function (lifemodifier) {
+        	if (this.get('mantra_of_healing_heavenly')) {
+        		lifemodifier += .10;
+        	}
+        	
+        	return lifemodifier;
         },
 
         modifyArmorModifier : function (armormodifier) {
@@ -839,13 +866,15 @@ var gahandler = (function() {
             '.archon':          'archon',
 
             // MONK
-            '.resolve':                  'resolve',
-            '.seize_the_initiative':     'seize_the_initiative',
-            '.the_guardians_path':       'the_guardians_path',
-            '.mantra_of_evasion':        'mantra_of_evasion',
-            '.mantra_of_evasion_armor':  'mantra_of_evasion_armor',
-            '.deadly_reach_keen_eye':    'deadly_reach_keen_eye',
-            '.crippling_wave_concussion':'crippling_wave_concussion',
+            '.resolve':                   'resolve',
+            '.seize_the_initiative':      'seize_the_initiative',
+            '.the_guardians_path':        'the_guardians_path',
+            '.mantra_of_evasion':         'mantra_of_evasion',
+            '.mantra_of_evasion_armor':   'mantra_of_evasion_armor',
+            '.mantra_of_healing_time':    'mantra_of_healing_time',
+            '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
+            '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
+            '.crippling_wave_concussion': 'crippling_wave_concussion',
 
             '.moblevel':        'moblevel',
 
@@ -886,6 +915,8 @@ var gahandler = (function() {
             'the_guardians_path',
             'mantra_of_evasion',
             'mantra_of_evasion_armor',
+            'mantra_of_healing_time',
+            'mantra_of_healing_heavenly',
             'deadly_reach_keen_eye',
             'crippling_wave_concussion'
         ],
