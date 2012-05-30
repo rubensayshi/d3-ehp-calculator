@@ -1,5 +1,5 @@
 Diablo3 Effective Health Pool Calculator
-===========
+========================================
 completely client side (javascript) calculator for your EHP.  
 checkout the working version (project page on github): http://rubensayshi.github.com/d3-ehp-calculator/
 
@@ -38,3 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies, 
 either expressed or implied, of the FreeBSD Project.
+
+Copyright and License - Apendix
+===============================
+The above BSD license will allow you to use this open source project for anything you like.  
+However, I would very much appreciate it when you decide to use the code if you could contribute your improvements back to this project
+and / or contact me so that I'm aware (and proud) of my project being used by other people too :-)
