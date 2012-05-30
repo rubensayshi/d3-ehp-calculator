@@ -406,7 +406,7 @@
                       <option value="4">4</option>
                       <option value="5">5</option>
                     </select></td>
-                    <td class="gruesome_feast_alt_ehp"></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th title="-20% damage if did poison damage to">Bad Medicine</th>
@@ -922,7 +922,7 @@ var gahandler = (function() {
             melee     : false,
             options   : {
                 jungle_fortitude:         false,
-                gruesome_feast:           false,
+                gruesome_feast:           0,
                 bad_medicine:             false,
                 soul_harvest:             0,
                 zombie_dogs_life_link:    false,
@@ -931,10 +931,6 @@ var gahandler = (function() {
         }),
 
         modifyBaseArmor : function (armor) {
-          if (this.get('horrify_frightening_aspect')) {
-              // +100% Armor are Armor*2, right?
-              armor *= 2;
-          }
             return armor;
         },
         
@@ -947,6 +943,10 @@ var gahandler = (function() {
         },
 
         modifyArmorModifier : function (armormodifier) {
+          if (this.get('horrify_frightening_aspect')) {
+              // +100% Armor are Armor*2, right?
+              armormodifier *= 2;
+          }
             return armormodifier;
         },
         
