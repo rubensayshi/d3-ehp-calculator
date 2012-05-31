@@ -49,10 +49,10 @@ var SimulationView = Backbone.View.extend({
             $parent.empty();
             
             _.each(options, function(optionInfo, optionName) {
-                optionInfo['type']    = optionInfo['type']  || 'checkbox';
-                optionInfo['title'  ] = optionInfo['title'] || "[" + optionName + "]";
+                optionInfo['type']  = optionInfo['type']  || 'checkbox';
+                optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
                 
-                var $row, $col1, $col2, $col3, $input;
+                var $row, $col1, $col2, $col3, $input, $alt;
                 
                 if (optionInfo['type'] == 'checkbox') {
                     $input = $('<input type="checkbox" />')
@@ -75,6 +75,18 @@ var SimulationView = Backbone.View.extend({
                                 .addClass(optionName);
                 }
                 
+                if (typeof(optionInfo['alternative']) != 'undefined') {
+                    $alt = $('<span />')
+                                .addClass(optionName + "_alt_ehp");
+
+                    if (typeof(optionInfo['magic_only']) != 'undefined') {
+                        $alt.addClass('magic_only');                        
+                    }
+                    if (typeof(optionInfo['melee_only']) != 'undefined') {
+                        $alt.addClass('melee_only');
+                    }
+                }
+                
                 $row = $('<tr />')
                             .appendTo($parent);
                 $col1 = $('<th />')
@@ -84,6 +96,7 @@ var SimulationView = Backbone.View.extend({
                             .append($input)
                             .appendTo($row);
                 $col3 = $('<td />')
+                            .append($alt)
                             .appendTo($row);
             });
         });
@@ -110,7 +123,7 @@ var SimulationView = Backbone.View.extend({
 
             toField($fieldObj, selector, optionName, this.model.get(optionName));
             
-            if (optionInfo['alternative'] !== undefined) {
+            if (typeof(optionInfo['alternative']) != 'undefined') {
                 if (typeof optionInfo['alternative'] == 'boolean') {
                     alternatives[optionName] = [{/* this should contain stat changes */}, !this.model.get(optionName)];
                     alternatives[optionName][0][optionName] = !this.model.get(optionName);
@@ -138,7 +151,7 @@ var SimulationView = Backbone.View.extend({
         _.each(alternatives, function(alt, alt_field) {
             var alt_stats   = alt[0];
             var reltosource = alt[1];
-            var selector    = "." + alt_field +  "_alt_ehp";
+            var selector    = generateSelector(alt_field + "_alt_ehp");
             var alt_model   = this.model.clone();
             
             alt_model.set(alt_stats);

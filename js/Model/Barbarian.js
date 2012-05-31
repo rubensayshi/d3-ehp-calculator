@@ -5,13 +5,13 @@ var Barbarian = Character.extend({
     }),
     
     options : _.extend({}, Character.prototype.options, {
-        toughasnails: {"type": "checkbox", "default": true, "title": "Tough as Nails", "alternative": true},
+        toughasnails: {"type": "checkbox", "default": false, "title": "Tough as Nails", "alternative": true},
         nervesofsteel:{"type": "checkbox", "default": false, "title": "Nerves of Steel", "alternative": true},
         warcry:       {"type": "checkbox", "default": false, "title": "War Cry - No Rune", "alternative": true},
         warcry_armor: {"type": "checkbox", "default": false, "title": "War Cry - Hardened Wrath", "alternative": true},
         warcry_resist:{"type": "checkbox", "default": false, "title": "War Cry - Impunity", "alternative": true},
         warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true},
-        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true}
+        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true, 'magic_only': true}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {
