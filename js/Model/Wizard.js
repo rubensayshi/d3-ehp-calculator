@@ -1,14 +1,18 @@
 var Wizard = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "wz",
-        melee     : false,
-        options   : {
-            energy_armor: false,
-            prismatic:    false,
-            blur:         false,
-            glass_cannon: false,
-            archon:       false
-        }
+        melee     : false
+    }),
+    
+    options : _.extend({}, Character.prototype.options, {
+        energy_armor: {"type": "checkbox", "default": false, "title": "Energy Armor", "alternative": true},
+        prismatic:    {"type": "checkbox", "default": false, "title": "Energy Armor - Prismatic", "alternative": true},
+        blur:         {"type": "checkbox", "default": false, "title": "Blur", "alternative": true},
+        glass_cannon: {"type": "checkbox", "default": false, "title": "Glass Cannon", "alternative": true}
+   }),
+    
+    extra_options : _.extend({}, Character.prototype.extra_options, {
+        archon: {"type": "checkbox", "default": false, "title": "Archon", "tip": "Keep in mind it's only 15 second duration!"}
     }),
 
     modifyArmorModifier : function (armormodifier) {

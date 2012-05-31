@@ -1,15 +1,19 @@
 var WitchDoctor = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "wd",
-        melee     : false,
-        options   : {
-            jungle_fortitude:          false,
-            gruesome_feast:            0,
-            bad_medicine:              false,
-            soul_harvest:              0,
-            zombie_dogs_life_link:     false,
-            horrify_frightening_aspect:false
-        }
+        melee     : false
+    }),
+    
+    options : _.extend({}, Character.prototype.options, {
+        jungle_fortitude: {"type": "checkbox", "default": false, "title": "Jungle Fortitude", "alternative": true},
+        gruesome_feast:   {"type": "select",   "default": 0, "title": "Energy Armor - Prismatic", "alternative": true, "options": [0,1,2,3,4,5]},
+        bad_medicine:     {"type": "checkbox", "default": false, "title": "Bad Medicine", "alternative": true}
+   }),
+    
+    extra_options : _.extend({}, Character.prototype.extra_options, {
+        soul_harvest:               {"type": "select",   "default": 0, "title": "Soul Harvest", "alternative": true, "options": [0,1,2,3,4,5], "tip": "note that you most likely will not have a 5 Stack / 100% uptime on this!"},
+        zombie_dogs_life_link:      {"type": "checkbox", "default": false, "title": "Zombie Dogs - Life Link", "alternative": true, "tip": "of course this will only work if you have zombie dogs alive"},
+        horrify_frightening_aspect: {"type": "checkbox", "default": false, "title": "Horrify - Frightening Aspect", "tip": "you will gain 100% Armor after casting this spell. However, this only lasts 8 secounds whereas the cooldown is 20 secs. So you will not get more than 2/5 uptime on this!"}
     }),
     
     modifyBaseResist : function (resist) {  
