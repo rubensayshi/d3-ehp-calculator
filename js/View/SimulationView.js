@@ -134,7 +134,7 @@ var SimulationView = Backbone.View.extend({
             }            
         }, this);
         
-        _.each(['life', 'armor', 'resist'], function(buffed_stats_field) {
+        _.each(['life', 'armor', 'armor_reduc', 'resist', 'resist_reduc'], function(buffed_stats_field) {
             var selector = generateSelector(buffed_stats_field);
             var $fieldObj = $(selector,  this.el);
 
