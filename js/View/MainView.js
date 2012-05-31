@@ -4,7 +4,7 @@ var MainView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
         
-        this.currentView = new InputView({'el': $('#content', this.el)});
+        this.currentView = new IntroView({'el': $('#content', this.el)});
         
         this.render();
     },

@@ -1,8 +1,8 @@
-var InputView = Backbone.View.extend({
+var IntroView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
 
-        this.template = _.template($('#input-template').html());
+        this.template = _.template($('#intro-template').html());
     },
 
     render: function() {
