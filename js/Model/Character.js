@@ -40,12 +40,12 @@ var Character = Backbone.Model.extend({
         base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge"},
         base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
         base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
-        base_armor:       {"type": "text", "default": 4000, "title": "Armor"},
-        base_resist:      {"type": "text", "default": 200,  "title": "All Resist"},
+        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
+        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1},
         base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
-        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %"},
-        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction"},
-        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction"}
+        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
+        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
+        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
     },
     options:       {},
     extra_options: {},

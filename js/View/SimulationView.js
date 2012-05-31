@@ -94,8 +94,7 @@ var SimulationView = Backbone.View.extend({
                         .html("?")
                         .appendTo($col2)
                         .tooltip();
-                }
-                
+                }                
                 
                 if (typeof(optionInfo['alternative']) != 'undefined') {
                     if (typeof optionInfo['alternative'] == 'boolean') {
@@ -107,12 +106,11 @@ var SimulationView = Backbone.View.extend({
 
                     $alt.addClass(optionName + "_alt_ehp");
                     
-                    if (typeof(optionInfo['magic_only']) != 'undefined') {
-                        $alt.addClass('magic_only');                        
-                    }
-                    if (typeof(optionInfo['melee_only']) != 'undefined') {
-                        $alt.addClass('melee_only');
-                    }
+                    _.each(['magic_only', 'melee_only', 'ranged_only'], function(x_only) {
+                        if (typeof(optionInfo[x_only]) != 'undefined') {
+                            $alt.addClass(x_only);                        
+                        }
+                    });
                     
                     if ($alt != $col3) {
                         $alt.appendTo($col3);
@@ -177,10 +175,13 @@ var SimulationView = Backbone.View.extend({
             alt_model.set(alt_stats);
 
             var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
-            
+
             if($(selector, this.el).hasClass('melee_only')) {
                 alt_ehp_title = "EHP melee";
                 alt_ehp_field = "ehp_melee";
+            } else if($(selector, this.el).hasClass('ranged_only')) {
+                alt_ehp_title = "EHP ranged";
+                alt_ehp_field = "ehp_ranged";
             } else if($(selector, this.el).hasClass('magic_only')) {
                 alt_ehp_title = "EHP magic";
                 alt_ehp_field = "ehp_magic";
