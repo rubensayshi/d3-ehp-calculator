@@ -1,18 +1,23 @@
 var Monk = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "mn",
-        melee     : true,
-        options   : {
-            resolve:                  false,
-            seize_the_initiative:     false,
-            the_guardians_path:       false,
-            mantra_of_evasion:        false,
-            mantra_of_evasion_armor:  false,
-            mantra_of_healing_time:   false,
-            deadly_reach_keen_eye:    false,
-            crippling_wave_concussion:false,
-            fists_of_thunder_flash:   false
-        }
+        melee     : true
+    }),
+    
+    options : _.extend({}, Character.prototype.options, {
+        resolve:                   {"type": "checkbox", "default": false, "title": "Resolve", "alternative": true, "tip": "Keep in mind you can't always have this on your target (ranged mobs, etc)."},
+        the_guardians_path:        {"type": "checkbox", "default": false, "title": "The Guardians Path", "alternative": true, "tip": "Only if you're using DUAL WIELD!!"},
+        seize_the_initiative:      {"type": "checkbox", "default": false, "title": "Seize the Initiative", "alternative": true},
+        mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true},
+        mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true},
+        mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Time of Need", "alternative": true},
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Evasion - Heavenly Body", "alternative": true}
+    }),
+    
+    extra_options : _.extend({}, Character.prototype.extra_options, {       
+        deadly_reach_keen_eye:    {"type": "checkbox", "default": false, "title": "Deadly Reach - Keen Eye", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
+        crippling_wave_concussion:{"type": "checkbox", "default": false, "title": "Crippling Wave - Concussion", "alternative": true, 'magic_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"},
+        fists_of_thunder_flash:   {"type": "checkbox", "default": false, "title": "Fists of Thunder - Lightning Flash", "alternative": true, 'magic_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"}
     }),
 
     modifyBaseArmor : function (armor) {

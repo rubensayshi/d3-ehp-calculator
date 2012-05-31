@@ -1,7 +1,7 @@
 var Barbarian = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "br",
-        melee     : true,
+        melee     : true
     }),
     
     options : _.extend({}, Character.prototype.options, {
@@ -85,5 +85,5 @@ var Barbarian = Character.extend({
         }
         
         return dodgechance;
-    },
+    }
 });

@@ -11,14 +11,6 @@ var SimulationView = Backbone.View.extend({
         _.bindAll(this);
 
         this.template = _.template($('#simulation-template').html());
-
-        this.class_templates = {
-            "br": _.template($('#simulation-br-template').html()),
-            "dh": _.template($('#simulation-not-available-template').html()),
-            "mn": _.template($('#simulation-mn-template').html()),
-            "wd": _.template($('#simulation-wd-template').html()),
-            "wz": _.template($('#simulation-wz-template').html())
-        };
     },
 
     viewToModel: function() {

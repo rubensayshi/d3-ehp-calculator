@@ -1,13 +1,14 @@
 var Character = Backbone.Model.extend({
     defaults : {
         level:        60,
-        base_vit:     1200,
-        base_dex:     1200,
-        base_int:     1200,
+        base_vit:     1000,
+        base_dex:     1000,
+        base_int:     1000,
+        base_str:     1000,
         base_armor:   4000,
-        base_resist:  300,
+        base_resist:  200,
         base_dodge:   10,
-        extra_life:   12,
+        extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
 
@@ -36,6 +37,7 @@ var Character = Backbone.Model.extend({
             return classes;
         }},
         level:            {"type": "text", "default": 60,   "title": "Level"},
+        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge"},
         base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
