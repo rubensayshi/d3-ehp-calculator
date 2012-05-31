@@ -54,6 +54,16 @@ var SimulationView = Backbone.View.extend({
                 
                 var $row, $col1, $col2, $col3, $input, $alt;
                 
+                $row = $('<tr />')
+                            .appendTo($parent);
+                $col1 = $('<th />')
+                            .html(optionInfo['title'])
+                            .appendTo($row);
+                $col2 = $('<td />')
+                            .appendTo($row);
+                $col3 = $('<td />')
+                            .appendTo($row);
+                
                 if (optionInfo['type'] == 'checkbox') {
                     $input = $('<input type="checkbox" />')
                                 .addClass(optionName);
@@ -75,29 +85,39 @@ var SimulationView = Backbone.View.extend({
                                 .addClass(optionName);
                 }
                 
+                $input.appendTo($col2);
+                
+                if (typeof(optionInfo['tip']) != 'undefined') {
+                    $('<span />')
+                        .attr('title', optionInfo['tip'])
+                        .addClass('label label-info')
+                        .html("?")
+                        .appendTo($col2)
+                        .tooltip();
+                }
+                
+                
                 if (typeof(optionInfo['alternative']) != 'undefined') {
-                    $alt = $('<span />')
-                                .addClass(optionName + "_alt_ehp");
+                    if (typeof optionInfo['alternative'] == 'boolean') {
+                        $alt = $col3;
+                    } else {
+                        $alt = $('<strong />').html("+"+optionInfo['alternative']+" "+optionInfo['title']+"<br />").appendTo($col3);
+                        $alt = $('<span />');
+                    }
 
+                    $alt.addClass(optionName + "_alt_ehp");
+                    
                     if (typeof(optionInfo['magic_only']) != 'undefined') {
                         $alt.addClass('magic_only');                        
                     }
                     if (typeof(optionInfo['melee_only']) != 'undefined') {
                         $alt.addClass('melee_only');
                     }
+                    
+                    if ($alt != $col3) {
+                        $alt.appendTo($col3);
+                    }
                 }
-                
-                $row = $('<tr />')
-                            .appendTo($parent);
-                $col1 = $('<th />')
-                            .html(optionInfo['title'])
-                            .appendTo($row);
-                $col2 = $('<td />')
-                            .append($input)
-                            .appendTo($row);
-                $col3 = $('<td />')
-                            .append($alt)
-                            .appendTo($row);
             });
         });
     },
