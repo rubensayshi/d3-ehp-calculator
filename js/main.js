@@ -9,7 +9,7 @@ var classlist = {
     'br': [Barbarian,   'Barbarian'],
     //'dh': [DemonHunter, 'Demon Hunter'],
     'mn': [Monk,        'Monk'],
-    'wd': [WitchDoctor, 'Witch Docter'],
+    'wd': [WitchDoctor, 'Witch Doctor'],
     'wz': [Wizard,      'Wizard']
 };
 
