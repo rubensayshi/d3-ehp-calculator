@@ -1,9 +1,10 @@
 var SimulationView = Backbone.View.extend({
     events: {
-        'change input':       'viewToModel',
-        'change .input_select': 'viewToModel',
-        'change .your_class': 'changeClass',
-        'click button.reset': 'viewToModel'
+        'change input':          'viewToModel',
+        'change .input_select':  'viewToModel',
+        'change .your_class':    'changeClass',
+        'click button.reset':    'viewToModel',
+        'click button.new_char': 'inputNewChar'
     },
 
     fieldMap: {
@@ -104,7 +105,8 @@ var SimulationView = Backbone.View.extend({
     ],
 
     initialize: function() {
-        _.bindAll(this, 'render', 'modelToView', 'viewToModel', 'changeClass');
+        console.log('initialize');
+        _.bindAll(this);
 
         this.template = _.template($('#simulation-template').html());
 
@@ -115,9 +117,6 @@ var SimulationView = Backbone.View.extend({
             "wd": _.template($('#simulation-wd-template').html()),
             "wz": _.template($('#simulation-wz-template').html())
         };
-
-        this.render();
-        this.changeClass();
     },
 
     viewToModel: function() {
@@ -226,7 +225,7 @@ var SimulationView = Backbone.View.extend({
         }, this);
     },
 
-    changeClass: function(event) {
+    changeClass: function() {
         classname = $('.your_class', this.el).val();
 
         this.model = getModelForClass(classname);
@@ -238,6 +237,10 @@ var SimulationView = Backbone.View.extend({
         if (gahandler) {
             gahandler.changeClass(classname)
         }
+    },
+    
+    inputNewChar: function() {
+        this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
     },
 
     prepareVal: function(val, field, dec) {
@@ -278,5 +281,7 @@ var SimulationView = Backbone.View.extend({
             title: "<strong>keep in mind; dodge is random.</strong><br />" +
                    "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
         });
+
+        this.changeClass();
     }
 });

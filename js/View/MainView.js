@@ -3,13 +3,26 @@ var MainView = Backbone.View.extend({
     
     initialize: function() {
         _.bindAll(this);
-        
-        this.currentView = new IntroView({'el': $('#content', this.el)});
-        
-        this.render();
-    },
 
-    render: function() {
-        this.currentView.render();
-    }
+        this.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView}); });
+    },
+    
+    getContentEl: function() {
+        return $('#content', this.el);
+    },
+    
+    changeView: function(newView) {
+        if (typeof newView == 'function') {
+            newView = newView(this.getContentEl(), this);
+        }
+        
+        console.log(newView);
+
+        this.currentView = newView;
+        newView.mainView = this;
+        
+        this.getContentEl().empty();
+        
+        newView.render();
+    },
 });
