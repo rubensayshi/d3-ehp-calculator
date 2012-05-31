@@ -5,13 +5,13 @@ var Monk = Character.extend({
     }),
     
     options : _.extend({}, Character.prototype.options, {
-        resolve:                   {"type": "checkbox", "default": false, "title": "Resolve", "alternative": true, "tip": "Keep in mind you can't always have this on your target (ranged mobs, etc)."},
-        the_guardians_path:        {"type": "checkbox", "default": false, "title": "The Guardians Path", "alternative": true, "tip": "Only if you're using DUAL WIELD!!"},
-        seize_the_initiative:      {"type": "checkbox", "default": false, "title": "Seize the Initiative", "alternative": true},
-        mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true},
-        mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true},
-        mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Time of Need", "alternative": true},
-        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Evasion - Heavenly Body", "alternative": true}
+        resolve:                   {"type": "checkbox", "default": false, "title": "Resolve", "alternative": true, "tip": "Keep in mind you can't always have this on your target (ranged mobs, etc).", "alt": "-25% damage taken from mobs you've hit"},
+        the_guardians_path:        {"type": "checkbox", "default": false, "title": "The Guardians Path", "alternative": true, "tip": "Only if you're using DUAL WIELD!!", "alt": "+15% dodge when dual wielding"},
+        seize_the_initiative:      {"type": "checkbox", "default": false, "title": "Seize the Initiative", "alternative": true, "alt": "100% of your dex as armor"},
+        mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true, "alt": "+15% dodge"},
+        mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true, "alt": "an extra +20% armor"},
+        mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Evasion - Heavenly Body", "alternative": true, "alt": "+15% dodge"}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {       

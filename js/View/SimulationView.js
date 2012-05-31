@@ -43,13 +43,14 @@ var SimulationView = Backbone.View.extend({
             _.each(options, function(optionInfo, optionName) {
                 optionInfo['type']  = optionInfo['type']  || 'checkbox';
                 optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
+                optionInfo['alt']   = optionInfo['alt']   || "";
                 
                 var $row, $col1, $col2, $col3, $input, $alt;
                 
                 $row = $('<tr />')
                             .appendTo($parent);
                 $col1 = $('<th />')
-                            .html(optionInfo['title'])
+                            .append($('<span />').html(optionInfo['title']).attr('title', optionInfo['alt']))
                             .appendTo($row);
                 $col2 = $('<td />')
                             .appendTo($row);
