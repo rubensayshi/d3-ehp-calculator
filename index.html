@@ -53,6 +53,24 @@
         <div id="simulation-template">
         <div class="row">
             <div id="content" class="span9">
+                <table id="base_options" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Option</th>
+                            <th>Choice</th>
+                            <th width="30%">Alternative</th>
+                        </tr>
+                    </thead>
+                    <tbody>                    
+                        <tr>
+                            <th>Your Class</th>
+                            <td>
+                                <select class="your_class"></select>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
                 <table id="options" class="table table-bordered table-striped table-condensed">
                     <thead>
                         <tr>
@@ -61,76 +79,17 @@
                             <th width="30%">Alternative</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody></tbody>
+                </table>
+                <table id="extra_options" class="table table-bordered table-striped table-condensed">
+                    <thead>
                         <tr>
-                            <th>Your Class</th>
-                            <td>
-                                <select class="your_class"></select>
-                            </td>
-                            <td></td>
+                            <th width="35%">Option</th>
+                            <th>Choice</th>
+                            <th width="30%">Alternative</th>
                         </tr>
-                        <tr>
-                            <th>Your level</th>
-                            <td><input type="text" class="level" value="" /></td>
-                            <td></td>
-                         </tr>
-                        <tr>
-                            <th>Mob level</th>
-                            <td><input type="text" class="moblevel" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>VIT</th>
-                            <td><input type="text" class="base_vit" value="" /></td>
-                            <td><strong>+1 VIT</strong><br />
-                                <span class="base_vit_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>DEX</th>
-                            <td><input type="text" class="base_dex" value="" /> <span title="Dex is only used for skill effects (eg monk passive), not for dodge" class="label label-info auto_tooltip">?</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>INT</th>
-                            <td><input type="text" class="base_int" value="" /> <span title="Int is only used for skill effects (eg Witch Doctor passive), not in general for resist" class="label label-info auto_tooltip">?</span></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>+ Extra Life %</th>
-                            <td><input type="text" class="extra_life" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Armor</th>
-                            <td><input type="text" class="base_armor" value="" />  <br /></td>
-                            <td><strong>+10 Armor</strong><br />
-                                <span class="base_armor_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>All Resistance</th>
-                            <td><input type="text" class="base_resist" value="" /> <span title="Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!" class="label label-info auto_tooltip">?</span></td>
-                            <td><strong>+1 All Resist</strong><br />
-                                <span class="base_resist_alt_ehp"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Melee only Reduction</th>
-                            <td><input type="text" class="base_melee_reduc" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Ranged only Reduction</th>
-                            <td><input type="text" class="base_ranged_reduc" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>Dodge %</th>
-                            <td><input type="text" class="base_dodge" value="" /></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
+                    </thead>
+                    <tbody></tbody>
                 </table>
                 <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
                     <thead>

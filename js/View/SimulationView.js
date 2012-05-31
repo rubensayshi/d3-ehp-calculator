@@ -7,105 +7,7 @@ var SimulationView = Backbone.View.extend({
         'click button.new_char': 'inputNewChar'
     },
 
-    fieldMap: {
-        '.your_class':      'your_class',
-        '.level':           'level',
-        '.extra_life':      'extra_life',
-        '.base_vit':        'base_vit',
-        '.base_dex':        'base_dex',
-        '.base_int':        'base_int',
-        '.base_armor':      'base_armor',
-        '.base_resist':     'base_resist',
-        '.base_dodge':      'base_dodge',
-        '.base_melee_reduc': 'base_melee_reduc',
-        '.base_ranged_reduc':'base_ranged_reduc',
-
-        // BARBARIAN
-        '.toughasnails':    'toughasnails',
-        '.nervesofsteel':   'nervesofsteel',
-        '.warcry':          'warcry',
-        '.warcry_armor':    'warcry_armor',
-        '.warcry_resist':   'warcry_resist',
-        '.warcry_dodge':    'warcry_dodge',
-        '.warcry_life':     'warcry_life',
-        '.threat_shout':    'threat_shout',
-        '.superstition':    'superstition',
-
-        // WIZARD
-        '.energy_armor':    'energy_armor',
-        '.prismatic':       'prismatic',
-        '.blur':            'blur',
-        '.glass_cannon':    'glass_cannon',
-        '.archon':          'archon',
-
-        // MONK
-        '.resolve':                   'resolve',
-        '.seize_the_initiative':      'seize_the_initiative',
-        '.the_guardians_path':        'the_guardians_path',
-        '.mantra_of_evasion':         'mantra_of_evasion',
-        '.mantra_of_evasion_armor':   'mantra_of_evasion_armor',
-        '.mantra_of_healing_time':    'mantra_of_healing_time',
-        '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
-        '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
-        '.crippling_wave_concussion': 'crippling_wave_concussion',
-        '.fists_of_thunder_flash':    'fists_of_thunder_flash',
-        
-        // WITCH DOCTOR
-        '.jungle_fortitude':      'jungle_fortitude',
-        '.gruesome_feast':        'gruesome_feast',
-        '.bad_medicine':          'bad_medicine',
-        '.soul_harvest':          'soul_harvest',
-        '.zombie_dogs_life_link': 'zombie_dogs_life_link',
-        '.horrify_frightening_aspect': 'horrify_frightening_aspect',
-
-        '.moblevel':        'moblevel',
-
-        '.life':            'life',
-        '.armor':           'armor',
-        '.resist':          'resist',
-        '.dodge':           'dodge',
-        '.armor_reduc':     'armor_reduc',
-        '.resist_reduc':    'resist_reduc',
-
-        '.ehp':             'ehp',
-        '.ehp_dodge':       'ehp_dodge',
-        '.ehp_melee':       'ehp_melee',
-        '.ehp_dodge_melee': 'ehp_dodge_melee',
-        '.ehp_ranged':      'ehp_ranged',
-        '.ehp_dodge_ranged':'ehp_dodge_ranged',
-        '.ehp_magic':       'ehp_magic',
-        '.ehp_dodge_magic': 'ehp_dodge_magic'
-    },
-
-    classFields: [
-        'toughasnails',
-        'nervesofsteel',
-        'warcry',
-        'warcry_armor',
-        'warcry_resist',
-        'warcry_dodge',
-        'warcry_life',
-        'threat_shout',
-        'superstition',
-        'energy_armor',
-        'prismatic',
-        'blur',
-        'glass_cannon',
-        'archon',
-        'resolve',
-        'seize_the_initiative',
-        'the_guardians_path',
-        'mantra_of_evasion',
-        'mantra_of_evasion_armor',
-        'mantra_of_healing_time',
-        'mantra_of_healing_heavenly',
-        'deadly_reach_keen_eye',
-        'crippling_wave_concussion',
-        'fists_of_thunder_flash'
-    ],
-
     initialize: function() {
-        console.log('initialize');
         _.bindAll(this);
 
         this.template = _.template($('#simulation-template').html());
@@ -120,76 +22,117 @@ var SimulationView = Backbone.View.extend({
     },
 
     viewToModel: function() {
-        _.each(this.fieldMap, function(field, selector) {
+        _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
+            var selector = generateSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
                 // --
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                this.model.set(field, !!$fieldObj.prop('checked'));
+                this.model.set(optionName, !!$fieldObj.prop('checked'));
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
-                    var val = $fieldObj.val();
-                    
-                    var normalizeFloat = function(val, alertOnError) {
-                        var res = parseFloat(val);
-   
-                        if (isNaN(res) || (res != val && res == parseInt(val))) {
-                            if (alertOnError) {
-                                alert("We failed to properly parse the value for [" + field + "]");
-                            
-                            return 0;
-                        } else {                  
-                            return normalizeFloat(val.replace(",", "."), true);
-                        }
-                    }
-                    
-                    return res;
-                };
-
-                val = normalizeFloat(val);
-                
-                this.model.set(field, parseFloat($fieldObj.val()));
+                this.model.set(optionName, normalizeFloat($fieldObj.val(), optionName));
             } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
-                this.model.set(field, $fieldObj.val());
+                this.model.set(optionName, $fieldObj.val());
             }
         }, this);
     },
+    
+    renderOptions: function() {
+        _.each({
+            '#base_options tbody':  this.model.base_options,
+            '#options tbody':       this.model.options,
+            '#extra_options tbody': this.model.extra_options
+        }, function(options, parent) {
+            var $parent = $(parent);
+            
+            $parent.empty();
+            
+            _.each(options, function(optionInfo, optionName) {
+                optionInfo['type']    = optionInfo['type']  || 'checkbox';
+                optionInfo['title'  ] = optionInfo['title'] || "[" + optionName + "]";
+                
+                var $row, $col1, $col2, $col3, $input;
+                
+                if (optionInfo['type'] == 'checkbox') {
+                    $input = $('<input type="checkbox" />')
+                                .addClass(optionName);
+                } else if (optionInfo['type'] == 'select') {
+                    seloptions = optionInfo['options'] || {};
+                    
+                    if (typeof seloptions == 'function') {
+                        seloptions = seloptions();
+                    }
+                    
+                    $input = $('<select />')
+                                .addClass(optionName);
+                    
+                    _.each(seloptions, function(val, key) {
+                       $input.append($('<option />').val(key).html(val)); 
+                    });
+                } else if (optionInfo['type'] == 'text') {
+                    $input = $('<input type="text" />')
+                                .addClass(optionName);
+                }
+                
+                $row = $('<tr />')
+                            .appendTo($parent);
+                $col1 = $('<th />')
+                            .html(optionInfo['title'])
+                            .appendTo($row);
+                $col2 = $('<td />')
+                            .append($input)
+                            .appendTo($row);
+                $col3 = $('<td />')
+                            .appendTo($row);
+            });
+        });
+    },
 
     modelToView: function() {
-        $(this.el).find('.class_options').remove();
-        $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
-
-        _.each(this.fieldMap, function(field, selector) {
-            var $fieldObj = $(selector,  this.el);
-
+        var alternatives = {};
+        
+        var toField = _.bind(function($fieldObj, selector, fieldName, fieldValue) {
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
-                $fieldObj.html(this.prepareVal(this.model.get(field), field));
+                $fieldObj.html(this.prepareVal(fieldValue, fieldName));
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                $fieldObj.prop('checked', !!this.model.get(field));
+                $fieldObj.prop('checked', !!fieldValue);
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                $fieldObj.val(this.prepareVal(this.model.get(field), field));
+                $fieldObj.val(this.prepareVal(fieldValue, fieldName));
             } else if ($fieldObj.is('select')) {
-                $fieldObj.val(this.model.get(field));
+                $fieldObj.val(fieldValue);
             }
         }, this);
         
-        var alt_booleans = this.classFields;
-        var alt_stats = {
-            base_armor:      10,
-            base_vit:        1,
-            base_resist:     1,
-        };
-        
-        var alternatives = {};
-        _.each(alt_booleans, function(alt_field) {
-            alternatives[alt_field] = [{/* this should contain stat changes */}, !this.model.get(alt_field)];
-            // set the stat change
-            alternatives[alt_field][0][alt_field] = !this.model.get(alt_field);
+        _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
+            var selector = generateSelector(optionName);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, optionName, this.model.get(optionName));
+            
+            if (optionInfo['alternative'] !== undefined) {
+                if (typeof optionInfo['alternative'] == 'boolean') {
+                    alternatives[optionName] = [{/* this should contain stat changes */}, !this.model.get(optionName)];
+                    alternatives[optionName][0][optionName] = !this.model.get(optionName);
+                } else {
+                    alternatives[optionName] = [{/* this should contain stat changes */}, true];
+                    alternatives[optionName][0][optionName] = this.model.get(optionName) + optionInfo['alternative'];
+                }
+            }            
         }, this);
-        _.each(alt_stats, function(alt_val, alt_field) {
-            alternatives[alt_field] = [{/* this should contain stat changes */}, true];
-            // set the stat change
-            alternatives[alt_field][0][alt_field] = this.model.get(alt_field) + alt_val;
+        
+        _.each(['life', 'armor', 'resist'], function(buffed_stats_field) {
+            var selector = generateSelector(buffed_stats_field);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
+        }, this);
+        
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+            var selector = generateSelector(ehp_field);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
         }, this);
         
         _.each(alternatives, function(alt, alt_field) {
@@ -231,6 +174,7 @@ var SimulationView = Backbone.View.extend({
         this.model = getModelForClass(classname);
         this.model.on('change', this.modelToView, this);
 
+        this.renderOptions();
         this.modelToView();
         $(".auto_tooltip").tooltip();
         

@@ -2,16 +2,20 @@ var Barbarian = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "br",
         melee     : true,
-        options   : {
-            toughasnails: false,
-            nervesofsteel:false,
-            warcry:       false,
-            warcry_armor: false,
-            warcry_resist:false,
-            warcry_dodge: false,
-            threat_shout: false,
-            superstition: false
-        }
+    }),
+    
+    options : _.extend({}, Character.prototype.options, {
+        toughasnails: {"type": "checkbox", "default": true, "title": "Tough as Nails", "alternative": true},
+        nervesofsteel:{"type": "checkbox", "default": false, "title": "Nerves of Steel", "alternative": true},
+        warcry:       {"type": "checkbox", "default": false, "title": "War Cry - No Rune", "alternative": true},
+        warcry_armor: {"type": "checkbox", "default": false, "title": "War Cry - Hardened Wrath", "alternative": true},
+        warcry_resist:{"type": "checkbox", "default": false, "title": "War Cry - Impunity", "alternative": true},
+        warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true},
+        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true}
+    }),
+    
+    extra_options : _.extend({}, Character.prototype.extra_options, {
+        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout"}
     }),
 
     modifyBaseArmor : function (armor) {
@@ -19,7 +23,7 @@ var Barbarian = Character.extend({
             armor += this.get('vit');
         }
 
-        return armor
+        return armor;
     },
 
     modifyArmorModifier : function (armormodifier) {
