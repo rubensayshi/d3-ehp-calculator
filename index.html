@@ -25,11 +25,31 @@
 <body>
     <div class="container">
         <div class="row">
-          <div id="ehp" class="offset1 span10"></div>
+          <div id="content" class="offset1 span10"></div>
         </div>
     </div>
     
     <div class="templates">
+        <div id="input-template">
+            <div class="row">
+                <div class="span4">
+                    <h3>Welcome <small>to the D3 EHP calculator</small></h3>
+                    <p>This is an open source effort to provide you with a tool to (easily) calculator your EHP and
+                        to be able to compare which skills and items might provide you with the greatest benefit!
+                    </p>
+                    <p>If you'd like to contribute or provide feedback then my prefered method is through <a href="https://github.com/rubensayshi/d3-ehp-calculator">the github project page</a>.
+                        I'll do my best to merge any pull requests asap and/or discuss issues added there. <br />
+                        <br />
+                        For other discussions or just telling me you like the tool you can use <a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">the topic on diablofans.com</a>
+                    </p>                 
+                </div>
+                <div class="span6">
+                    <h3>Select or create a character</h3>
+                    <p>The first upcoming feature I'll be working on is managing your characters here!</p>
+                    <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>                 
+                </div>
+            </div>
+        </div>
         <div id="simulation-template">
             <table id="options" class="table table-bordered table-striped table-condensed">
                 <thead>
@@ -455,7 +475,11 @@
     <script src="js/Model/Monk.js" type="text/javascript"></script>
     <script src="js/Model/WitchDoctor.js" type="text/javascript"></script>
     <script src="js/Model/Wizard.js" type="text/javascript"></script>
+    
+    <script src="js/View/MainView.js" type="text/javascript"></script>
+    <script src="js/View/InputView.js" type="text/javascript"></script>
     <script src="js/View/SimulationView.js" type="text/javascript"></script>
+    
     <script src="js/gahandler.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>
     <script src="js/gaq.js" type="text/javascript"></script>

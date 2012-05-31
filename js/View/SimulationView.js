@@ -1,6 +1,4 @@
 var SimulationView = Backbone.View.extend({
-    el: $('#ehp'),
-
     events: {
         'change input':       'viewToModel',
         'change .input_select': 'viewToModel',

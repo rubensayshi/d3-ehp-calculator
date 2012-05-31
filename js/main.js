@@ -47,4 +47,4 @@ var getModelForClass = function(classname, forceNew) {
     return model;
 };
 
-var simView = new SimulationView();
+var mainView = new MainView({'el': $("container")});
