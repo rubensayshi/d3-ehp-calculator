@@ -942,11 +942,11 @@ var gahandler = (function() {
         
         modifyBaseResist : function (resis) { 	
           if (this.get('soul_harvest') > 0) {
-             // (130 Int for every soul harvested up to 5) * resis per Int
+             // (130 Int for every soul harvested up to 5) * resist per Int
              resis += (this.get('soul_harvest')*130) * 0.1
           }
           if (this.get('gruesome_feast') > 0) {
-             // (10% Int for every healtglobe consumed up to 5) * resis per Int
+             // (10% Int for every healtglobe consumed up to 5) * resist per Int
              resis += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1
           }
           
@@ -959,10 +959,9 @@ var gahandler = (function() {
 
         modifyArmorModifier : function (armormodifier) {
           if (this.get('horrify_frightening_aspect')) {
-              // +100% Armor are Armor*2, right?
-              armormodifier *= 2;
+              armormodifier += 1;
           }
-            return armormodifier;
+          return armormodifier;
         },
         
 
