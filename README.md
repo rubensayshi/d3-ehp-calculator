@@ -8,6 +8,7 @@ Authors
 =======
 Ruben de Vries (https://github.com/rubensayshi)  
 Kevin McClellan (https://github.com/kdmcclel)
+Marv Cool (https://github.com/MrMarvin)
 
 
 Copyright and License
@@ -38,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies, 
 either expressed or implied, of the FreeBSD Project.
+
 
 Copyright and License - Apendix
 ===============================
