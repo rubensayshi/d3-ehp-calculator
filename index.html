@@ -927,46 +927,35 @@ var gahandler = (function() {
             your_class: "wd",
             melee     : false,
             options   : {
-                jungle_fortitude:         false,
-                gruesome_feast:           0,
-                bad_medicine:             false,
-                soul_harvest:             0,
-                zombie_dogs_life_link:    false,
+                jungle_fortitude:          false,
+                gruesome_feast:            0,
+                bad_medicine:              false,
+                soul_harvest:              0,
+                zombie_dogs_life_link:     false,
                 horrify_frightening_aspect:false
             }
         }),
-
-        modifyBaseArmor : function (armor) {
-            return armor;
-        },
         
-        modifyBaseResist : function (resis) { 	
-          if (this.get('soul_harvest') > 0) {
-             // (130 Int for every soul harvested up to 5) * resist per Int
-             resis += (this.get('soul_harvest')*130) * 0.1
-          }
-          if (this.get('gruesome_feast') > 0) {
-             // (10% Int for every healtglobe consumed up to 5) * resist per Int
-             resis += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1
-          }
+        modifyBaseResist : function (resist) { 	
+            if (this.get('soul_harvest') > 0) {
+                // (130 Int for every soul harvested up to 5) * resist per Int
+                resist += (this.get('soul_harvest')*130) * 0.1
+            }
+            
+            if (this.get('gruesome_feast') > 0) {
+                // (10% Int for every healtglobe consumed up to 5) * resist per Int
+                resist += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1
+            }
           
-          return resis;
-        },
-        
-        modifyLifeModifier : function (lifemodifier) {
-          return lifemodifier;
+          return resist;
         },
 
         modifyArmorModifier : function (armormodifier) {
-          if (this.get('horrify_frightening_aspect')) {
-              armormodifier += 1;
-          }
-          return armormodifier;
-        },
-        
-
-        modifyDodgeChance : function (dodgechance) {
-            return dodgechance; 
+            if (this.get('horrify_frightening_aspect')) {
+                armormodifier += 1;
+            }
+            
+            return armormodifier;
         },
 
         modifyReductionModifier : function (modifier) {
