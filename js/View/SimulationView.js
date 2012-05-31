@@ -210,6 +210,9 @@ var SimulationView = Backbone.View.extend({
     },
     
     inputNewChar: function() {
+        alert("Soon! Very Soon!"); 
+        return;
+        
         this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
     },
 
