@@ -68,6 +68,7 @@ var SimulationView = Backbone.View.extend({
                     }
                     
                     $input = $('<select />')
+                                .addClass('form-inline input-small')
                                 .addClass(optionName);
                     
                     _.each(seloptions, function(val, key) {
@@ -75,6 +76,7 @@ var SimulationView = Backbone.View.extend({
                     });
                 } else if (optionInfo['type'] == 'text') {
                     $input = $('<input type="text" />')
+                                .addClass('form-inline input-small')
                                 .addClass(optionName);
                 }
                 

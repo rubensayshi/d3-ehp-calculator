@@ -67,4 +67,4 @@ var normalizeFloat = function(value, optionName, alertOnError) {
     return res;
 }
     
-var mainView = new MainView({'el': $(".container")});
+var mainView = new MainView({'el': $("#container")});

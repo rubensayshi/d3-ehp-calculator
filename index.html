@@ -6,7 +6,8 @@
 <html lang="en">
 <head>
     <title>Diablo3 Effective Health Pool Calculator</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
@@ -23,15 +24,15 @@
     <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-        <div class="row">
+    <div id="container" class="container-fluid">
+        <div class="row-fluid">
           <div id="content" class="span12"></div>
         </div>
     </div>
     
     <div class="templates">
         <div id="intro-template">
-            <div class="row">
+            <div class="row-fluid">
                 <div class="span4">
                     <h3>Welcome <small>to the D3 EHP calculator</small></h3>
                     <p>This is an open source effort to provide you with a tool to (easily) calculator your EHP and
@@ -51,14 +52,14 @@
             </div>
         </div>
         <div id="simulation-template">
-        <div class="row">
+        <div class="row-fluid">
             <div id="content" class="span9">
                 <table id="base_options" class="table table-bordered table-striped table-condensed">
                     <thead>
                         <tr>
                             <th width="35%">Option</th>
                             <th>Choice</th>
-                            <th width="30%">Alternative</th>
+                            <th width="40%">Alternative</th>
                         </tr>
                     </thead>
                     <tbody>                    
@@ -76,7 +77,7 @@
                         <tr>
                             <th width="35%">Option</th>
                             <th>Choice</th>
-                            <th width="30%">Alternative</th>
+                            <th width="40%">Alternative</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -86,7 +87,7 @@
                         <tr>
                             <th width="35%">Option</th>
                             <th>Choice</th>
-                            <th width="30%">Alternative</th>
+                            <th width="40%">Alternative</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -96,23 +97,23 @@
                         <tr>
                             <th width="35%">Buffed Stats</th>
                             <th>&nbsp;</th>
-                            <th width="30%">&nbsp;</th>
+                            <th width="40%">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="highlighted-row">
                             <th>Buffed Life</th>
-                            <td><input type="text" readonly=true class="life" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
                             <td></td>
                         </tr>
                         <tr class="highlighted-row">
                             <th>Buffed Armor</th>
-                            <td><input type="text" readonly=true class="armor" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
                             <td class="armor_reduc"></td>
                         </tr>
                         <tr class="highlighted-row">
                             <th>Buffed Resistance</th>
-                            <td><input type="text" readonly=true class="resist" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
                             <td class="resist_reduc"></td>
                         </tr>
                     </tbody>
@@ -122,29 +123,29 @@
                         <tr>
                             <th width="35%">Results</th>
                             <th>EHP without dodge</th>
-                            <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="highlighted-row">
                             <th>EHP</th>
-                            <td><input type="text" readonly=true class="ehp" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
                         </tr>
                         <tr class="highlighted-row">
                             <th>EHP melee</th>
-                            <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
                         </tr>
                         <tr class="highlighted-row">
                             <th>EHP ranged</th>
-                            <td><input type="text" readonly=true class="ehp_ranged" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_ranged" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
                         </tr>
                         <tr class="highlighted-row">
                             <th>EHP magic</th>
-                            <td><input type="text" readonly=true class="ehp_magic" value="" /></td>
-                            <td><input type="text" readonly=true class="ehp_dodge_magic" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
                         </tr>
                         <tr>
                             <th></th>
