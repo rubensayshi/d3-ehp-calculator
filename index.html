@@ -27,15 +27,35 @@
 <body>
     <div id="container" class="container-fluid">
         <div class="row-fluid">
-          <div id="content" class="span12"></div>
+          <div id="content" class="span9"></div>
+            <div id="sidebar" class="span3">
+                <div class="cp">
+                    <button class="btn btn-primary manage_chars"><i class="icon-user icon-white"></i> Manage Characters</button>
+                </div>
+                
+                <div class="latest-update">
+                    <h3>Latest Update</h3>
+                    <p>The interface (and all code behind it) got a complete overhaul, <br />
+                    as a result it's become easier to add a new character (go check it out yourself) and you can easily load previous characters.</p>
+                    <p>There is a chance I might have broken something in the display logic though, however the calculations should be fine.</p>
+                </div>
+                
+                <div class="bugs-and-features">
+                    <h3>Bugs & Features</h3>
+                    If you find something that's not working properly or you got a feature request, <br />
+                    you can report an issue on <a href="https://github.com/rubensayshi/d3-ehp-calculator/issues?state=open">github</a> 
+                    or post it in the topic on the forums (<a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">diablofans</a> 
+                                                            or <a href="http://eu.battle.net/d3/en/forum/topic/4525923896">battle.net</a>).
+                </div>
+                </p>
+            </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="templates">
         <div id="intro-template">
             <div class="row-fluid">
-                <div class="span4">
-                    <h3>Welcome <small>to the D3 EHP calculator</small></h3>
+                <div class="span5">
+                    <h3>Welcome <small>to the D3 EHP Calculator</small></h3>
                     <p>This is an open source effort to provide you with a tool to (easily) calculator your EHP and
                         to be able to compare which skills and items might provide you with the greatest benefit!
                     </p>
@@ -45,7 +65,7 @@
                         For other discussions or just telling me you like the tool you can use <a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">the topic on diablofans.com</a>
                     </p>                 
                 </div>
-                <div class="span8">
+                <div class="span7">
                     <h3>Select or Create a Character</h3>
                     <div class="well">
                         <ul class="character-list well unstyled"></ul>
@@ -56,7 +76,7 @@
         </div>
         <div id="input-template">
         <div class="row-fluid">
-            <div class="span9">
+            <div class="span12">
                 <h3>Input New Character</h3>
                 <p>The stats shown in your ingame character screen already included a lot of passives and buffs you have on you. <br />
                 In previous versions of this tool you had to disable those first before you could copy your stats from ingame to here, 
@@ -106,7 +126,9 @@
         </div>
         <div id="simulation-template">
         <div class="row-fluid">
-            <div class="span9">
+            <div class="span12">
+                <h3>D3 EHP Calculator</h3>
+                <p>Tweak the values below to find out how they affect your EHP.</p>
                 <table id="base_options" class="table table-bordered table-striped table-condensed">
                     <thead>
                         <tr>
@@ -200,31 +222,8 @@
                             <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
                             <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
                         </tr>
-                        <tr>
-                            <td colspan="3" class="well" style="text-align: right;">
-                                <button class="reset btn">Refresh Calculation (debug)</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
-            </div>
-            <div class="span3">
-                <button class="btn btn-primary manage_chars"><i class="icon-user icon-white"></i> Manage Characters</button>
-                
-                <br />
-                <br />
-                
-                <h3>Latest Update</h3>
-                <p>I redid all the code responsible for the UI, this will allow me more flexibility and I'll be able to make it easier for users to input their characters stats (when I make the above button work properly!). <br /></p>
-                <p>There is a chance I might have broken something in the display logic though, however the calculations should be fine. </p>
-                
-                <h3>Bugs & Features</h3>
-                If you find something that's not working properly or you got a feature request, <br />
-                you can report an issue on <a href="https://github.com/rubensayshi/d3-ehp-calculator/issues?state=open">github</a> 
-                or post it in the topic on the forums (<a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">diablofans</a> 
-                                                        or <a href="http://eu.battle.net/d3/en/forum/topic/4525923896">battle.net</a>).
-                
-                </p>
             </div>
         </div>
         </div>

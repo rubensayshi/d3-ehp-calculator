@@ -3,8 +3,7 @@ var SimulationView = Backbone.View.extend({
         'change input':              'viewToModel',
         'change .input_select':      'viewToModel',
         'change .your_class':        'changeClass',
-        'click button.reset':        'viewToModel',
-        'click button.manage_chars': 'manageChars'
+        'click button.reset':        'viewToModel'
     },
 
     initialize: function() {
@@ -218,7 +217,8 @@ var SimulationView = Backbone.View.extend({
     changeClass: function() {
         classname = $('.your_class', this.el).val();
 
-        this.model = CharacterList.getModelByClass(classname);
+        newModel = this.model = CharacterList.getModelByClass(classname);
+        CharacterList.add(newModel);
         
         this.renderClass();
     },
@@ -234,10 +234,6 @@ var SimulationView = Backbone.View.extend({
             gahandler.changeClass(this.model.get('your_class'));
         }
         
-    },
-    
-    manageChars: function() {
-        this.mainView.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
 
     prepareVal: function(val, field, dec) {

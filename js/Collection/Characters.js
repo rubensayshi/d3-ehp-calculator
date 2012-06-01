@@ -19,7 +19,6 @@ var Characters = Backbone.Collection.extend({
         }
 
         model = new modelclass(attr);
-        this.add(model);
 
         return model;
     }
