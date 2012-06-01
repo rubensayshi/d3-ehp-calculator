@@ -212,6 +212,10 @@ var SimulationView = Backbone.View.extend({
 
         this.model = getModelForClass(classname);
         
+        this.renderClass();
+    },
+    
+    renderClass: function() {
         this.model.on('change', this.modelToView, this);
         
         this.renderOptions();
@@ -221,6 +225,7 @@ var SimulationView = Backbone.View.extend({
         if (gahandler) {
             gahandler.changeClass(classname);
         }
+        
     },
     
     inputNewChar: function() {
@@ -258,13 +263,14 @@ var SimulationView = Backbone.View.extend({
 
         if (this.model) {
             $classSelect.val(this.model.get('your_class'));
+            this.renderClass();
+        } else {
+            this.changeClass();
         }
 
         $("#dodge_ehp_explained").tooltip({
             title: "<strong>keep in mind; dodge is random.</strong><br />" +
                    "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
         });
-
-        this.changeClass();
     }
 });
