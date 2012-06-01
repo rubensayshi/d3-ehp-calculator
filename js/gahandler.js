@@ -34,3 +34,8 @@ var gahandler = (function() {
         changeClass: changeClass
     };
 })();
+
+window.onerror = function(message, file, line) { 
+    var formattedmessage = '[' + file + ' (' + line + ')] ' + message; 
+    _gaq.push(['_trackEvent', 'Exceptions', 'Application', formattedmessage, null, true]);
+ };
