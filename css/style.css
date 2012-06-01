@@ -1,23 +1,26 @@
- .templates {
+.templates {
     display: none;
- }
+}
 
- .highlighted-row th, .highlighted-row td {
+.highlighted-row th, .highlighted-row td {
     border-bottom: 1px solid black;
- }
- table {
-    width: 780px;
- }
- thead th {
+}
+table {}
+thead th {
     border-bottom: 1px solid black;
- }
+}
 
- td .label, th .label {
+td .label, th .label {
     float: right;
     margin-right: 5px;
- }
+}
  
- td input, td select {
+td input, td select {
     margin-bottom: 0px;
- }
+}
+ 
+#container {
+    max-width: 950px;   
+    margin: 20px auto;
+}
  

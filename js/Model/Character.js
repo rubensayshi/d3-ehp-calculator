@@ -1,14 +1,14 @@
 var Character = Backbone.Model.extend({
     defaults : {
         level:        60,
-        base_vit:     1200,
-        base_dex:     1200,
-        base_int:     1200,
+        base_vit:     1000,
+        base_dex:     1000,
+        base_int:     1000,
+        base_str:     1000,
         base_armor:   4000,
-        base_resist:  300,
+        base_resist:  200,
         base_dodge:   10,
-        base_dodge:   10,
-        extra_life:   12,
+        extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
 
@@ -23,41 +23,54 @@ var Character = Backbone.Model.extend({
         resist:       null,
         dodge:        null,
         armor_reduc:  null,
-        resist_reduc: null,
-        
-        options:      {}
+        resist_reduc: null
     },
 
+    base_options:  {
+        your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
+            var classes = {};
+            
+            _.each(classlist, function(info, shortname) {
+                classes[shortname] = info[1];
+            }, this);
+            
+            return classes;
+        }},
+        level:            {"type": "text", "default": 60,   "title": "Level"},
+        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
+        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge"},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
+        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
+        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
+        base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
+        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
+        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
+        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+    },
+    options:       {},
+    extra_options: {},
+    
+    getAllOptions: function() {
+        return _.extend({}, this.base_options, this.options, this.extra_options);
+    },
+    
     initialize : function () {
         // ensure there's always an options collection
-        if (!this.get('options')) {
-            this.set('options', {});
+        if (!this.options) {
+            this.options = {};
         }
         
-        _.each(this.get('options'), function(o_default, o_name) {
-            if( typeof(this.get(o_name)) == undefined ) this.set(o_name, o_default);
+        _.each(this.getAllOptions(), function(o_info, o_name) {
+            if(typeof(this.get(o_name)) == 'undefined') {
+                this.set(o_name, o_info['default']);
+            }
         }, this);
         
         this.on('change', this.simulate);
 
         this.trigger('change');
-    },
-
-    getAllInputStats : function () {
-        return _.extend({}, {
-            your_class:   this.get('your_class'),
-            level:        this.get('level'),
-            base_vit:     this.get('base_vit'),
-            base_dex:     this.get('base_dex'),
-            base_int:     this.get('base_int'),                
-            base_armor:   this.get('base_armor'),
-            base_resist:  this.get('base_resist'),
-            base_dodge:   this.get('base_dodge'),
-            extra_life:   this.get('extra_life'),
-            base_melee_reduc:   this.get('base_melee_reduc'),
-            base_ranged_reduc:  this.get('base_ranged_reduc'),
-            moblevel:     this.get('moblevel'),
-        }, this.get('options'));
     },
 
     /*

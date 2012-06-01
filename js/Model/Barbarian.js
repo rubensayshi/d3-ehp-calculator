@@ -1,17 +1,22 @@
 var Barbarian = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
         your_class: "br",
-        melee     : true,
-        options   : {
-            toughasnails: false,
-            nervesofsteel:false,
-            warcry:       false,
-            warcry_armor: false,
-            warcry_resist:false,
-            warcry_dodge: false,
-            threat_shout: false,
-            superstition: false
-        }
+        melee     : true
+    }),
+    
+    options : _.extend({}, Character.prototype.options, {
+        toughasnails: {"type": "checkbox", "default": false, "title": "Tough as Nails", "alternative": true, "alt": "+25% armor"},
+        nervesofsteel:{"type": "checkbox", "default": false, "title": "Nerves of Steel", "alternative": true, "alt": "100% of your vit as armor"},
+        warcry:       {"type": "checkbox", "default": false, "title": "War Cry - No Rune", "alternative": true, "alt": "+20% armor"},
+        warcry_armor: {"type": "checkbox", "default": false, "title": "War Cry - Hardened Wrath", "alternative": true, "alt": "another +20% armor (total +40%)"},
+        warcry_resist:{"type": "checkbox", "default": false, "title": "War Cry - Impunity", "alternative": true, "alt": "+50% to all your resistance stats"},
+        warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true, "alt": "+15% dodge"},
+        warcry_life:  {"type": "checkbox", "default": false, "title": "War Cry - Invigorate", "alternative": true, "alt": "+10% life"},
+        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true, 'magic_only': true, "tip": "note that it's for magic EHP only", "alt": "+20% dmg reduction non physical"}
+    }),
+    
+    extra_options : _.extend({}, Character.prototype.extra_options, {
+        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-25% dmg done by mobs"}
     }),
 
     modifyBaseArmor : function (armor) {
@@ -19,7 +24,7 @@ var Barbarian = Character.extend({
             armor += this.get('vit');
         }
 
-        return armor
+        return armor;
     },
 
     modifyArmorModifier : function (armormodifier) {
@@ -81,5 +86,5 @@ var Barbarian = Character.extend({
         }
         
         return dodgechance;
-    },
+    }
 });

@@ -1,213 +1,182 @@
 var SimulationView = Backbone.View.extend({
-    el: $('#ehp'),
-
     events: {
-        'change input':       'viewToModel',
-        'change .input_select': 'viewToModel',
-        'change .your_class': 'changeClass',
-        'click button.reset': 'viewToModel'
+        'change input':          'viewToModel',
+        'change .input_select':  'viewToModel',
+        'change .your_class':    'changeClass',
+        'click button.reset':    'viewToModel',
+        'click button.new_char': 'inputNewChar'
     },
-
-    fieldMap: {
-        '.your_class':      'your_class',
-        '.level':           'level',
-        '.extra_life':      'extra_life',
-        '.base_vit':        'base_vit',
-        '.base_dex':        'base_dex',
-        '.base_int':        'base_int',
-        '.base_armor':      'base_armor',
-        '.base_resist':     'base_resist',
-        '.base_dodge':      'base_dodge',
-        '.base_melee_reduc': 'base_melee_reduc',
-        '.base_ranged_reduc':'base_ranged_reduc',
-
-        // BARBARIAN
-        '.toughasnails':    'toughasnails',
-        '.nervesofsteel':   'nervesofsteel',
-        '.warcry':          'warcry',
-        '.warcry_armor':    'warcry_armor',
-        '.warcry_resist':   'warcry_resist',
-        '.warcry_dodge':    'warcry_dodge',
-        '.warcry_life':     'warcry_life',
-        '.threat_shout':    'threat_shout',
-        '.superstition':    'superstition',
-
-        // WIZARD
-        '.energy_armor':    'energy_armor',
-        '.prismatic':       'prismatic',
-        '.blur':            'blur',
-        '.glass_cannon':    'glass_cannon',
-        '.archon':          'archon',
-
-        // MONK
-        '.resolve':                   'resolve',
-        '.seize_the_initiative':      'seize_the_initiative',
-        '.the_guardians_path':        'the_guardians_path',
-        '.mantra_of_evasion':         'mantra_of_evasion',
-        '.mantra_of_evasion_armor':   'mantra_of_evasion_armor',
-        '.mantra_of_healing_time':    'mantra_of_healing_time',
-        '.mantra_of_healing_heavenly':'mantra_of_healing_heavenly',
-        '.deadly_reach_keen_eye':     'deadly_reach_keen_eye',
-        '.crippling_wave_concussion': 'crippling_wave_concussion',
-        '.fists_of_thunder_flash':    'fists_of_thunder_flash',
-        
-        // WITCH DOCTOR
-        '.jungle_fortitude':      'jungle_fortitude',
-        '.gruesome_feast':        'gruesome_feast',
-        '.bad_medicine':          'bad_medicine',
-        '.soul_harvest':          'soul_harvest',
-        '.zombie_dogs_life_link': 'zombie_dogs_life_link',
-        '.horrify_frightening_aspect': 'horrify_frightening_aspect',
-
-        '.moblevel':        'moblevel',
-
-        '.life':            'life',
-        '.armor':           'armor',
-        '.resist':          'resist',
-        '.dodge':           'dodge',
-        '.armor_reduc':     'armor_reduc',
-        '.resist_reduc':    'resist_reduc',
-
-        '.ehp':             'ehp',
-        '.ehp_dodge':       'ehp_dodge',
-        '.ehp_melee':       'ehp_melee',
-        '.ehp_dodge_melee': 'ehp_dodge_melee',
-        '.ehp_ranged':      'ehp_ranged',
-        '.ehp_dodge_ranged':'ehp_dodge_ranged',
-        '.ehp_magic':       'ehp_magic',
-        '.ehp_dodge_magic': 'ehp_dodge_magic'
-    },
-
-    classFields: [
-        'toughasnails',
-        'nervesofsteel',
-        'warcry',
-        'warcry_armor',
-        'warcry_resist',
-        'warcry_dodge',
-        'warcry_life',
-        'threat_shout',
-        'superstition',
-        'energy_armor',
-        'prismatic',
-        'blur',
-        'glass_cannon',
-        'archon',
-        'resolve',
-        'seize_the_initiative',
-        'the_guardians_path',
-        'mantra_of_evasion',
-        'mantra_of_evasion_armor',
-        'mantra_of_healing_time',
-        'mantra_of_healing_heavenly',
-        'deadly_reach_keen_eye',
-        'crippling_wave_concussion',
-        'fists_of_thunder_flash'
-    ],
 
     initialize: function() {
-        _.bindAll(this, 'render', 'modelToView', 'viewToModel', 'changeClass');
+        _.bindAll(this);
 
         this.template = _.template($('#simulation-template').html());
-
-        this.class_templates = {
-            "br": _.template($('#simulation-br-template').html()),
-            "dh": _.template($('#simulation-not-available-template').html()),
-            "mn": _.template($('#simulation-mn-template').html()),
-            "wd": _.template($('#simulation-wd-template').html()),
-            "wz": _.template($('#simulation-wz-template').html())
-        };
-
-        this.render();
-        this.changeClass();
     },
 
     viewToModel: function() {
-        _.each(this.fieldMap, function(field, selector) {
+        _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
+            var selector = generateSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
                 // --
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                this.model.set(field, !!$fieldObj.prop('checked'));
+                this.model.set(optionName, !!$fieldObj.prop('checked'));
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
-                    var val = $fieldObj.val();
-                    
-                    var normalizeFloat = function(val, alertOnError) {
-                        var res = parseFloat(val);
-   
-                        if (isNaN(res) || (res != val && res == parseInt(val))) {
-                            if (alertOnError) {
-                                alert("We failed to properly parse the value for [" + field + "]");
-                            
-                            return 0;
-                        } else {                  
-                            return normalizeFloat(val.replace(",", "."), true);
-                        }
-                    }
-                    
-                    return res;
-                };
-
-                val = normalizeFloat(val);
-                
-                this.model.set(field, parseFloat($fieldObj.val()));
+                this.model.set(optionName, normalizeFloat($fieldObj.val(), optionName));
             } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
-                this.model.set(field, $fieldObj.val());
+                this.model.set(optionName, $fieldObj.val());
             }
         }, this);
     },
+    
+    renderOptions: function() {
+        _.each({
+            '#base_options tbody':  this.model.base_options,
+            '#options tbody':       this.model.options,
+            '#extra_options tbody': this.model.extra_options
+        }, function(options, parent) {
+            var $parent = $(parent);
+            
+            $parent.empty();
+            
+            _.each(options, function(optionInfo, optionName) {
+                optionInfo['type']  = optionInfo['type']  || 'checkbox';
+                optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
+                optionInfo['alt']   = optionInfo['alt']   || "";
+                
+                var $row, $col1, $col2, $col3, $input, $alt;
+                
+                $row = $('<tr />')
+                            .appendTo($parent);
+                $col1 = $('<th />')
+                            .append($('<span />').html(optionInfo['title']).attr('title', optionInfo['alt']))
+                            .appendTo($row);
+                $col2 = $('<td />')
+                            .appendTo($row);
+                $col3 = $('<td />')
+                            .appendTo($row);
+                
+                if (optionInfo['type'] == 'checkbox') {
+                    $input = $('<input type="checkbox" />')
+                                .addClass(optionName);
+                } else if (optionInfo['type'] == 'select') {
+                    seloptions = optionInfo['options'] || {};
+                    
+                    if (typeof seloptions == 'function') {
+                        seloptions = seloptions();
+                    }
+                    
+                    $input = $('<select />')
+                                .addClass('form-inline input-small')
+                                .addClass(optionName);
+                    
+                    _.each(seloptions, function(val, key) {
+                       $input.append($('<option />').val(key).html(val)); 
+                    });
+                } else if (optionInfo['type'] == 'text') {
+                    $input = $('<input type="text" />')
+                                .addClass('form-inline input-small')
+                                .addClass(optionName);
+                }
+                
+                $input.appendTo($col2);
+                
+                if (typeof(optionInfo['tip']) != 'undefined') {
+                    $('<span />')
+                        .attr('title', optionInfo['tip'])
+                        .addClass('label label-info')
+                        .html("?")
+                        .appendTo($col2)
+                        .tooltip();
+                }                
+                
+                if (typeof(optionInfo['alternative']) != 'undefined') {
+                    if (typeof optionInfo['alternative'] == 'boolean') {
+                        $alt = $col3;
+                    } else {
+                        $alt = $('<strong />').html("+"+optionInfo['alternative']+" "+optionInfo['title']+"<br />").appendTo($col3);
+                        $alt = $('<span />');
+                    }
+
+                    $alt.addClass(optionName + "_alt_ehp");
+                    
+                    _.each(['magic_only', 'melee_only', 'ranged_only'], function(x_only) {
+                        if (typeof(optionInfo[x_only]) != 'undefined') {
+                            $alt.addClass(x_only);                        
+                        }
+                    });
+                    
+                    if ($alt != $col3) {
+                        $alt.appendTo($col3);
+                    }
+                }
+            });
+        });
+    },
 
     modelToView: function() {
-        $(this.el).find('.class_options').remove();
-        $(this.el).find('#options').after($(this.class_templates[this.model.get('your_class')]()));
-
-        _.each(this.fieldMap, function(field, selector) {
-            var $fieldObj = $(selector,  this.el);
-
+        var alternatives = {};
+        
+        var toField = _.bind(function($fieldObj, selector, fieldName, fieldValue) {
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
-                $fieldObj.html(this.prepareVal(this.model.get(field), field));
+                $fieldObj.html(this.prepareVal(fieldValue, fieldName));
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                $fieldObj.prop('checked', !!this.model.get(field));
+                $fieldObj.prop('checked', !!fieldValue);
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                $fieldObj.val(this.prepareVal(this.model.get(field), field));
+                $fieldObj.val(this.prepareVal(fieldValue, fieldName));
             } else if ($fieldObj.is('select')) {
-                $fieldObj.val(this.model.get(field));
+                $fieldObj.val(fieldValue);
             }
         }, this);
         
-        var alt_booleans = this.classFields;
-        var alt_stats = {
-            base_armor:      10,
-            base_vit:        1,
-            base_resist:     1,
-        };
-        
-        var alternatives = {};
-        _.each(alt_booleans, function(alt_field) {
-            alternatives[alt_field] = [{/* this should contain stat changes */}, !this.model.get(alt_field)];
-            // set the stat change
-            alternatives[alt_field][0][alt_field] = !this.model.get(alt_field);
+        _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
+            var selector = generateSelector(optionName);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, optionName, this.model.get(optionName));
+            
+            if (typeof(optionInfo['alternative']) != 'undefined') {
+                if (typeof optionInfo['alternative'] == 'boolean') {
+                    alternatives[optionName] = [{/* this should contain stat changes */}, !this.model.get(optionName)];
+                    alternatives[optionName][0][optionName] = !this.model.get(optionName);
+                } else {
+                    alternatives[optionName] = [{/* this should contain stat changes */}, true];
+                    alternatives[optionName][0][optionName] = this.model.get(optionName) + optionInfo['alternative'];
+                }
+            }            
         }, this);
-        _.each(alt_stats, function(alt_val, alt_field) {
-            alternatives[alt_field] = [{/* this should contain stat changes */}, true];
-            // set the stat change
-            alternatives[alt_field][0][alt_field] = this.model.get(alt_field) + alt_val;
+        
+        _.each(['life', 'armor', 'armor_reduc', 'resist', 'resist_reduc'], function(buffed_stats_field) {
+            var selector = generateSelector(buffed_stats_field);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
+        }, this);
+        
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+            var selector = generateSelector(ehp_field);
+            var $fieldObj = $(selector,  this.el);
+
+            toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
         }, this);
         
         _.each(alternatives, function(alt, alt_field) {
             var alt_stats   = alt[0];
             var reltosource = alt[1];
-            var selector    = "." + alt_field +  "_alt_ehp";
+            var selector    = generateSelector(alt_field + "_alt_ehp");
             var alt_model   = this.model.clone();
             
             alt_model.set(alt_stats);
 
             var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
-            
+
             if($(selector, this.el).hasClass('melee_only')) {
                 alt_ehp_title = "EHP melee";
                 alt_ehp_field = "ehp_melee";
+            } else if($(selector, this.el).hasClass('ranged_only')) {
+                alt_ehp_title = "EHP ranged";
+                alt_ehp_field = "ehp_ranged";
             } else if($(selector, this.el).hasClass('magic_only')) {
                 alt_ehp_title = "EHP magic";
                 alt_ehp_field = "ehp_magic";
@@ -228,18 +197,26 @@ var SimulationView = Backbone.View.extend({
         }, this);
     },
 
-    changeClass: function(event) {
+    changeClass: function() {
         classname = $('.your_class', this.el).val();
 
         this.model = getModelForClass(classname);
         this.model.on('change', this.modelToView, this);
 
+        this.renderOptions();
         this.modelToView();
         $(".auto_tooltip").tooltip();
         
         if (gahandler) {
             gahandler.changeClass(classname)
         }
+    },
+    
+    inputNewChar: function() {
+        alert("Soon! Very Soon!"); 
+        return;
+        
+        this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
     },
 
     prepareVal: function(val, field, dec) {
@@ -280,5 +257,7 @@ var SimulationView = Backbone.View.extend({
             title: "<strong>keep in mind; dodge is random.</strong><br />" +
                    "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
         });
+
+        this.changeClass();
     }
 });

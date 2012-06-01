@@ -47,4 +47,24 @@ var getModelForClass = function(classname, forceNew) {
     return model;
 };
 
-var simView = new SimulationView();
+var generateSelector = function(fieldname) {
+    return "." + fieldname;
+};
+
+var normalizeFloat = function(value, optionName, alertOnError) {
+    var res = parseFloat(value);
+
+    if (isNaN(res) || (res != value && res == parseInt(value))) {
+        if (alertOnError) {
+            alert("We failed to properly parse the valueue for [" + optionName + "]");
+        
+            return 0;
+        } else {                  
+            return normalizeFloat(value.replace(",", "."), optionName, true);
+        }
+    }
+    
+    return res;
+}
+    
+var mainView = new MainView({'el': $("#container")});

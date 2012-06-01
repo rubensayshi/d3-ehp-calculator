@@ -6,7 +6,8 @@
 <html lang="en">
 <head>
     <title>Diablo3 Effective Health Pool Calculator</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
     <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
@@ -23,430 +24,157 @@
     <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-          <div id="ehp" class="offset1 span10"></div>
+    <div id="container" class="container-fluid">
+        <div class="row-fluid">
+          <div id="content" class="span12"></div>
         </div>
     </div>
     
     <div class="templates">
+        <div id="intro-template">
+            <div class="row-fluid">
+                <div class="span4">
+                    <h3>Welcome <small>to the D3 EHP calculator</small></h3>
+                    <p>This is an open source effort to provide you with a tool to (easily) calculator your EHP and
+                        to be able to compare which skills and items might provide you with the greatest benefit!
+                    </p>
+                    <p>If you'd like to contribute or provide feedback then my prefered method is through <a href="https://github.com/rubensayshi/d3-ehp-calculator">the github project page</a>.
+                        I'll do my best to merge any pull requests asap and/or discuss issues added there. <br />
+                        <br />
+                        For other discussions or just telling me you like the tool you can use <a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">the topic on diablofans.com</a>
+                    </p>                 
+                </div>
+                <div class="span8">
+                    <h3>Select or create a character</h3>
+                    <p>The first upcoming feature I'll be working on is managing your characters here!</p>
+                    <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>                 
+                </div>
+            </div>
+        </div>
         <div id="simulation-template">
-            <table id="options" class="table table-bordered table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Option</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>Your Class</th>
-                        <td>
-                            <select class="your_class"></select>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Your level</th>
-                        <td><input type="text" class="level" value="" /></td>
-                        <td></td>
-                     </tr>
-                    <tr>
-                        <th>Mob level</th>
-                        <td><input type="text" class="moblevel" value="" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>VIT</th>
-                        <td><input type="text" class="base_vit" value="" /></td>
-                        <td><strong>+1 VIT</strong><br />
-                            <span class="base_vit_alt_ehp"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>DEX</th>
-                        <td><input type="text" class="base_dex" value="" /> <span title="Dex is only used for skill effects (eg monk passive), not for dodge" class="label label-info auto_tooltip">?</span></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>INT</th>
-                        <td><input type="text" class="base_int" value="" /> <span title="Int is only used for skill effects (eg Witch Doctor passive), not in general for resist" class="label label-info auto_tooltip">?</span></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>+ Extra Life %</th>
-                        <td><input type="text" class="extra_life" value="" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Armor</th>
-                        <td><input type="text" class="base_armor" value="" />  <br /></td>
-                        <td><strong>+10 Armor</strong><br />
-                            <span class="base_armor_alt_ehp"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>All Resistance</th>
-                        <td><input type="text" class="base_resist" value="" /> <span title="Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!" class="label label-info auto_tooltip">?</span></td>
-                        <td><strong>+1 All Resist</strong><br />
-                            <span class="base_resist_alt_ehp"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Melee only Reduction</th>
-                        <td><input type="text" class="base_melee_reduc" value="" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Ranged only Reduction</th>
-                        <td><input type="text" class="base_ranged_reduc" value="" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Dodge %</th>
-                        <td><input type="text" class="base_dodge" value="" /></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table id="results" class="table table-bordered table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Buffed Stats</th>
-                        <th>&nbsp;</th>
-                        <th width="30%">&nbsp;</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="highlighted-row">
-                        <th>Buffed Life</th>
-                        <td><input type="text" readonly=true class="life" value="" /></td>
-                        <td></td>
-                    </tr>
-                    <tr class="highlighted-row">
-                        <th>Buffed Armor</th>
-                        <td><input type="text" readonly=true class="armor" value="" /></td>
-                        <td class="armor_reduc"></td>
-                    </tr>
-                    <tr class="highlighted-row">
-                        <th>Buffed Resistance</th>
-                        <td><input type="text" readonly=true class="resist" value="" /></td>
-                        <td class="resist_reduc"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table id="results" class="table table-bordered table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Results</th>
-                        <th>EHP without dodge</th>
-                        <th width="30%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="highlighted-row">
-                        <th>EHP</th>
-                        <td><input type="text" readonly=true class="ehp" value="" /></td>
-                        <td><input type="text" readonly=true class="ehp_dodge" value="" /></td>
-                    </tr>
-                    <tr class="highlighted-row">
-                        <th>EHP melee</th>
-                        <td><input type="text" readonly=true class="ehp_melee" value="" /></td>
-                        <td><input type="text" readonly=true class="ehp_dodge_melee" value="" /></td>
-                    </tr>
-                    <tr class="highlighted-row">
-                        <th>EHP ranged</th>
-                        <td><input type="text" readonly=true class="ehp_ranged" value="" /></td>
-                        <td><input type="text" readonly=true class="ehp_dodge_ranged" value="" /></td>
-                    </tr>
-                    <tr class="highlighted-row">
-                        <th>EHP magic</th>
-                        <td><input type="text" readonly=true class="ehp_magic" value="" /></td>
-                        <td><input type="text" readonly=true class="ehp_dodge_magic" value="" /></td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td></td>
-                        <td><button class="reset btn btn-primary">refresh</button></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="row-fluid">
+            <div id="content" class="span9">
+                <table id="base_options" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Option</th>
+                            <th>Choice</th>
+                            <th width="40%">Alternative</th>
+                        </tr>
+                    </thead>
+                    <tbody>                    
+                        <tr>
+                            <th>Your Class</th>
+                            <td>
+                                <select class="your_class"></select>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table id="options" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Option</th>
+                            <th>Choice</th>
+                            <th width="40%">Alternative</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <table id="extra_options" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Option</th>
+                            <th>Choice</th>
+                            <th width="40%">Alternative</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Buffed Stats</th>
+                            <th>&nbsp;</th>
+                            <th width="40%">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlighted-row">
+                            <th>Buffed Life</th>
+                            <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
+                            <td></td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <th>Buffed Armor</th>
+                            <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
+                            <td class="armor_reduc"></td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <th>Buffed Resistance</th>
+                            <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
+                            <td class="resist_reduc"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table id="results" class="table table-bordered table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th width="35%">Results</th>
+                            <th>EHP without dodge</th>
+                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlighted-row">
+                            <th>EHP</th>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <th>EHP melee</th>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <th>EHP ranged</th>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                        </tr>
+                        <tr class="highlighted-row">
+                            <th>EHP magic</th>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
+                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td></td>
+                            <td><button class="reset btn btn-primary">refresh</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="span3">
+                <button class="btn btn-danger new_char"><i class="icon-user"></i> Input New Character</button>
+                
+                <br />
+                <br />
+                
+                <h3>Latest Update</h3>
+                <p>I redid all the code responsible for the UI, this will allow me more flexibility and I'll be able to make it easier for users to input their characters stats (when I make the above button work properly!). <br /></p>
+                <p>There is a chance I might have broken something in the display logic though, however the calculations should be fine. </p>
+                <p>Oh and </p>
+                
+                <h3>Bugs & Features</h3>
+                If you find something that's not working properly or you got a feature request, <br />
+                you can report an issue on <a href="https://github.com/rubensayshi/d3-ehp-calculator/issues?state=open">github</a> 
+                or post it in the topic on the forums (<a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">diablofans</a> 
+                                                        or <a href="http://eu.battle.net/d3/en/forum/topic/4525923896">battle.net</a>).
+                
+                </p>
+            </div>
         </div>
-        
-        <div id="simulation-br-template">
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Barbarian Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="+10% life">War Cry - Invigorate</th>
-                        <td><input type="checkbox" class="warcry_life" value="1" /></td>
-                        <td class="warcry_life_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+25% armor">Tough As Nails</th>
-                        <td><input type="checkbox" class="toughasnails" value="1" /></td>
-                        <td class="toughasnails_alt_ehp"></td>
-                    </tr>
-                      <tr>
-                        <th title="100% of your vit as armor">Nerves Of Steel</th>
-                        <td><input type="checkbox" class="nervesofsteel" value="1" /></td>
-                        <td class="nervesofsteel_alt_ehp"></td>
-                    </tr>
-                      <tr>
-                        <th title="+20% armor">War Cry - No Rune</th>
-                        <td><input type="checkbox" class="warcry" value="1" /></td>
-                        <td class="warcry_alt_ehp"></td>
-                    </tr>
-                      <tr>
-                        <th title="another +20% armor (total +40%)">War Cry - Hardened Wrath</th>
-                        <td><input type="checkbox" class="warcry_armor" value="1" /></td>
-                        <td class="warcry_armor_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+50% to all your resistance stats">WarCry - Impunity</th>
-                        <td><input type="checkbox" class="warcry_resist" value="1" /></td>
-                        <td class="warcry_resist_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+15% dodge">WarCry - Veteran's Warning</th>
-                        <td><input type="checkbox" class="warcry_dodge" value="1" /></td>
-                        <td class="warcry_dodge_alt_ehp"></td>
-                    </tr>
-                      <tr>
-                        <th title="+20% dmg reduction non physical">Superstition <span class="label label-info auto_tooltip" title="note that it's for magic EHP only">?</span></th>
-                        <td><input type="checkbox" class="superstition" value="1" /></td>
-                        <td class="superstition_alt_ehp magic_only"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Barbarian Extra Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="-25% dmg done by mobs">Threatening Shout <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                        <td><input type="checkbox" class="threat_shout" value="1" /></td>
-                        <td class="threat_shout_alt_ehp"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    
-        <div id="simulation-wz-template">
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Wizard Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="-20% melee dmg taken">Blur</th>
-                        <td><input type="checkbox" class="blur" value="1" /></td>
-                        <td class="blur_alt_ehp melee_only"></td>
-                    </tr>
-                    <tr>
-                        <th title="+65% armor">Energy Armor</th>
-                        <td><input type="checkbox" class="energy_armor" value="1" /></td>
-                        <td class="energy_armor_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+40% to all resistance stats">Energy Armor - Prismatic</th>
-                        <td><input type="checkbox" class="prismatic" value="1" /></td>
-                        <td class="prismatic_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="-10% armor/resistance for 15% dmg">Glass Cannon</th>
-                        <td><input type="checkbox" class="glass_cannon" value="1" /></td>
-                        <td class="glass_cannon_alt_ehp"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Wizard Extra Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="+40% armor and resistance">Archon <span class="label label-info auto_tooltip" title="note that this will only be for 15 seconds!">?</span></th>
-                        <td><input type="checkbox" class="archon" value="1" /></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    
-        <div id="simulation-mn-template">
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Monk Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="-25% damage taken from mobs you've hit">Resolve <span class="label label-info auto_tooltip" title="note that you can't always have this on all mobs (ranged etc)">?</span></th>
-                        <td><input type="checkbox" class="resolve" value="1" /></td>
-                        <td class="resolve_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="100% of your dex as armor">Seize the Initiative</th>
-                        <td><input type="checkbox" class="seize_the_initiative" value="1" /></td>
-                        <td class="seize_the_initiative_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+15% dodge">The Guardian's Path <span class="label label-info auto_tooltip" title="note only if you are dualwielding!!">?</span></th>
-                        <td><input type="checkbox" class="the_guardians_path" value="1" /></td>
-                        <td class="the_guardians_path_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+15% dodge">Matra of Evasion <span class="label label-info auto_tooltip" title="can't include the activation bonus properly at this time">?</span></th>
-                        <td><input type="checkbox" class="mantra_of_evasion" value="1" /></td>
-                        <td class="mantra_of_evasion_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="an extra +20% armor (and the +15% dodge from the mantra itself)">Matra of Evasion - Hard Target</th>
-                        <td><input type="checkbox" class="mantra_of_evasion_armor" value="1" /></td>
-                        <td class="mantra_of_evasion_armor_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+20% to all resistance">Matra of Healing - Time of Need</th>
-                        <td><input type="checkbox" class="mantra_of_healing_time" value="1" /></td>
-                        <td class="mantra_of_healing_time_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="+15% dodge">Matra of Healing - Heavenly Body</th>
-                        <td><input type="checkbox" class="mantra_of_healing_heavenly" value="1" /></td>
-                        <td class="mantra_of_healing_heavenly_alt_ehp"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Monk Extra Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                    <tr>
-                        <th>Deadly Reach - Keen Eye <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                        <td><input type="checkbox" class="deadly_reach_keen_eye" value="1" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Crippling Wave - Concussion <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                        <td><input type="checkbox" class="crippling_wave_concussion" value="1" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Fists of Thunder - Lightning Flash <span class="label label-info auto_tooltip" title="note that you might not have a 100% uptime on this!">?</span></th>
-                        <td><input type="checkbox" class="fists_of_thunder_flash" value="1" /></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    
-        <div id="simulation-wd-template">
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Witch Doctor Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th title="-20% damage to your and your pets">Jungle Fortitude </th>
-                        <td><input type="checkbox" class="jungle_fortitude" value="1" /></td>
-                        <td class="jungle_fortitude_alt_ehp"></td>
-                    </tr>
-                    <tr>
-                        <th title="10% Int for every healthglobe collected">Gruesome Feast</th>
-                        <td><select class="gruesome_feast input_select" >
-                          <option value="0">0</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                        </select></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th title="-20% damage if did poison damage to">Bad Medicine</th>
-                        <td><input type="checkbox" class="bad_medicine" value="1" /></td>
-                        <td class="bad_medicine_alt_ehp"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Witch Doctor Extra Options</th>
-                        <th>Choice</th>
-                        <th width="30%">Alternative</th>
-                    </tr>
-                </thead>
-                    <tr>
-                        <th title="up to five stacks of +130 Int" >Soul Harvest <span class="label label-info auto_tooltip" title="note that you most likely will not have a 5 Stack / 100% uptime on this!">?</span></th>
-                        <td>
-                          <select class="soul_harvest input_select" >
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                          </select></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th title="your dogs take 10% of the damage done to you">Zombie Dogs - Life Link<span class="label label-info auto_tooltip" title="of course this will only work if you have zombie dogs alive">?</span></th>
-                        <td><input type="checkbox" class="zombie_dogs_life_link" value="0" /></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th title="+100% Armor for 8 seconds after casting this spell">Horrify - Frightening Aspect<span class="label label-info auto_tooltip" title="you will gain 100% Armor after casting this spell. However, this only lasts 8 secounds whereas the cooldown is 20 secs. So you will not get more than 2/5 uptime on this!">?</span></th>
-                        <td><input type="checkbox" class="horrify_frightening_aspect" value="0" /></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>    
-    
-        <div id="simulation-not-available-template">
-            <table class="table table-bordered class_options table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th width="35%">Class Options Not Supported</th>
-                        <th>&nbsp;</th>
-                        <th width="30%">&nbsp;</th>
-                    </tr>
-                </thead>
-            </table>
         </div>
     </div>
     
@@ -455,7 +183,12 @@
     <script src="js/Model/Monk.js" type="text/javascript"></script>
     <script src="js/Model/WitchDoctor.js" type="text/javascript"></script>
     <script src="js/Model/Wizard.js" type="text/javascript"></script>
+    
+    <script src="js/View/MainView.js" type="text/javascript"></script>
+    <script src="js/View/IntroView.js" type="text/javascript"></script>
+    <script src="js/View/InputView.js" type="text/javascript"></script>
     <script src="js/View/SimulationView.js" type="text/javascript"></script>
+    
     <script src="js/gahandler.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>
     <script src="js/gaq.js" type="text/javascript"></script>
