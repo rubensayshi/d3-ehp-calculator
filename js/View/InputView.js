@@ -1,7 +1,7 @@
 var InputView = SimulationView.extend({
     events: {
         'change .your_class':       'changeClass',
-        'click button.back':        'backToCalc',
+        'click button.back':        'backToIntro',
         'click button.create-char': 'createCharacter'
     },
     
@@ -15,8 +15,8 @@ var InputView = SimulationView.extend({
         this.template = _.template($('#input-template').html());
     },
     
-    backToCalc : function() {
-        this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView}); });
+    backToIntro : function() {
+        this.mainView.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
     
     createCharacter : function() {
@@ -43,6 +43,8 @@ var InputView = SimulationView.extend({
                     .appendTo($row);
         $col2 = $('<td />')
                     .appendTo($row);
+        $col3 = $('<td />')
+                    .appendTo($row);
         
         if (optionInfo['type'] == 'checkbox') {
             $input = $('<input type="checkbox" />')
@@ -55,7 +57,7 @@ var InputView = SimulationView.extend({
             }
             
             $input = $('<select />')
-                        .addClass('form-inline input-small')
+                        .addClass('form-inline input-medium')
                         .addClass(optionName);
             
             _.each(seloptions, function(val, key) {
@@ -63,7 +65,7 @@ var InputView = SimulationView.extend({
             });
         } else if (optionInfo['type'] == 'text') {
             $input = $('<input type="text" />')
-                        .addClass('form-inline input-small')
+                        .addClass('form-inline input-medium')
                         .addClass(optionName);
         }
         

@@ -1,10 +1,10 @@
 var SimulationView = Backbone.View.extend({
     events: {
-        'change input':          'viewToModel',
-        'change .input_select':  'viewToModel',
-        'change .your_class':    'changeClass',
-        'click button.reset':    'viewToModel',
-        'click button.new_char': 'inputNewChar'
+        'change input':              'viewToModel',
+        'change .input_select':      'viewToModel',
+        'change .your_class':        'changeClass',
+        'click button.reset':        'viewToModel',
+        'click button.manage_chars': 'manageChars'
     },
 
     initialize: function() {
@@ -60,7 +60,7 @@ var SimulationView = Backbone.View.extend({
             }
             
             $input = $('<select />')
-                        .addClass('form-inline input-small')
+                        .addClass('form-inline input-medium')
                         .addClass(optionName);
             
             _.each(seloptions, function(val, key) {
@@ -68,7 +68,7 @@ var SimulationView = Backbone.View.extend({
             });
         } else if (optionInfo['type'] == 'text') {
             $input = $('<input type="text" />')
-                        .addClass('form-inline input-small')
+                        .addClass('form-inline input-medium')
                         .addClass(optionName);
         }
         
@@ -228,8 +228,8 @@ var SimulationView = Backbone.View.extend({
         
     },
     
-    inputNewChar: function() {
-        this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
+    manageChars: function() {
+        this.mainView.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
 
     prepareVal: function(val, field, dec) {

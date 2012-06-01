@@ -4,7 +4,7 @@ var MainView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this);
 
-        this.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView}); });
+        this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
     
     getContentEl: function() {

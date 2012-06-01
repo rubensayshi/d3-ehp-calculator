@@ -23,4 +23,10 @@ td input, td select {
     max-width: 950px;   
     margin: 20px auto;
 }
- 
+
+.input-normal {
+    width: 150px;
+}
+.input-medium {
+    width: 110px;
+}
