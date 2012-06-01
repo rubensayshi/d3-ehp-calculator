@@ -8,21 +8,21 @@ var MainView = Backbone.View.extend({
     },
     
     getContentEl: function() {
-        return $('#content', this.el);
+        return $('<div />').appendTo($('#content', this.el));
     },
     
     changeView: function(newView) {
         if (typeof newView == 'function') {
             newView = newView(this.getContentEl(), this);
         }
-        
-        console.log(newView);
 
+        if (this.currentView) {
+            this.currentView.remove();
+        }
+                        
         this.currentView = newView;
-        newView.mainView = this;
-        
-        this.getContentEl().empty();
-        
-        newView.render();
+        this.currentView.mainView = this;
+                
+        this.currentView.render();
     },
 });

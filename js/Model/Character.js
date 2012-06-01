@@ -69,7 +69,6 @@ var Character = Backbone.Model.extend({
         }, this);
         
         this.on('change', this.simulate);
-
         this.trigger('change');
     },
 
@@ -98,6 +97,26 @@ var Character = Backbone.Model.extend({
     modifyReductionModifierRanged : function (modifier)       { return modifier; },
     modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
+    rebase : function () {
+        this.off('change', this.simulate);
+        
+        this.set('armor',  this.get('base_armor'));
+        this.set('resist', this.get('base_resist'));
+
+        // create and modify the armor modifier
+        var armormodifier = 1;
+        armormodifier = this.modifyArmorModifier(armormodifier);
+
+        // create and modify the resist modifier
+        var resistmodifier = 1;
+        resistmodifier = this.modifyResistModifier(resistmodifier);
+
+        this.set('base_armor',  this.get('armor')  / armormodifier);
+        this.set('base_resist', this.get('resist') / resistmodifier);
+        
+        this.on('change', this.simulate);
+    },
+    
     simulate : function () {
         this.off('change', this.simulate);
         

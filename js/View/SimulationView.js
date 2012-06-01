@@ -32,89 +32,97 @@ var SimulationView = Backbone.View.extend({
         }, this);
     },
     
-    renderOptions: function() {
+    renderOptionRow: function($parent, optionInfo, optionName) {
+        optionInfo['type']  = optionInfo['type']  || 'checkbox';
+        optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
+        optionInfo['alt']   = optionInfo['alt']   || "";
+        
+        var $row, $col1, $col2, $col3, $input, $alt;
+        
+        $row = $('<tr />')
+                    .appendTo($parent);
+        $col1 = $('<th />')
+                    .append($('<span />').html(optionInfo['title']).attr('title', optionInfo['alt']))
+                    .appendTo($row);
+        $col2 = $('<td />')
+                    .appendTo($row);
+        $col3 = $('<td />')
+                    .appendTo($row);
+        
+        if (optionInfo['type'] == 'checkbox') {
+            $input = $('<input type="checkbox" />')
+                        .addClass(optionName);
+        } else if (optionInfo['type'] == 'select') {
+            seloptions = optionInfo['options'] || {};
+            
+            if (typeof seloptions == 'function') {
+                seloptions = seloptions();
+            }
+            
+            $input = $('<select />')
+                        .addClass('form-inline input-small')
+                        .addClass(optionName);
+            
+            _.each(seloptions, function(val, key) {
+               $input.append($('<option />').val(key).html(val)); 
+            });
+        } else if (optionInfo['type'] == 'text') {
+            $input = $('<input type="text" />')
+                        .addClass('form-inline input-small')
+                        .addClass(optionName);
+        }
+        
+        $input.appendTo($col2);
+        
+        if (typeof(optionInfo['tip']) != 'undefined') {
+            $('<span />')
+                .attr('title', optionInfo['tip'])
+                .addClass('label label-info')
+                .html("?")
+                .appendTo($col2)
+                .tooltip();
+        }                
+        
+        if (typeof(optionInfo['alternative']) != 'undefined') {
+            if (typeof optionInfo['alternative'] == 'boolean') {
+                $alt = $col3;
+            } else {
+                $alt = $('<strong />').html("+"+optionInfo['alternative']+" "+optionInfo['title']+"<br />").appendTo($col3);
+                $alt = $('<span />');
+            }
+
+            $alt.addClass(optionName + "_alt_ehp");
+            
+            _.each(['magic_only', 'melee_only', 'ranged_only'], function(x_only) {
+                if (typeof(optionInfo[x_only]) != 'undefined') {
+                    $alt.addClass(x_only);                        
+                }
+            });
+            
+            if ($alt != $col3) {
+                $alt.appendTo($col3);
+            }
+        }
+    },
+    
+    renderOptions: function() {        
         _.each({
             '#base_options tbody':  this.model.base_options,
             '#options tbody':       this.model.options,
             '#extra_options tbody': this.model.extra_options
         }, function(options, parent) {
-            var $parent = $(parent);
+            var $parent = $(parent, this.el);
+            
+            if (!$parent) {
+                return;
+            }
             
             $parent.empty();
             
-            _.each(options, function(optionInfo, optionName) {
-                optionInfo['type']  = optionInfo['type']  || 'checkbox';
-                optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
-                optionInfo['alt']   = optionInfo['alt']   || "";
-                
-                var $row, $col1, $col2, $col3, $input, $alt;
-                
-                $row = $('<tr />')
-                            .appendTo($parent);
-                $col1 = $('<th />')
-                            .append($('<span />').html(optionInfo['title']).attr('title', optionInfo['alt']))
-                            .appendTo($row);
-                $col2 = $('<td />')
-                            .appendTo($row);
-                $col3 = $('<td />')
-                            .appendTo($row);
-                
-                if (optionInfo['type'] == 'checkbox') {
-                    $input = $('<input type="checkbox" />')
-                                .addClass(optionName);
-                } else if (optionInfo['type'] == 'select') {
-                    seloptions = optionInfo['options'] || {};
-                    
-                    if (typeof seloptions == 'function') {
-                        seloptions = seloptions();
-                    }
-                    
-                    $input = $('<select />')
-                                .addClass('form-inline input-small')
-                                .addClass(optionName);
-                    
-                    _.each(seloptions, function(val, key) {
-                       $input.append($('<option />').val(key).html(val)); 
-                    });
-                } else if (optionInfo['type'] == 'text') {
-                    $input = $('<input type="text" />')
-                                .addClass('form-inline input-small')
-                                .addClass(optionName);
-                }
-                
-                $input.appendTo($col2);
-                
-                if (typeof(optionInfo['tip']) != 'undefined') {
-                    $('<span />')
-                        .attr('title', optionInfo['tip'])
-                        .addClass('label label-info')
-                        .html("?")
-                        .appendTo($col2)
-                        .tooltip();
-                }                
-                
-                if (typeof(optionInfo['alternative']) != 'undefined') {
-                    if (typeof optionInfo['alternative'] == 'boolean') {
-                        $alt = $col3;
-                    } else {
-                        $alt = $('<strong />').html("+"+optionInfo['alternative']+" "+optionInfo['title']+"<br />").appendTo($col3);
-                        $alt = $('<span />');
-                    }
-
-                    $alt.addClass(optionName + "_alt_ehp");
-                    
-                    _.each(['magic_only', 'melee_only', 'ranged_only'], function(x_only) {
-                        if (typeof(optionInfo[x_only]) != 'undefined') {
-                            $alt.addClass(x_only);                        
-                        }
-                    });
-                    
-                    if ($alt != $col3) {
-                        $alt.appendTo($col3);
-                    }
-                }
-            });
-        });
+            _.each(options, function(optionInfo, optionName) { 
+                this.renderOptionRow($parent, optionInfo, optionName); 
+            }, this);
+        }, this);
     },
 
     modelToView: function() {
@@ -203,18 +211,19 @@ var SimulationView = Backbone.View.extend({
         classname = $('.your_class', this.el).val();
 
         this.model = getModelForClass(classname);
+        
         this.model.on('change', this.modelToView, this);
-
+        
         this.renderOptions();
         this.modelToView();
         $(".auto_tooltip").tooltip();
         
         if (gahandler) {
-            gahandler.changeClass(classname)
+            gahandler.changeClass(classname);
         }
     },
     
-    inputNewChar: function() {        
+    inputNewChar: function() {
         this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
     },
 
@@ -251,7 +260,6 @@ var SimulationView = Backbone.View.extend({
             $classSelect.val(this.model.get('your_class'));
         }
 
-        $(".auto_tooltip").tooltip();
         $("#dodge_ehp_explained").tooltip({
             title: "<strong>keep in mind; dodge is random.</strong><br />" +
                    "In normal EHP calculations it's excluded since if you get unlucky you will have 0 dodges before your health pool is empty!"
