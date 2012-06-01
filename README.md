@@ -7,7 +7,7 @@ checkout the working version (project page on github): http://rubensayshi.github
 Authors
 =======
 Ruben de Vries (https://github.com/rubensayshi)  
-Kevin McClellan (https://github.com/kdmcclel)
+Kevin McClellan (https://github.com/kdmcclel)  
 Marv Cool (https://github.com/MrMarvin)
 
 
