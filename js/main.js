@@ -3,7 +3,7 @@
  * when the code is changed in such a way that the cached data has become invalid
  * we can update the version string to invalidate the old cache
  */
-var VERSION = "b71af78aef2e4d81e3e16dfb76b3fd21d431687b";
+var VERSION = "f3f2be41432df7a40251c415be4fdd2eb9749a1e";
 
 var classlist = {
     'br': [Barbarian,   'Barbarian'],

@@ -21,11 +21,12 @@ var InputView = SimulationView.extend({
     
     createCharacter : function() {
         var newModel = this.model;
+
+        CharacterList.add(newModel); // must be before .save is called *by viewToModel*
         
         this.viewToModel();
         newModel.rebase();
         
-        CharacterList.add(newModel);
         newModel.save();
                 
         this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': newModel}); });
