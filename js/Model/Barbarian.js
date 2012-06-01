@@ -16,7 +16,7 @@ var Barbarian = Character.extend({
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {
-        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-25% dmg done by mobs"}
+        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "alternative": true, "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-25% dmg done by mobs"}
     }),
 
     modifyBaseArmor : function (armor) {
