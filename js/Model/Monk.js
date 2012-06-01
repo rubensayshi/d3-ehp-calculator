@@ -1,7 +1,8 @@
 var Monk = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
-        your_class: "mn",
-        melee     : true
+        description: 'Monk',
+        your_class:  "mn",
+        melee     :  true
     }),
     
     options : _.extend({}, Character.prototype.options, {

@@ -1,5 +1,12 @@
 var Characters = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage("Characters"),
+    model: function(attrs, options) {
+        if (getClassInfo(attrs.your_class)) {
+            modelclass = getClassInfo(attrs.your_class)[0];
+        }
+
+        return new modelclass(attrs, options);
+    },
 
     getModelByClass: function(classname, attr) {
         if (getClassInfo(classname)) {
@@ -12,7 +19,6 @@ var Characters = Backbone.Collection.extend({
         }
 
         model = new modelclass(attr);
-        
         this.add(model);
 
         return model;

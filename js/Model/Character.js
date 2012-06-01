@@ -1,5 +1,6 @@
 var Character = Backbone.Model.extend({
     defaults : {
+        description: 'My Character',
         level:        60,
         base_vit:     1000,
         base_dex:     1000,
@@ -36,6 +37,7 @@ var Character = Backbone.Model.extend({
             
             return classes;
         }},
+        description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},

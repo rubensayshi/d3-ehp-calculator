@@ -20,18 +20,20 @@ var IntroView = Backbone.View.extend({
         
         $charlist = $('.character-list', this.el);
         
-        charlist.each(function(character) {
-            character = charlist.getModelByClass(character.get('your_class'), character);
-            
-            $('<li />')
-                .append($('<a>')
-                            .html(character.get('your_class'))
-                            .click(_.bind(function() {
-                                console.log(character);
-                                this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': character}); });
-                            }, this))
-                )
-                .appendTo($charlist);
+        CharacterList.each(function(character) {
+            $('<button />')
+                .addClass('btn btn-inverse')
+                .append($('<i />').addClass('icon-user icon-white'))
+                .append($('<span />').css('padding-left', '15px').html(character.get('description')))
+                .css({'cursor':     'pointer',
+                      'min-width':  '30%',
+                      'margin-top': '5px',
+                      'text-align': 'left'
+                })
+                .click(_.bind(function() {
+                    this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': character}); });
+                }, this))
+                .appendTo($('<li />').appendTo($charlist));
         }, this);
     }
 });

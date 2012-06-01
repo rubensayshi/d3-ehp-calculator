@@ -25,12 +25,15 @@ var SimulationView = Backbone.View.extend({
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                 this.model.set(optionName, !!$fieldObj.prop('checked'));
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
-                this.model.set(optionName, normalizeFloat($fieldObj.val(), optionName));
+                var val = $fieldObj.val();
+                    val = $fieldObj.hasClass('plain') ? val : normalizeFloat(val, optionName);
+                
+                this.model.set(optionName, val);
             } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
                 this.model.set(optionName, $fieldObj.val());
             }
         }, this);
-        
+
         this.model.save();
     },
     
@@ -71,6 +74,7 @@ var SimulationView = Backbone.View.extend({
         } else if (optionInfo['type'] == 'text') {
             $input = $('<input type="text" />')
                         .addClass('form-inline input-medium')
+                        .addClass(typeof(optionInfo['plain']) != 'undefined' ? 'plain' : '')
                         .addClass(optionName);
         }
         
@@ -136,7 +140,9 @@ var SimulationView = Backbone.View.extend({
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
                 $fieldObj.prop('checked', !!fieldValue);
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                $fieldObj.val(this.prepareVal(fieldValue, fieldName));
+                fieldValue = $fieldObj.hasClass('plain') ? fieldValue : this.prepareVal(fieldValue, fieldName);
+                
+                $fieldObj.val(fieldValue);
             } else if ($fieldObj.is('select')) {
                 $fieldObj.val(fieldValue);
             }
@@ -212,7 +218,7 @@ var SimulationView = Backbone.View.extend({
     changeClass: function() {
         classname = $('.your_class', this.el).val();
 
-        this.model = charlist.getModelByClass(classname);
+        this.model = CharacterList.getModelByClass(classname);
         
         this.renderClass();
     },
@@ -225,7 +231,7 @@ var SimulationView = Backbone.View.extend({
         $(".auto_tooltip").tooltip();
         
         if (gahandler) {
-            gahandler.changeClass(classname);
+            gahandler.changeClass(this.model.get('your_class'));
         }
         
     },

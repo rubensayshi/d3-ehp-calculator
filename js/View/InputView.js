@@ -25,7 +25,7 @@ var InputView = SimulationView.extend({
         this.viewToModel();
         newModel.rebase();
         
-        charlist.add(newModel);
+        CharacterList.add(newModel);
         newModel.save();
                 
         this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': newModel}); });
@@ -68,6 +68,7 @@ var InputView = SimulationView.extend({
         } else if (optionInfo['type'] == 'text') {
             $input = $('<input type="text" />')
                         .addClass('form-inline input-medium')
+                        .addClass(typeof(optionInfo['plain']) != 'undefined' ? 'plain' : '')
                         .addClass(optionName);
         }
         
@@ -86,7 +87,7 @@ var InputView = SimulationView.extend({
     changeClass: function() {
         classname = $('.your_class', this.el).val();
 
-        this.model = charlist.getModelByClass(classname);
+        this.model = CharacterList.getModelByClass(classname);
         
         this.renderOptions();
         this.modelToView();

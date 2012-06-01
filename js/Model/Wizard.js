@@ -1,7 +1,8 @@
 var Wizard = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
-        your_class: "wz",
-        melee     : false
+        description: 'Wizard',
+        your_class:  "wz",
+        melee     :  false
     }),
     
     options : _.extend({}, Character.prototype.options, {

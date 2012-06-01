@@ -1,7 +1,8 @@
 var WitchDoctor = Character.extend({
     defaults: _.extend({}, Character.prototype.defaults, {
-        your_class: "wd",
-        melee     : false
+        description: 'Witch Doctor',
+        your_class:  "wd",
+        melee     :  false
     }),
     
     options : _.extend({}, Character.prototype.options, {

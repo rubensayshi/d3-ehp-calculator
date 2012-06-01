@@ -3,7 +3,7 @@
  * when the code is changed in such a way that the cached data has become invalid
  * we can update the version string to invalidate the old cache
  */
-var VERSION = "b2412f9da4fb434e9ac8e87fbbc49bdc604ad23e";
+var VERSION = "b71af78aef2e4d81e3e16dfb76b3fd21d431687b";
 
 var classlist = {
     'br': [Barbarian,   'Barbarian'],
@@ -12,12 +12,6 @@ var classlist = {
     'wd': [WitchDoctor, 'Witch Doctor'],
     'wz': [Wizard,      'Wizard']
 };
-
-var charlist = new Characters();
-charlist.fetch();
-
-console.log(charlist);
-
 var getClassInfo = function(shortname) {
     return (classlist[shortname]) ? modelclass = classlist[shortname] : [];
 };
@@ -30,12 +24,19 @@ var generateSelector = function(fieldname) {
     return "." + fieldname;
 };
 
+if (localStorage) {
+    if (!(storage_version = localStorage.getItem('VERSION')) || storage_version != VERSION) {
+        localStorage.clear();
+        localStorage.setItem('VERSION', VERSION);
+    }
+}
+
 var normalizeFloat = function(value, optionName, alertOnError) {
     var res = parseFloat(value);
 
     if (isNaN(res) || (res != value && res == parseInt(value))) {
         if (alertOnError) {
-            alert("We failed to properly parse the valueue for [" + optionName + "]");
+            alert("We failed to properly parse the value for [" + optionName + "]");
         
             return 0;
         } else {                  
@@ -45,5 +46,8 @@ var normalizeFloat = function(value, optionName, alertOnError) {
     
     return res;
 }
+
+var CharacterList = new Characters();
+CharacterList.fetch();
     
 var mainView = new MainView({'el': $("#container")});
