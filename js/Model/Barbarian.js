@@ -12,11 +12,11 @@ var Barbarian = Character.extend({
         warcry_resist:{"type": "checkbox", "default": false, "title": "War Cry - Impunity", "alternative": true, "alt": "+50% to all your resistance stats"},
         warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true, "alt": "+15% dodge"},
         warcry_life:  {"type": "checkbox", "default": false, "title": "War Cry - Invigorate", "alternative": true, "alt": "+10% life"},
-        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true, 'magic_only': true, "alt": "+20% dmg reduction non physical"}
+        superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true, 'magic_only': true, "tip": "note that it's for magic EHP only", "alt": "+20% dmg reduction non physical"}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {
-        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "alt": "-25% dmg done by mobs"}
+        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-25% dmg done by mobs"}
     }),
 
     modifyBaseArmor : function (armor) {

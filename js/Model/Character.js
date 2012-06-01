@@ -43,7 +43,7 @@ var Character = Backbone.Model.extend({
         base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
         base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
-        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1},
+        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
         base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
         extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
         base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},

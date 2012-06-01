@@ -18,7 +18,7 @@ var getClassInfo = function(shortname) {
 };
 
 var getModelForClass = function(classname, forceNew) {
-    var use_storage = false && !!localStorage;
+    var use_storage = !!localStorage;
     var storage_key = 'previous_' + VERSION + '_' + classname;
     var modelclass,
         model;
