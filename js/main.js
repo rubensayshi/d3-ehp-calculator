@@ -13,38 +13,13 @@ var classlist = {
     'wz': [Wizard,      'Wizard']
 };
 
+var charlist = new Characters();
+charlist.fetch();
+
+console.log(charlist);
+
 var getClassInfo = function(shortname) {
     return (classlist[shortname]) ? modelclass = classlist[shortname] : [];
-};
-
-var getModelForClass = function(classname, forceNew) {
-    var use_storage = false && !!localStorage;
-    var storage_key = 'previous_' + VERSION + '_' + classname;
-    var modelclass,
-        model;
-
-    if (getClassInfo(classname)) {
-        modelclass = getClassInfo(classname)[0];
-    } else {
-        // we should have some proper error here I think ...
-        alert("you somehow selected a class which we do not recognise [" + classname + "]. \nApplication will now crash, we will refresh the page for you ;).");
-        window.location.reload(true);
-        return;
-    }
-
-    if (!forceNew && use_storage && localStorage.getItem(storage_key)) {
-        model = new modelclass(JSON.parse(localStorage.getItem(storage_key)));
-    } else {
-        model = new modelclass();
-    }
-
-    if (use_storage) {
-        model.on('change', function(model) {
-            localStorage.setItem(storage_key, JSON.stringify(model));
-        }, model);
-    }
-
-    return model;
 };
 
 var updateBreadcrumb = function(breadcrumb) {

@@ -23,8 +23,10 @@ var InputView = SimulationView.extend({
         var newModel = this.model;
         
         this.viewToModel();
-        
         newModel.rebase();
+        
+        charlist.add(newModel);
+        newModel.save();
                 
         this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': newModel}); });
     },
@@ -84,7 +86,7 @@ var InputView = SimulationView.extend({
     changeClass: function() {
         classname = $('.your_class', this.el).val();
 
-        this.model = getModelForClass(classname);
+        this.model = charlist.getModelByClass(classname);
         
         this.renderOptions();
         this.modelToView();

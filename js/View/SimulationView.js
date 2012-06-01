@@ -30,6 +30,8 @@ var SimulationView = Backbone.View.extend({
                 this.model.set(optionName, $fieldObj.val());
             }
         }, this);
+        
+        this.model.save();
     },
     
     renderOptionRow: function($parent, optionInfo, optionName) {
@@ -210,7 +212,7 @@ var SimulationView = Backbone.View.extend({
     changeClass: function() {
         classname = $('.your_class', this.el).val();
 
-        this.model = getModelForClass(classname);
+        this.model = charlist.getModelByClass(classname);
         
         this.renderClass();
     },
