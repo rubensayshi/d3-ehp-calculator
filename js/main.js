@@ -47,6 +47,10 @@ var getModelForClass = function(classname, forceNew) {
     return model;
 };
 
+var updateBreadcrumb = function(breadcrumb) {
+    window.location.hash = breadcrumb;
+};
+
 var generateSelector = function(fieldname) {
     return "." + fieldname;
 };

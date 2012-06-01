@@ -9,6 +9,8 @@ var SimulationView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this);
+        
+        updateBreadcrumb("calculator");
 
         this.template = _.template($('#simulation-template').html());
     },
@@ -212,10 +214,7 @@ var SimulationView = Backbone.View.extend({
         }
     },
     
-    inputNewChar: function() {
-        alert("Soon! Very Soon!"); 
-        return;
-        
+    inputNewChar: function() {        
         this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
     },
 
