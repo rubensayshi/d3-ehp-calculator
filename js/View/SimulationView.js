@@ -98,7 +98,7 @@ var SimulationView = Backbone.View.extend({
 
             $alt.addClass(optionName + "_alt_ehp");
             
-            _.each(['magic_only', 'melee_only', 'ranged_only'], function(x_only) {
+            _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only'], function(x_only) {
                 if (typeof(optionInfo[x_only]) != 'undefined') {
                     $alt.addClass(x_only);                        
                 }
@@ -197,6 +197,9 @@ var SimulationView = Backbone.View.extend({
             } else if($(selector, this.el).hasClass('magic_only')) {
                 alt_ehp_title = "EHP magic";
                 alt_ehp_field = "ehp_magic";
+            } else if($(selector, this.el).hasClass('dodge_only')) {
+                alt_ehp_title = "EHP dodge";
+                alt_ehp_field = "ehp_dodge";
             }
             
             var ehp     = this.model.get(alt_ehp_field);
