@@ -11,7 +11,7 @@ var Barbarian = Character.extend({
         warcry:       {"type": "checkbox", "default": false, "title": "War Cry - No Rune", "alternative": true, "alt": "+20% armor"},
         warcry_armor: {"type": "checkbox", "default": false, "title": "War Cry - Hardened Wrath", "alternative": true, "alt": "another +20% armor (total +40%)"},
         warcry_resist:{"type": "checkbox", "default": false, "title": "War Cry - Impunity", "alternative": true, "alt": "+50% to all your resistance stats"},
-        warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true, "alt": "+15% dodge"},
+        warcry_dodge: {"type": "checkbox", "default": false, "title": "War Cry - Veteran's Warning", "alternative": true, "dodge_only": true, "alt": "+15% dodge"},
         warcry_life:  {"type": "checkbox", "default": false, "title": "War Cry - Invigorate", "alternative": true, "alt": "+10% life"},
         superstition: {"type": "checkbox", "default": false, "title": "Superstition ", "alternative": true, 'magic_only': true, "tip": "note that it's for magic EHP only", "alt": "+20% dmg reduction non physical"}
     }),
