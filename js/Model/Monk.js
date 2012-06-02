@@ -11,8 +11,8 @@ var Monk = Character.extend({
         seize_the_initiative:      {"type": "checkbox", "default": false, "title": "Seize the Initiative", "alternative": true, "alt": "100% of your dex as armor"},
         mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true, "dodge_only": true, "alt": "+15% dodge"},
         mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true, "alt": "an extra +20% armor"},
-        mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
-        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Evasion - Heavenly Body", "alternative": true, "alt": "+15% dodge"}
+        mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Healing - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {       
