@@ -26,6 +26,7 @@ var InputView = SimulationView.extend({
         
         this.viewToModel();
         newModel.rebase();
+        newModel.simulate();
         
         newModel.save();
                 
