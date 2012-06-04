@@ -204,9 +204,6 @@ var Character = Backbone.Model.extend({
         // apply the life modifier
         this.set('life', this.get('life') * lifemodifier);
 
-        console.log(this.get('life'));
-        console.log(modifier);
-
         // apply all modifiers
         var ehp             = this.get('life') / modifier;
         var ehp_dodge       = this.get('life') / modifier / dodgemodifier;

@@ -9,8 +9,6 @@ var InputView = SimulationView.extend({
         _.bindAll(this);
         
         updateBreadcrumb("input-char");
-
-        console.log($('#input-template'));
         
         this.template = _.template($('#input-template').html());
     },
