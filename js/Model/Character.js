@@ -116,6 +116,10 @@ var Character = Backbone.Model.extend({
 
         this.set('base_armor',  this.get('armor')  / armormodifier);
         this.set('base_resist', this.get('resist') / resistmodifier);
+
+        this.set('base_armor',  this.get('base_armor')  - this.modifyBaseArmor(0));
+        this.set('base_resist', this.get('base_resist') - this.modifyBaseResist(0));
+        
         
         // create and modify the dodge chance
         var dodgechance = 1;
