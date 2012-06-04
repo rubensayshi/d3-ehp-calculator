@@ -40,10 +40,10 @@ var Character = Backbone.Model.extend({
         description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
         base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge"},
         base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
+        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
         base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
         base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
@@ -199,6 +199,9 @@ var Character = Backbone.Model.extend({
 
         // apply the life modifier
         this.set('life', this.get('life') * lifemodifier);
+
+        console.log(this.get('life'));
+        console.log(modifier);
 
         // apply all modifiers
         var ehp             = this.get('life') / modifier;
