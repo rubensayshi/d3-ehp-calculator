@@ -129,101 +129,279 @@
             <div class="span12">
                 <h3>D3 EHP Calculator</h3>
                 <p>Tweak the values below to find out how they affect your EHP.</p>
-                <table id="base_options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>                    
-                        <tr>
-                            <th>Your Class</th>
-                            <td>
-                                <select class="your_class"></select>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table id="options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <table id="extra_options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Buffed Stats</th>
-                            <th>&nbsp;</th>
-                            <th width="40%">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>Buffed Life</th>
-                            <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Armor</th>
-                            <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
-                            <td class="armor_reduc"></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Resistance</th>
-                            <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
-                            <td class="resist_reduc"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table id="results" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Results</th>
-                            <th>EHP without dodge</th>
-                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>EHP</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP melee</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP ranged</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP magic</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li> <a href="#tab1" data-toggle="tab">Your Character</a> </li>
+                        <li class="active">                <a href="#tab2" data-toggle="tab">Item Compare</a>   </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane" id="tab1">
+                        <table id="base_options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody>                    
+                                <tr>
+                                    <th>Your Class</th>
+                                    <td>
+                                        <select class="your_class"></select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table id="options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id="extra_options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Buffed Stats</th>
+                                    <th>&nbsp;</th>
+                                    <th width="40%">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Life</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Armor</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
+                                    <td class="armor_reduc"></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Resistance</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
+                                    <td class="resist_reduc"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab1" data-toggle="tab">Defensive Results (EHP)</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <table id="results" class="table table-bordered table-striped table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th width="35%">Results</th>
+                                            <th>EHP without dodge</th>
+                                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlighted-row">
+                                            <th>EHP</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP melee</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP ranged</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP magic</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane active" id="tab2">
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="tabbable">
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <li class="active"> <a href="#head" data-toggle="tab">Head</a>     </li>
+                                        <li>                <a href="#chest" data-toggle="tab">Chest</a>   </li>
+                                        <li>                <a href="#gloves" data-toggle="tab">Gloves</a>   </li>
+                                        <li>                <a href="#bracers" data-toggle="tab">Bracers</a>   </li>
+                                        <li>                <a href="#pants" data-toggle="tab">Pants</a>   </li>
+                                        <li>                <a href="#offhand" data-toggle="tab">OffHand</a>   </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="span9">
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="head">
+                                        <div class="row-fluid">
+                                            <div class="span6">
+                                                <table class="table table-bordered table-striped table-condensed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Current Item</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th width="30%">VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="span6">
+                                                <table class="table table-bordered table-striped table-condensed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">New Item</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th width="30%">VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>VIT</th>
+                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="chest">chest</div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <table id="results" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Results</th>
+                                    <th>EHP without dodge</th>
+                                    <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlighted-row">
+                                    <th>EHP</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>EHP melee</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>EHP ranged</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>EHP magic</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
+                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                                </tr>
+                            </tbody>
+                        </table>                        
+                    </div>
+                </div>
             </div>
         </div>
         </div>
