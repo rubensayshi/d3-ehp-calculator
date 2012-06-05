@@ -236,6 +236,8 @@ var SimulationView = Backbone.View.extend({
         this.modelToView();
         $(".auto_tooltip").tooltip();
         
+        updateBreadcrumb("calculator/" + this.model.id);
+        
         if (gahandler) {
             gahandler.changeClass(this.model.get('your_class'));
         }

@@ -38,3 +38,6 @@ td input, td select {
 .input-medium {
     width: 110px;
 }
+
+a:active { outline: none; -moz-outline-style: none; }
+a:focus  { outline: none; -moz-outline-style: none; }
