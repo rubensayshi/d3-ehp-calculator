@@ -53,7 +53,9 @@ var Character = Backbone.Model.extend({
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true}
     },
     options:       {},
-    extra_options: {},
+    extra_options: {
+        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+    },
     
     getAllOptions: function() {
         return _.extend({}, this.base_options, this.options, this.extra_options);
@@ -83,7 +85,13 @@ var Character = Backbone.Model.extend({
      * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
      */
     modifyBaseArmor              : function (armor)          { return armor; },
-    modifyArmorModifier          : function (armormodifier)  { return armormodifier; },
+    modifyArmorModifier          : function (armormodifier)  {
+        if (this.get('enchantress')) {
+            armormodifier += .15;
+        }
+        
+        return armormodifier; 
+    },
     modifyBaseResist             : function (resist)         { return resist; },
     modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
     modifyBaseLife               : function (life)           { return life; },

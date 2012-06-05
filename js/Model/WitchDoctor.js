@@ -35,8 +35,8 @@ var WitchDoctor = Character.extend({
         if (this.get('horrify_frightening_aspect')) {
             armormodifier += 1;
         }
-        
-        return armormodifier;
+
+        return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
 
     modifyReductionModifier : function (modifier) {

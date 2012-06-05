@@ -16,6 +16,7 @@ var Monk = Character.extend({
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {       
+        mantra_of_conv_intimid:   {"type": "checkbox", "default": false, "title": "Mantra of Conviction - Intimidation", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         deadly_reach_keen_eye:    {"type": "checkbox", "default": false, "title": "Deadly Reach - Keen Eye", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         crippling_wave_concussion:{"type": "checkbox", "default": false, "title": "Crippling Wave - Concussion", "alternative": true, 'magic_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         fists_of_thunder_flash:   {"type": "checkbox", "default": false, "title": "Fists of Thunder - Lightning Flash", "alternative": true, 'dodge_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"}
@@ -54,7 +55,7 @@ var Monk = Character.extend({
             armormodifier += .50;
         }
 
-        return armormodifier;
+        return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
     
 
@@ -82,7 +83,11 @@ var Monk = Character.extend({
         if (this.get('crippling_wave_concussion')) {
             modifier *= (1 - 0.20);
         }
-
+        
+        if (this.get('mantra_of_conv_intimid')) {
+            modifier *= (1 - 0.10);
+        }
+        
         return modifier;
     }
 });

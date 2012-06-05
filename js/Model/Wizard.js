@@ -29,7 +29,7 @@ var Wizard = Character.extend({
             armormodifier += .40;
         }
 
-        return armormodifier;
+        return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
 
     modifyResistModifier : function (resistmodifier) {
