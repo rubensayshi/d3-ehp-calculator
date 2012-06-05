@@ -24,8 +24,11 @@ var Character = Backbone.Model.extend({
         resist:       null,
         dodge:        null,
         armor_reduc:  null,
-        resist_reduc: null
+        resist_reduc: null,
+        
+        items :       []
     },
+    
 
     base_options:  {
         your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {

@@ -124,6 +124,16 @@
             </div>
         </div>
         </div>
+        <div id="item-template">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th colspan="2"><%= title %></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <div id="simulation-template">
         <div class="row-fluid">
             <div class="span12">
@@ -246,133 +256,18 @@
                         <div class="row-fluid">
                             <div class="span3">
                                 <div class="tabbable">
-                                    <ul class="nav nav-pills nav-stacked">
-                                        <li class="active"> <a href="#head" data-toggle="tab">Head</a>     </li>
-                                        <li>                <a href="#chest" data-toggle="tab">Chest</a>   </li>
-                                        <li>                <a href="#gloves" data-toggle="tab">Gloves</a>   </li>
-                                        <li>                <a href="#bracers" data-toggle="tab">Bracers</a>   </li>
-                                        <li>                <a href="#pants" data-toggle="tab">Pants</a>   </li>
-                                        <li>                <a href="#offhand" data-toggle="tab">OffHand</a>   </li>
-                                    </ul>
+                                    <ul class="nav nav-pills nav-stacked slot-list"></ul>
                                 </div>
                             </div>
                             <div class="span9">
-                                <div class="tab-content">
-                                    <div class="tab-pane active" id="head">
-                                        <div class="row-fluid">
-                                            <div class="span6">
-                                                <table class="table table-bordered table-striped table-condensed">
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">Current Item</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th width="30%">VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="span6">
-                                                <table class="table table-bordered table-striped table-condensed">
-                                                    <thead>
-                                                        <tr>
-                                                            <th colspan="2">New Item</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th width="30%">VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>VIT</th>
-                                                            <td><input type="text" class="input-small form-inline" value="" /></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="chest">chest</div>
-                                </div>
+                                <div class="tab-content slot-list"></div>
                             </div>
                         </div>
                     
                         <table id="results" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th width="35%">Results</th>
+                                    <th width="35%">New Item Changes</th>
                                     <th>EHP without dodge</th>
                                     <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
                                 </tr>
@@ -408,6 +303,7 @@
     </div>
     
     <script src="js/Model/Character.js" type="text/javascript"></script>
+    <script src="js/Model/Item.js" type="text/javascript"></script>
     <script src="js/Model/Barbarian.js" type="text/javascript"></script>
     <script src="js/Model/Monk.js" type="text/javascript"></script>
     <script src="js/Model/WitchDoctor.js" type="text/javascript"></script>
@@ -418,6 +314,7 @@
     <script src="js/View/IntroView.js" type="text/javascript"></script>
     <script src="js/View/SimulationView.js" type="text/javascript"></script>
     <script src="js/View/InputView.js" type="text/javascript"></script>
+    <script src="js/View/ItemView.js" type="text/javascript"></script>
     
     <script src="js/gahandler.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>

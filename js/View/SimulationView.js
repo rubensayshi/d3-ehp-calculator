@@ -5,6 +5,8 @@ var SimulationView = Backbone.View.extend({
         'change .your_class':        'changeClass',
         'click button.reset':        'viewToModel'
     },
+    
+    itemslots : ['head', 'chest', 'legs', 'hands', 'wrist'],
 
     initialize: function() {
         _.bindAll(this);
@@ -226,11 +228,39 @@ var SimulationView = Backbone.View.extend({
         this.renderClass();
     },
     
+    renderItemCompare : function() {
+        var firsttab, firsttabpane;
+        
+        _.each(this.itemslots, function(itemslot) {
+            var tid          = this.cid + "_" + itemslot;
+            
+            var $currentItem = $('<div class="current-item span6" />'),
+                $newItem     = $('<div class="new-item span6" />'),
+                $tabpane     = $('<div class="tab-pane" />')
+                                    .attr('id', tid)
+                                    .html(itemslot)
+                                    .append($currentItem)
+                                    .append($newItem),
+                $tabA        = $('<a  data-toggle="tab" />')
+                                    .attr('href', "#" + tid)
+                                    .html(itemslot),
+                $tab         = $('<li />')
+                                    .append($tabA);
+            
+            $('ul.slot-list', this.el).append($tab);
+            $('div.slot-list', this.el).append($tabpane);
+        }, this);
+
+        $('ul.slot-list > li:first', this.el).addClass('active');
+        $('div.slot-list > div:first', this.el).addClass('active');
+    },
+    
     renderClass: function() {
         this.model.on('change', this.modelToView, this);
-        
+
         this.renderOptions();
         this.modelToView();
+        this.renderItemCompare();
         $(".auto_tooltip").tooltip();
         
         updateBreadcrumb("calculator/" + this.model.id);
