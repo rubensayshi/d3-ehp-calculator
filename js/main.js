@@ -49,5 +49,7 @@ var normalizeFloat = function(value, optionName, alertOnError) {
 
 var CharacterList = new Characters();
 CharacterList.fetch();
-    
+
+gahandler.logVersion(VERSION);
+
 var mainView = new MainView({'el': $("#container")});

@@ -19,7 +19,11 @@ var gahandler = (function() {
         _gaq.push(['_trackPageview', '/' + classname + '/']);
         
         reset();
-    }
+    };
+    
+    var logVersion = function(v) {
+        _gaq.push(['_trackEvent', 'VERSION', v]);
+    };
     
     var reset = function() {
         keepAlive();
@@ -31,6 +35,7 @@ var gahandler = (function() {
     });
     
     return {
+        logVersion:  logVersion,
         changeClass: changeClass
     };
 })();
