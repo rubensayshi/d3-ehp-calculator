@@ -42,7 +42,7 @@ var Barbarian = Character.extend({
             armormodifier += .25;
         }
 
-        return armormodifier;
+        return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
 
     modifyResistModifier : function (resistmodifier) {
