@@ -6,8 +6,20 @@ var MainView = Backbone.View.extend({
     
     initialize: function() {
         _.bindAll(this);
+        
+        var re    = new RegExp("^#calculator/(.+)"),
+            match = re.exec(window.location.hash);
+        
+        if (match && match[1]) {
+            
+            var charFromUrl = CharacterList.get(match[1]);
+            
+            if (charFromUrl) {
+                return this.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': charFromUrl}); });
+            }
+        }
 
-        this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+        return this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
     
     getContentEl: function() {
@@ -15,7 +27,7 @@ var MainView = Backbone.View.extend({
     },
     
     manageChars: function() {
-        this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+        return this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
     },
     
     changeView: function(currentView) {
