@@ -252,7 +252,12 @@ var SimulationView = Backbone.View.extend({
                                     .data('itemslot', itemslot)
                                     .append($currentItem)
                                     .append($newItem),
-                $tabA        = $('<a  data-toggle="tab" />')
+                $tabA        = $('<a />')
+                                    .on('click', _.bind(function(e) {
+                                        this.doItemCompare(itemslot);
+                                        $tabA.tab('show');         
+                                        e.preventDefault();
+                                    }, this))
                                     .attr('href', "#" + tid)
                                     .html(itemslot),
                 $tab         = $('<li />')
@@ -296,7 +301,6 @@ var SimulationView = Backbone.View.extend({
         
         _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
             var selector = this.getItemCompareSelector(ehp_field);
-            var $fieldObj = $(selector,  this.el);
             
             var ehp     = this.model.get(ehp_field);
             var alt_ehp = compareModel.get(ehp_field);
@@ -309,10 +313,6 @@ var SimulationView = Backbone.View.extend({
 
             $(selector, this.el).val(ehp_change);
             $(selector + '.percentage', this.el).val(ehp_change_p);
-            
-            
-
-            //this.toField($fieldObj, selector, ehp_field, compareModel.get(ehp_field));
         }, this);
         
         console.log(compareModel.get('ehp'));
