@@ -25,10 +25,9 @@ var Character = Backbone.Model.extend({
         dodge:        null,
         armor_reduc:  null,
         resist_reduc: null,
-        
-        items :       []
     },
     
+    gear: null,
 
     base_options:  {
         your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
@@ -74,6 +73,10 @@ var Character = Backbone.Model.extend({
                 this.set(o_name, o_info['default']);
             }
         }, this);
+        
+        this.gear = new Gear();
+        this.gear.url = '/gear/' + this.id;
+        this.gear.fetch();
         
         this.on('change', this.simulate);
         this.trigger('change');

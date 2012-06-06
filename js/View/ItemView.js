@@ -1,6 +1,7 @@
 var ItemView = Backbone.View.extend({
     title: '-',
     events: {
+        'change input': 'viewToModel',
     },
 
     initialize: function() {
@@ -27,8 +28,12 @@ var ItemView = Backbone.View.extend({
                 this.model.set(optionName, $fieldObj.val());
             }
         }, this);
+        
+        console.log(this.model);
 
-        this.model.save();
+        if (this.model.collection) {
+            this.model.save();
+        }
     },
     
     renderOptionRow: function($parent, optionInfo, optionName) {

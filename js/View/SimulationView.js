@@ -244,8 +244,18 @@ var SimulationView = Backbone.View.extend({
                 $tab         = $('<li />')
                                     .append($tabA);
 
-            newItem = new Item({'slot': itemslot});
-            curItem = new Item({'slot': itemslot});
+            console.log(this.model.gear);
+            
+            var aCurItems = this.model.gear.where({'slot': itemslot});
+            
+            if (aCurItems.length) {
+                curItem = aCurItems[0];
+            } else {
+                curItem = new Item({'slot': itemslot});
+                this.model.gear.add(curItem);
+            }
+
+            var newItem = new Item({'slot': itemslot});
 
             (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
             (new ItemView({'el': $newItem, 'model': newItem, 'title': 'New Item'})).render();
