@@ -6,7 +6,7 @@ var SimulationView = Backbone.View.extend({
         'click button.reset':        'viewToModel'
     },
     
-    itemslots : ['head', 'chest', 'legs', 'hands', 'wrist'],
+    itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
 
     initialize: function() {
         _.bindAll(this);
