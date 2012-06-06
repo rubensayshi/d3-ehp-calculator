@@ -6,7 +6,7 @@ var SimulationView = Backbone.View.extend({
         'click button.reset':        'viewToModel'
     },
     
-    itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
+    itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'waist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
 
     initialize: function() {
         _.bindAll(this);
@@ -106,7 +106,9 @@ var SimulationView = Backbone.View.extend({
             if (typeof optionInfo['alternative'] == 'boolean') {
                 $alt = $col3;
             } else {
-                $alt = $('<strong />').html("+"+optionInfo['alternative']+" "+optionInfo['title']+"<br />").appendTo($col3);
+                var altamount = typeof(optionInfo['alternative']) == 'object' ? 1 : optionInfo['alternative'];
+                
+                $alt = $('<strong />').html("+"+altamount+" "+optionInfo['title']+"<br />").appendTo($col3);
                 $alt = $('<span />');
             }
 
@@ -169,7 +171,9 @@ var SimulationView = Backbone.View.extend({
             this.toField($fieldObj, selector, optionName, this.model.get(optionName));
             
             if (typeof(optionInfo['alternative']) != 'undefined') {
-                if (typeof optionInfo['alternative'] == 'boolean') {
+                if (typeof optionInfo['alternative'] == 'object') {
+                    alternatives[optionName] = [optionInfo['alternative'], true];
+                } else if (typeof optionInfo['alternative'] == 'boolean') {
                     alternatives[optionName] = [{/* this should contain stat changes */}, !this.model.get(optionName)];
                     alternatives[optionName][0][optionName] = !this.model.get(optionName);
                 } else {
