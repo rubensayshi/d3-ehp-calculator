@@ -16,6 +16,13 @@ var Character = Backbone.Model.extend({
         melee:        false,
 
         moblevel:     63,
+        
+        extra_vit:    0,
+        extra_dex:    0,
+        extra_int:    0,
+        extra_str:    0,
+        extra_armor:  0,
+        extra_resist: 0,
 
         vit:          null,
         dex:          null,
@@ -132,6 +139,42 @@ var Character = Backbone.Model.extend({
     modifyReductionModifierRanged : function (modifier)       { return modifier; },
     modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
+    getDodgeFromExtraDex : function() {
+        var basedex  = this.get('base_dex');
+        var extradex = this.get('extra_dex');
+        
+        var calcdex  = basedex;
+        var dexsteps = [[100, 0.100], [500, 0.025], [1000, 0.020], [8000, 0.010]];
+        var dodge    = 0;
+        
+        _.all(dexsteps, function(dexstep) {
+            var stepmax = dexstep[0],
+                ddgpdex = dexstep[1];
+            
+            if (basedex <= stepmax) {
+                var dextomax    = (stepmax - basedex);
+                var dexoverflow = dextomax - extradex;
+                
+                if (dexoverflow >= 0) {
+                    dodge += (extradex * ddgpdex);
+                    
+                    return false;
+                } else {
+                    dodge += (dextomax * ddgpdex);
+                    
+                    basedex += dextomax;
+                    extradex-= dextomax;
+                    
+                    return true;
+                }
+            }
+            
+            return true;
+        });
+        
+        return dodge;
+    },
+    
     rebase : function () {
         this.off('change', this.simulate);
         
@@ -164,12 +207,12 @@ var Character = Backbone.Model.extend({
     
     simulate : function () {
         this.off('change', this.simulate);
-        
+                
         // grab the base values and set them so we can start modifying that value
-        this.set('armor',  this.get('base_armor'));
-        this.set('resist', this.get('base_resist'));
+        this.set('armor',  this.get('base_armor')  + this.get('extra_armor')  + (this.get('extra_str')*1));
+        this.set('resist', this.get('base_resist') + this.get('extra_resist') + (this.get('extra_int')*0.1));
         this.set('vit',    this.get('base_vit'));
-        this.set('dodge',  this.get('base_dodge'));
+        this.set('dodge',  this.get('base_dodge')  + this.getDodgeFromExtraDex());
 
         // modify the base values (static increases)
         this.set('armor',  this.modifyBaseArmor(this.get('armor')));
