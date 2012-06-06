@@ -55,6 +55,7 @@ var Monk = Character.extend({
             armormodifier += .50;
         }
 
+        // parent does the check for enchantress
         return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
     
@@ -87,7 +88,8 @@ var Monk = Character.extend({
         if (this.get('mantra_of_conv_intimid')) {
             modifier *= (1 - 0.10);
         }
-        
-        return modifier;
+
+        // parent does the check for melee 30% reduction
+        return this.constructor.__super__.modifyReductionModifier.apply(this, arguments);
     }
 });

@@ -42,6 +42,7 @@ var Barbarian = Character.extend({
             armormodifier += .25;
         }
 
+        // parent does the check for enchantress
         return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
 
@@ -66,11 +67,8 @@ var Barbarian = Character.extend({
             modifier *= (1 - 0.25);
         }
 
-        if (this.get('melee')) {
-            modifier *= (1 - 0.30);
-        }
-
-        return modifier;
+        // parent does the check for melee 30% reduction
+        return this.constructor.__super__.modifyReductionModifier.apply(this, arguments);
     },
 
     modifyReductionModifierMagic : function (modifier) {
