@@ -26,8 +26,9 @@ var Character = Backbone.Model.extend({
         armor_reduc:  null,
         resist_reduc: null,
     },
-    
-    gear: null,
+
+    gearbag: null,
+    new_gearbag: null,
 
     base_options:  {
         your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
@@ -62,7 +63,7 @@ var Character = Backbone.Model.extend({
         return _.extend({}, this.base_options, this.options, this.extra_options);
     },
     
-    initialize : function () {
+    initialize: function () {
         // ensure there's always an options collection
         if (!this.options) {
             this.options = {};
@@ -74,12 +75,30 @@ var Character = Backbone.Model.extend({
             }
         }, this);
         
-        this.gear = new Gear();
-        this.gear.url = '/gear/' + this.id;
-        this.gear.fetch();
+        this.gearbag = new ItemBag();
+        this.gearbag.localStorage = new Backbone.LocalStorage("gear" + this.id);
+        this.gearbag.fetch();
+        
+        this.new_gearbag = new ItemBag();
+        this.new_gearbag.localStorage = new Backbone.LocalStorage("new_gear" + this.id);
+        this.new_gearbag.fetch();
         
         this.on('change', this.simulate);
         this.trigger('change');
+    },
+    
+    getItemForSlot: function(itemslot, itembag) {
+        var aItems = itembag.where({'slot': itemslot}),
+            item;
+        
+        if (aItems.length) {
+            var item = aItems[0];
+        } else {
+            item = new Item({'slot': itemslot});
+            itembag.add(item);
+        }
+
+        return item;
     },
 
     /*

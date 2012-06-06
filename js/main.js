@@ -20,10 +20,6 @@ var updateBreadcrumb = function(breadcrumb) {
     window.location.hash = breadcrumb;
 };
 
-var generateSelector = function(fieldname) {
-    return "." + fieldname;
-};
-
 if (localStorage) {
     if (!(storage_version = localStorage.getItem('VERSION')) || storage_version != VERSION) {
         localStorage.clear();
@@ -48,6 +44,7 @@ var normalizeFloat = function(value, optionName, alertOnError) {
 }
 
 var CharacterList = new Characters();
+CharacterList.localStorage = new Backbone.LocalStorage("Characters");
 CharacterList.fetch();
 
 gahandler.logVersion(VERSION);

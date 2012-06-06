@@ -146,7 +146,7 @@
                     </ul>
                 </div>
                 <div class="tab-content">
-                    <div class="tab-pane" id="tab1">
+                    <div class="tab-pane character" id="tab1">
                         <table id="base_options" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
@@ -252,7 +252,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane active" id="tab2">
+                    <div class="tab-pane active item-compare" id="tab2">
                         <div class="row-fluid">
                             <div class="span3">
                                 <div class="tabbable">
@@ -275,23 +275,47 @@
                             <tbody>
                                 <tr class="highlighted-row">
                                     <th>EHP</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp percentage" value="" />
+                                    </td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge percentage" value="" />
+                                    </td>
                                 </tr>
                                 <tr class="highlighted-row">
                                     <th>EHP melee</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_melee" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_melee percentage" value="" />
+                                    </td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_melee percentage" value="" />
+                                    </td>
                                 </tr>
                                 <tr class="highlighted-row">
                                     <th>EHP ranged</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_ranged percentage" value="" />
+                                    </td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_ranged percentage" value="" />
+                                    </td>
                                 </tr>
                                 <tr class="highlighted-row">
                                     <th>EHP magic</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
-                                    <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_magic" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_magic percentage" value="" />
+                                    </td>
+                                    <td>
+                                        <input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" />
+                                        <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_magic percentage" value="" />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>                        
@@ -309,7 +333,7 @@
     <script src="js/Model/WitchDoctor.js" type="text/javascript"></script>
     <script src="js/Model/Wizard.js" type="text/javascript"></script>
     <script src="js/Collection/Characters.js" type="text/javascript"></script>
-    <script src="js/Collection/Gear.js" type="text/javascript"></script>
+    <script src="js/Collection/ItemBag.js" type="text/javascript"></script>
     
     <script src="js/View/MainView.js" type="text/javascript"></script>
     <script src="js/View/IntroView.js" type="text/javascript"></script>

@@ -9,10 +9,14 @@ var ItemView = Backbone.View.extend({
 
         this.template = _.template($('#item-template').html());
     },
+    
+    getSelector: function(fieldname) {
+        return "." + fieldname;
+    },
 
     viewToModel: function() {
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
-            var selector = generateSelector(optionName);
+            var selector = this.getSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
@@ -29,8 +33,6 @@ var ItemView = Backbone.View.extend({
             }
         }, this);
         
-        console.log(this.model);
-
         if (this.model.collection) {
             this.model.save();
         }
@@ -111,7 +113,7 @@ var ItemView = Backbone.View.extend({
         }, this);
         
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
-            var selector = generateSelector(optionName);
+            var selector = this.getSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
             toField($fieldObj, selector, optionName, this.model.get(optionName));
