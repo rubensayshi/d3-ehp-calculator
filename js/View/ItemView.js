@@ -1,4 +1,5 @@
 var ItemView = Backbone.View.extend({
+    title: '-',
     events: {
     },
 
@@ -73,7 +74,7 @@ var ItemView = Backbone.View.extend({
     
     renderOptions: function() {        
         _.each({
-            '#options tbody':       this.model.options
+            '#base_options tbody':       this.model.base_options
         }, function(options, parent) {
             var $parent = $(parent, this.el);
             
@@ -139,11 +140,12 @@ var ItemView = Backbone.View.extend({
     },
 
     render: function() {
-        $(this.template()).appendTo($(this.el));
-
         if (!this.model) {
             this.model = new Item();
         }
+        
+        $(this.template()).appendTo($(this.el));
+        $('.title', this.el).html(this.options.title);
 
         this.renderItem();
     }

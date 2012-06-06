@@ -229,8 +229,6 @@ var SimulationView = Backbone.View.extend({
     },
     
     renderItemCompare : function() {
-        var firsttab, firsttabpane;
-        
         _.each(this.itemslots, function(itemslot) {
             var tid          = this.cid + "_" + itemslot;
             
@@ -238,7 +236,6 @@ var SimulationView = Backbone.View.extend({
                 $newItem     = $('<div class="new-item span6" />'),
                 $tabpane     = $('<div class="tab-pane" />')
                                     .attr('id', tid)
-                                    .html(itemslot)
                                     .append($currentItem)
                                     .append($newItem),
                 $tabA        = $('<a  data-toggle="tab" />')
@@ -246,6 +243,12 @@ var SimulationView = Backbone.View.extend({
                                     .html(itemslot),
                 $tab         = $('<li />')
                                     .append($tabA);
+
+            newItem = new Item({'slot': itemslot});
+            curItem = new Item({'slot': itemslot});
+
+            (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
+            (new ItemView({'el': $newItem, 'model': newItem, 'title': 'New Item'})).render();
             
             $('ul.slot-list', this.el).append($tab);
             $('div.slot-list', this.el).append($tabpane);

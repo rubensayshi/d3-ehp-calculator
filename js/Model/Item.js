@@ -1,4 +1,4 @@
-var Character = Backbone.Model.extend({
+var Item = Backbone.Model.extend({
     defaults : {
         slot:        'inventory',
         description: 'My Item',
