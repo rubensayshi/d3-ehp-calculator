@@ -48,8 +48,9 @@ var Character = Backbone.Model.extend({
         base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
         base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
         extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
-        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
-        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction",  "alternative": 1, 'melee_only': true},
+        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
+        base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true}
     },
     options:       {},
     extra_options: {
@@ -105,6 +106,7 @@ var Character = Backbone.Model.extend({
     },
     modifyReductionModifierMelee  : function (modifier)       { return modifier; },
     modifyReductionModifierRanged : function (modifier)       { return modifier; },
+    modifyReductionModifierElite  : function (modifier)       { return modifier; },
     modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
     rebase : function () {
@@ -192,6 +194,11 @@ var Character = Backbone.Model.extend({
         modifier_ranged *= (1 - (this.get('base_ranged_reduc') / 100));
         var modifier_ranged = this.modifyReductionModifierRanged(modifier_ranged);
         
+        // add elite only modifiers
+        var modifier_elite = modifier;
+        modifier_elite *= (1 - (this.get('base_elite_reduc') / 100));
+        var modifier_elite = this.modifyReductionModifierElite(modifier_elite);
+        
         // add magic only modifiers
         var modifier_magic = modifier;
         var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
@@ -221,6 +228,8 @@ var Character = Backbone.Model.extend({
         var ehp_dodge_ranged= this.get('life') / modifier_ranged / dodgemodifier;
         var ehp_magic       = this.get('life') / modifier_magic;
         var ehp_dodge_magic = this.get('life') / modifier_magic / dodgemodifier;
+        var ehp_elite       = this.get('life') / modifier_elite;
+        var ehp_dodge_elite = this.get('life') / modifier_elite / dodgemodifier;
 
         // set the final properties
         this.set('ehp',             ehp);
@@ -231,6 +240,8 @@ var Character = Backbone.Model.extend({
         this.set('ehp_dodge_ranged',ehp_dodge_ranged);
         this.set('ehp_magic',       ehp_magic);
         this.set('ehp_dodge_magic', ehp_dodge_magic);
+        this.set('ehp_elite',       ehp_elite);
+        this.set('ehp_dodge_elite', ehp_dodge_elite);
         
         this.on('change', this.simulate);
     }

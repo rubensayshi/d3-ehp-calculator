@@ -98,7 +98,7 @@ var SimulationView = Backbone.View.extend({
 
             $alt.addClass(optionName + "_alt_ehp");
             
-            _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only'], function(x_only) {
+            _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only', 'elite_only'], function(x_only) {
                 if (typeof(optionInfo[x_only]) != 'undefined') {
                     $alt.addClass(x_only);                        
                 }
@@ -171,7 +171,7 @@ var SimulationView = Backbone.View.extend({
             toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
         }, this);
         
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
             var selector = generateSelector(ehp_field);
             var $fieldObj = $(selector,  this.el);
 
@@ -200,6 +200,9 @@ var SimulationView = Backbone.View.extend({
             } else if($(selector, this.el).hasClass('dodge_only')) {
                 alt_ehp_title = "EHP dodge";
                 alt_ehp_field = "ehp_dodge";
+            } else if($(selector, this.el).hasClass('elite_only')) {
+                alt_ehp_title = "EHP elite";
+                alt_ehp_field = "ehp_elite";
             }
             
             var ehp     = this.model.get(alt_ehp_field);
