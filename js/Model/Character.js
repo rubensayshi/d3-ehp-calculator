@@ -53,12 +53,13 @@ var Character = Backbone.Model.extend({
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true}
     },
     options:       {},
-    extra_options: {
+    extra_options: {},
+    shared_options: {
         enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
     },
     
     getAllOptions: function() {
-        return _.extend({}, this.base_options, this.options, this.extra_options);
+        return _.extend({}, this.base_options, this.options, this.extra_options, this.shared_options);
     },
     
     initialize : function () {
