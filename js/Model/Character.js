@@ -37,38 +37,32 @@ var Character = Backbone.Model.extend({
     gearbag: null,
     new_gearbag: null,
 
-    base_options:  {
-        your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
-            var classes = {};
-            
-            _.each(classlist, function(info, shortname) {
-                classes[shortname] = info[1];
-            }, this);
-            
-            return classes;
-        }},
-        description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
-        level:            {"type": "text", "default": 60,   "title": "Level"},
-        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": 1},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "alternative": 1},
-        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": 1},
-        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
-        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
-        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
-        base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
-        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
-        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
-        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+    getOptions: function() {
+        return this.constructor.options;
     },
-    options:       {},
-    extra_options: {},
-    shared_options: {
-        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+    
+    getBaseOptions: function() {
+        return this.constructor.base_options;
+    },
+    
+    getExtraOptions: function() {
+        return this.constructor.extra_options;
+    },
+    
+    getSharedOptions: function() {
+        var shared_options = Character.shared_options;
+        
+        _.each(classlist, function(classinfo, shortname) {
+            if (!(this instanceof classinfo[0])) {
+                shared_options = _.extend({}, shared_options, classinfo[0].getClassSharedOptions());
+            }
+        }, this);
+        
+        return shared_options;
     },
     
     getAllOptions: function() {
-        return _.extend({}, this.base_options, this.options, this.extra_options, this.shared_options);
+        return _.extend({}, this.getBaseOptions(), this.getOptions(), this.getExtraOptions(), this.getSharedOptions());
     },
     
     initialize: function () {
@@ -302,5 +296,40 @@ var Character = Backbone.Model.extend({
         this.set('ehp_dodge_magic', ehp_dodge_magic);
         
         this.on('change', this.simulate);
+    }
+}, {
+    /* -- static properties -- */
+    base_options:  {
+        your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
+            var classes = {};
+            
+            _.each(classlist, function(info, shortname) {
+                classes[shortname] = info[1];
+            }, this);
+            
+            return classes;
+        }},
+        description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
+        level:            {"type": "text", "default": 60,   "title": "Level"},
+        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": 1},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "alternative": 1},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": 1},
+        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
+        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
+        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
+        base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
+        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
+        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
+        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+    },
+    options:       {},
+    extra_options: {},
+    shared_options:{
+        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+    },
+    
+    getClassSharedOptions: function() {
+        return {};
     }
 });

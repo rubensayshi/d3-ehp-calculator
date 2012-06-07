@@ -81,7 +81,7 @@ var ItemView = Backbone.View.extend({
     
     renderOptions: function() {        
         _.each({
-            '#base_options tbody':       this.model.base_options
+            '#base_options tbody':       this.model.getBaseOptions()
         }, function(options, parent) {
             var $parent = $(parent, this.el);
             

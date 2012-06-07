@@ -13,23 +13,13 @@ var Item = Backbone.Model.extend({
         base_melee_reduc:   0,
         base_ranged_reduc:  0
     },
-
-    base_options:  {
-        description:      {"type": "text", "default": "", "title": "Description", "plain": true},
-        extra_str:        {"type": "text", "default": 0,  "title": "STR"},
-        extra_dex:        {"type": "text", "default": 0,  "title": "DEX"},
-        extra_int:        {"type": "text", "default": 0,  "title": "INT"},
-        base_vit:         {"type": "text", "default": 0,  "title": "VIT"},
-        base_armor:       {"type": "text", "default": 0,  "title": "Armor"},
-        base_resist:      {"type": "text", "default": 0,  "title": "All Resist"},
-        base_dodge:       {"type": "text", "default": 0,  "title": "Dodge %"},
-        extra_life:       {"type": "text", "default": 0,  "title": "Extra Life %"},
-        base_melee_reduc: {"type": "text", "default": 0,  "title": "Melee Reduction"},
-        base_ranged_reduc:{"type": "text", "default": 0,  "title": "Ranged Reduction"}
+    
+    getBaseOptions: function() {
+        return this.constructor.base_options;
     },
     
     getAllOptions: function() {
-        return _.extend({}, this.base_options);
+        return _.extend({}, this.getBaseOptions());
     },
     
     initialize : function () {
@@ -45,5 +35,20 @@ var Item = Backbone.Model.extend({
         }, this);
         
         this.trigger('change');
+    }
+}, {
+    /* -- static properties -- */
+    base_options:  {
+        description:      {"type": "text", "default": "", "title": "Description", "plain": true},
+        extra_str:        {"type": "text", "default": 0,  "title": "STR"},
+        extra_dex:        {"type": "text", "default": 0,  "title": "DEX"},
+        extra_int:        {"type": "text", "default": 0,  "title": "INT"},
+        base_vit:         {"type": "text", "default": 0,  "title": "VIT"},
+        base_armor:       {"type": "text", "default": 0,  "title": "Armor"},
+        base_resist:      {"type": "text", "default": 0,  "title": "All Resist"},
+        base_dodge:       {"type": "text", "default": 0,  "title": "Dodge %"},
+        extra_life:       {"type": "text", "default": 0,  "title": "Extra Life %"},
+        base_melee_reduc: {"type": "text", "default": 0,  "title": "Melee Reduction"},
+        base_ranged_reduc:{"type": "text", "default": 0,  "title": "Ranged Reduction"}
     }
 });
