@@ -248,31 +248,11 @@ var SimulationView = Backbone.View.extend({
             
             var $currentItem = $('<div class="current-item span6" />'),
                 $newItem     = $('<div class="new-item span6" />'),
-                $copy        = $('<button />')
-                                    .addClass('btn btn-info')
-                                    .append($('<i />').addClass('icon-arrow-left icon-white'))
-                                    .append($('<span />').html(' copy new to current'))
-                                    .on('click', _.bind(function(e) {
-                                        curItem.destroy();
-                                        curItem = newItem.clone();
-                                        
-                                        this.model.gearbag.add(curItem);
-                                        curItem.save();
-                                        
-                                        curItemView.replaceItem(curItem);
-                                        
-                                        this.doItemCompare(itemslot);
-                                    }, this)),
                 $tabpane     = $('<div class="tab-pane" />')
                                     .attr('id', tid)
                                     .data('itemslot', itemslot)
-                                    .append($('<div class="row-fluid" />')
-                                        .append($currentItem)
-                                        .append($newItem)
-                                    )
-                                    .append($('<div class="row-fluid" />')
-                                        .append($('<div class="span12 well" style="text-align: center;" />').append($copy))
-                                    ),
+                                    .append($currentItem)
+                                    .append($newItem),
                 $tabA        = $('<a />')
                                     .on('click', _.bind(function(e) {
                                         this.doItemCompare(itemslot);
@@ -288,10 +268,8 @@ var SimulationView = Backbone.View.extend({
             var curItem = this.model.getItemForSlot(itemslot, this.model.gearbag);
             var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
            
-            var curItemView = new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'});
-            var newItemView = new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item'});
-            curItemView.render();
-            newItemView.render();
+            (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
+            (new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item'})).render();
 
             curItem.on('change', function() { this.doItemCompare(itemslot); }, this);
             newItem.on('change', function() { this.doItemCompare(itemslot); }, this);

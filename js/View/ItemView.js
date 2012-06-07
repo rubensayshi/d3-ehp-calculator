@@ -120,13 +120,6 @@ var ItemView = Backbone.View.extend({
         }, this);
     },
     
-    replaceItem: function(newItem) {
-        this.model = newItem;
-
-        this.model.on('change', this.modelToView, this);
-        this.modelToView();
-    },
-    
     renderItem: function() {
         this.model.on('change', this.modelToView, this);
         
