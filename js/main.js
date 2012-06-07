@@ -7,7 +7,7 @@ var VERSION = "222097c7d26e4197435980f4731a5c6ad9c8e869";
 
 var classlist = {
     'br': [Barbarian,   'Barbarian'],
-    //'dh': [DemonHunter, 'Demon Hunter'],
+    'dh': [DemonHunter, 'Demon Hunter'],
     'mn': [Monk,        'Monk'],
     'wd': [WitchDoctor, 'Witch Doctor'],
     'wz': [Wizard,      'Wizard']
