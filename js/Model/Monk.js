@@ -12,7 +12,8 @@ var Monk = Character.extend({
         mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true, "dodge_only": true, "alt": "+15% dodge"},
         mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true, "alt": "an extra +20% armor"},
         mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Healing - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
-        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"}
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"},
+        mystic_ally_earth:         {"type": "checkbox", "default": false, "title": "Mystic Ally - Earth", "alternative": true, "alt": "+10% life"}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {       
@@ -43,6 +44,10 @@ var Monk = Character.extend({
             lifemodifier += .10;
         }
         
+        if (this.get('mystic_ally_earth')) {
+            lifemodifier += .10;
+        }
+        
         return lifemodifier;
     },
 
@@ -55,6 +60,7 @@ var Monk = Character.extend({
             armormodifier += .50;
         }
 
+        // parent does the check for enchantress
         return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
     
@@ -87,7 +93,8 @@ var Monk = Character.extend({
         if (this.get('mantra_of_conv_intimid')) {
             modifier *= (1 - 0.10);
         }
-        
-        return modifier;
+
+        // parent does the check for melee 30% reduction
+        return this.constructor.__super__.modifyReductionModifier.apply(this, arguments);
     }
 });
