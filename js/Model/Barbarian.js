@@ -17,7 +17,7 @@ var Barbarian = Character.extend({
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {
-        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "alternative": true, "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-25% dmg done by mobs"}
+        threat_shout: {"type": "checkbox", "default": false, "title": "Threatening Shout", "alternative": true, "tip": "note that you can't always have this on all mobs (ranged etc)", "alt": "-20% dmg done by mobs"}
     }),
 
     modifyBaseArmor : function (armor) {
@@ -64,7 +64,7 @@ var Barbarian = Character.extend({
 
     modifyReductionModifier : function (modifier) {
         if (this.get('threat_shout')) {
-            modifier *= (1 - 0.25);
+            modifier *= (1 - 0.20);
         }
 
         // parent does the check for melee 30% reduction
