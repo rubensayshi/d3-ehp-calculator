@@ -5,6 +5,8 @@ var SimulationView = Backbone.View.extend({
         'change .your_class':        'changeClass',
         'click button.reset':        'viewToModel'
     },
+    
+    itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
 
     initialize: function() {
         _.bindAll(this);
@@ -14,9 +16,21 @@ var SimulationView = Backbone.View.extend({
         this.template = _.template($('#simulation-template').html());
     },
 
+    getSelector: function(fieldname) {
+        return '.' + fieldname;
+    },
+
+    getCharacterSelector: function(fieldname) {
+        return '.character ' + this.getSelector(fieldname);
+    },
+
+    getItemCompareSelector: function(fieldname) {
+        return '.item-compare ' + this.getSelector(fieldname);
+    },
+
     viewToModel: function() {
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
-            var selector = generateSelector(optionName);
+            var selector = this.getCharacterSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
@@ -130,29 +144,30 @@ var SimulationView = Backbone.View.extend({
             }, this);
         }, this);
     },
+    
+
+    toField: function($fieldObj, selector, fieldName, fieldValue) {
+        if ($fieldObj.is('span') || $fieldObj.is('td')) {
+            $fieldObj.html(this.prepareVal(fieldValue, fieldName));
+        } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
+            $fieldObj.prop('checked', !!fieldValue);
+        } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
+            fieldValue = $fieldObj.hasClass('plain') ? fieldValue : this.prepareVal(fieldValue, fieldName);
+            
+            $fieldObj.val(fieldValue);
+        } else if ($fieldObj.is('select')) {
+            $fieldObj.val(fieldValue);
+        }
+    },
 
     modelToView: function() {
         var alternatives = {};
         
-        var toField = _.bind(function($fieldObj, selector, fieldName, fieldValue) {
-            if ($fieldObj.is('span') || $fieldObj.is('td')) {
-                $fieldObj.html(this.prepareVal(fieldValue, fieldName));
-            } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                $fieldObj.prop('checked', !!fieldValue);
-            } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text') {
-                fieldValue = $fieldObj.hasClass('plain') ? fieldValue : this.prepareVal(fieldValue, fieldName);
-                
-                $fieldObj.val(fieldValue);
-            } else if ($fieldObj.is('select')) {
-                $fieldObj.val(fieldValue);
-            }
-        }, this);
-        
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
-            var selector = generateSelector(optionName);
+            var selector = this.getCharacterSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
-            toField($fieldObj, selector, optionName, this.model.get(optionName));
+            this.toField($fieldObj, selector, optionName, this.model.get(optionName));
             
             if (typeof(optionInfo['alternative']) != 'undefined') {
                 if (typeof optionInfo['alternative'] == 'boolean') {
@@ -166,23 +181,23 @@ var SimulationView = Backbone.View.extend({
         }, this);
         
         _.each(['life', 'armor', 'armor_reduc', 'resist', 'resist_reduc'], function(buffed_stats_field) {
-            var selector = generateSelector(buffed_stats_field);
+            var selector = this.getCharacterSelector(buffed_stats_field);
             var $fieldObj = $(selector,  this.el);
 
-            toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
+            this.toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
         }, this);
         
         _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
-            var selector = generateSelector(ehp_field);
+            var selector = this.getCharacterSelector(ehp_field);
             var $fieldObj = $(selector,  this.el);
 
-            toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
+            this.toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
         }, this);
         
         _.each(alternatives, function(alt, alt_field) {
             var alt_stats   = alt[0];
             var reltosource = alt[1];
-            var selector    = generateSelector(alt_field + "_alt_ehp");
+            var selector    = this.getCharacterSelector(alt_field + "_alt_ehp");
             var alt_model   = this.model.clone();
             
             alt_model.set(alt_stats);
@@ -227,11 +242,89 @@ var SimulationView = Backbone.View.extend({
         this.renderClass();
     },
     
+    renderItemCompare : function() {
+        _.each(this.itemslots, function(itemslot) {
+            var tid          = this.cid + "_" + itemslot;
+            
+            var $currentItem = $('<div class="current-item span6" />'),
+                $newItem     = $('<div class="new-item span6" />'),
+                $tabpane     = $('<div class="tab-pane" />')
+                                    .attr('id', tid)
+                                    .data('itemslot', itemslot)
+                                    .append($currentItem)
+                                    .append($newItem),
+                $tabA        = $('<a />')
+                                    .on('click', _.bind(function(e) {
+                                        this.doItemCompare(itemslot);
+                                        $tabA.tab('show');         
+                                        e.preventDefault();
+                                    }, this))
+                                    .attr('href', "#" + tid)
+                                    .html(itemslot),
+                $tab         = $('<li />')
+                                    .data('itemslot', itemslot)
+                                    .append($tabA);
+
+            var curItem = this.model.getItemForSlot(itemslot, this.model.gearbag);
+            var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
+           
+            (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
+            (new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item'})).render();
+
+            curItem.on('change', function() { this.doItemCompare(itemslot); }, this);
+            newItem.on('change', function() { this.doItemCompare(itemslot); }, this);
+            
+            $('ul.slot-list', this.el).append($tab);
+            $('div.slot-list', this.el).append($tabpane);
+        }, this);
+
+        $('ul.slot-list > li:first', this.el).addClass('active');
+        $('div.slot-list > div:first', this.el).addClass('active');
+        
+        this.doItemCompare($('ul.slot-list > li:first', this.el).data('itemslot'));
+    },
+    
+    doItemCompare : function(itemslot) {
+        var curItem = this.model.getItemForSlot(itemslot, this.model.gearbag);
+        var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
+        
+        var compareModel = this.model.clone();
+
+        _.each(curItem.getAllOptions(), function(optionInfo, optionName) {
+            compareModel.set(optionName, compareModel.get(optionName) - curItem.get(optionName));
+        });
+        
+        _.each(newItem.getAllOptions(), function(optionInfo, optionName) {
+            compareModel.set(optionName, compareModel.get(optionName) + newItem.get(optionName));
+        });
+        
+        compareModel.simulate();
+        
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+            var selector = this.getItemCompareSelector(ehp_field);
+            
+            var ehp     = this.model.get(ehp_field);
+            var alt_ehp = compareModel.get(ehp_field);
+            
+            var ehp_change   = alt_ehp - ehp;
+            var ehp_change_p = (ehp_change / ehp);
+
+            ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change, '', 0))  : this.prepareVal(ehp_change, '', 0);
+            ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
+
+            $(selector, this.el).val(ehp_change);
+            $(selector + '.percentage', this.el).val(ehp_change_p);
+        }, this);
+        
+        console.log(compareModel.get('ehp'));
+    },
+    
     renderClass: function() {
         this.model.on('change', this.modelToView, this);
-        
+
         this.renderOptions();
         this.modelToView();
+        this.renderItemCompare();
         $(".auto_tooltip").tooltip();
         
         updateBreadcrumb("calculator/" + this.model.id);

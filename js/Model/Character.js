@@ -16,6 +16,13 @@ var Character = Backbone.Model.extend({
         melee:        false,
 
         moblevel:     63,
+        
+        extra_vit:    0,
+        extra_dex:    0,
+        extra_int:    0,
+        extra_str:    0,
+        extra_armor:  0,
+        extra_resist: 0,
 
         vit:          null,
         dex:          null,
@@ -24,8 +31,11 @@ var Character = Backbone.Model.extend({
         resist:       null,
         dodge:        null,
         armor_reduc:  null,
-        resist_reduc: null
+        resist_reduc: null,
     },
+
+    gearbag: null,
+    new_gearbag: null,
 
     base_options:  {
         your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
@@ -40,9 +50,9 @@ var Character = Backbone.Model.extend({
         description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything"},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge"},
-        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist"},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": 1},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "alternative": 1},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": 1},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
         base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
@@ -61,7 +71,7 @@ var Character = Backbone.Model.extend({
         return _.extend({}, this.base_options, this.options, this.extra_options, this.shared_options);
     },
     
-    initialize : function () {
+    initialize: function () {
         // ensure there's always an options collection
         if (!this.options) {
             this.options = {};
@@ -73,8 +83,30 @@ var Character = Backbone.Model.extend({
             }
         }, this);
         
+        this.gearbag = new ItemBag();
+        this.gearbag.localStorage = new Backbone.LocalStorage("gear" + this.id);
+        this.gearbag.fetch();
+        
+        this.new_gearbag = new ItemBag();
+        this.new_gearbag.localStorage = new Backbone.LocalStorage("new_gear" + this.id);
+        this.new_gearbag.fetch();
+        
         this.on('change', this.simulate);
         this.trigger('change');
+    },
+    
+    getItemForSlot: function(itemslot, itembag) {
+        var aItems = itembag.where({'slot': itemslot}),
+            item;
+        
+        if (aItems.length) {
+            var item = aItems[0];
+        } else {
+            item = new Item({'slot': itemslot});
+            itembag.add(item);
+        }
+
+        return item;
     },
 
     /*
@@ -108,6 +140,42 @@ var Character = Backbone.Model.extend({
     modifyReductionModifierRanged : function (modifier)       { return modifier; },
     modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
+    getDodgeFromExtraDex : function() {
+        var basedex  = this.get('base_dex');
+        var extradex = this.get('extra_dex');
+        
+        var calcdex  = basedex;
+        var dexsteps = [[100, 0.100], [500, 0.025], [1000, 0.020], [8000, 0.010]];
+        var dodge    = 0;
+        
+        _.all(dexsteps, function(dexstep) {
+            var stepmax = dexstep[0],
+                ddgpdex = dexstep[1];
+            
+            if (basedex <= stepmax) {
+                var dextomax    = (stepmax - basedex);
+                var dexoverflow = dextomax - extradex;
+                
+                if (dexoverflow >= 0) {
+                    dodge += (extradex * ddgpdex);
+                    
+                    return false;
+                } else {
+                    dodge += (dextomax * ddgpdex);
+                    
+                    basedex += dextomax;
+                    extradex-= dextomax;
+                    
+                    return true;
+                }
+            }
+            
+            return true;
+        });
+        
+        return dodge;
+    },
+    
     rebase : function () {
         this.off('change', this.simulate);
         
@@ -140,12 +208,12 @@ var Character = Backbone.Model.extend({
     
     simulate : function () {
         this.off('change', this.simulate);
-        
+                
         // grab the base values and set them so we can start modifying that value
-        this.set('armor',  this.get('base_armor'));
-        this.set('resist', this.get('base_resist'));
+        this.set('armor',  this.get('base_armor')  + this.get('extra_armor')  + (this.get('extra_str')*1));
+        this.set('resist', this.get('base_resist') + this.get('extra_resist') + (this.get('extra_int')*0.1));
         this.set('vit',    this.get('base_vit'));
-        this.set('dodge',  this.get('base_dodge'));
+        this.set('dodge',  this.get('base_dodge')  + this.getDodgeFromExtraDex());
 
         // modify the base values (static increases)
         this.set('armor',  this.modifyBaseArmor(this.get('armor')));

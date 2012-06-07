@@ -35,9 +35,11 @@
                 
                 <div class="latest-update">
                     <h3>Latest Update</h3>
-                    <p>The interface (and all code behind it) got a complete overhaul, <br />
-                    as a result it's become easier to add a new character (go check it out yourself) and you can easily load previous characters.</p>
-                    <p>There is a chance I might have broken something in the display logic though, however the calculations should be fine.</p>
+                    <p><strong>Item Compare has been added!</strong> <br />
+                    You can input your current item and compare the change in EHP if you would replace it with a new item!
+                    </p>
+                    <p>Next up will be changing the UI so it's more clear what people should be doing and after that <i>shield block</i> \o/
+                    </p>
                 </div>
                 
                 <div class="bugs-and-features">
@@ -76,7 +78,7 @@
         </div>
         <div id="input-template">
         <div class="row-fluid">
-            <div class="span12">
+            <div class="span12 character">
                 <h3>Input New Character</h3>
                 <p>The stats shown in your ingame character screen already included a lot of passives and buffs you have on you. <br />
                 In previous versions of this tool you had to disable those first before you could copy your stats from ingame to here, 
@@ -136,132 +138,248 @@
             </div>
         </div>
         </div>
+        <div id="item-template">
+            <table id="base_options" class="table table-bordered table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="title"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <div id="simulation-template">
         <div class="row-fluid">
             <div class="span12">
                 <h3>D3 EHP Calculator</h3>
-                <p>Tweak the values below to find out how they affect your EHP.</p>
-                <table id="base_options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody>                    
-                        <tr>
-                            <th>Your Class</th>
-                            <td>
-                                <select class="your_class"></select>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table id="options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <table id="extra_options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <table id="shared_options" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Option</th>
-                            <th>Choice</th>
-                            <th width="40%">Alternative</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Buffed Stats</th>
-                            <th>&nbsp;</th>
-                            <th width="40%">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>Buffed Life</th>
-                            <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Armor</th>
-                            <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
-                            <td class="armor_reduc"></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>Buffed Resistance</th>
-                            <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
-                            <td class="resist_reduc"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table id="results" class="table table-bordered table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th width="35%">Results</th>
-                            <th>EHP without dodge</th>
-                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="highlighted-row">
-                            <th>EHP</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP melee</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP ranged</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
-                        </tr>
-                        <tr class="highlighted-row">
-                            <th>EHP magic</th>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
-                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active"> <a href="#tab1" data-toggle="tab">Your Character</a> </li>
+                        <li> <a href="#tab2" data-toggle="tab">Item Compare</a> </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane character active" id="tab1">
+                        <p>Tweak the values below to find out how they affect your EHP.</p>
+                        <table id="base_options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody>                    
+                                <tr>
+                                    <th>Your Class</th>
+                                    <td>
+                                        <select class="your_class"></select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table id="options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id="extra_options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id="shared_options" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Option</th>
+                                    <th>Choice</th>
+                                    <th width="40%">Alternative</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <table id=buffed_stats" class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="35%">Buffed Stats</th>
+                                    <th>&nbsp;</th>
+                                    <th width="40%">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Life</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Armor</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
+                                    <td class="armor_reduc"></td>
+                                </tr>
+                                <tr class="highlighted-row">
+                                    <th>Buffed Resistance</th>
+                                    <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
+                                    <td class="resist_reduc"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab1" data-toggle="tab">Defensive Results (EHP)</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <table id="results" class="table table-bordered table-striped table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th width="35%">Results</th>
+                                            <th>EHP without dodge</th>
+                                            <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="highlighted-row">
+                                            <th>EHP</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP melee</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP ranged</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                                        </tr>
+                                        <tr class="highlighted-row">
+                                            <th>EHP magic</th>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
+                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane item-compare" id="tab2">
+                        <p>Select which item slot you want to compare. <br />
+                        Type in the stats for your current item and the new item (stats are saved, so you won't have to type it all in again the next time). <br />
+                        Check out the stat changes at the bottom of the screen! <br />
+                        <br />
+                        We only compare stats for the selected slot, so when you switch to a different slot then the stats at the bottom reflect that item change, it won't display all the item changes together.
+                        </p>
+                        <div class="row-fluid">
+                            <div class="span3">
+                                <div class="tabbable">
+                                    <ul class="nav nav-pills nav-stacked slot-list"></ul>
+                                </div>
+                            </div>
+                            <div class="span9">
+                                <div class="tab-content slot-list"></div>
+                            </div>
+                        </div>
+                    
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab1" data-toggle="tab">Defensive Results (EHP)</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                            <p>Replace your 'Current Item' with the 'New Item' would result in teh following change in EHP for your given stats                            
+                            </p>
+                            <table id="results" class="table table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th width="35%">New Item Changes</th>
+                                        <th>EHP without dodge</th>
+                                        <th width="40%">EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="highlighted-row">
+                                        <th>EHP</th>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp percentage" value="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge percentage" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr class="highlighted-row">
+                                        <th>EHP melee</th>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_melee" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_melee percentage" value="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_melee percentage" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr class="highlighted-row">
+                                        <th>EHP ranged</th>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_ranged percentage" value="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_ranged percentage" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr class="highlighted-row">
+                                        <th>EHP magic</th>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_magic" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_magic percentage" value="" />
+                                        </td>
+                                        <td>
+                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" />
+                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_magic percentage" value="" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         </div>
     </div>
     
     <script src="js/Model/Character.js" type="text/javascript"></script>
+    <script src="js/Model/Item.js" type="text/javascript"></script>
     <script src="js/Model/Barbarian.js" type="text/javascript"></script>
     <script src="js/Model/Monk.js" type="text/javascript"></script>
     <script src="js/Model/WitchDoctor.js" type="text/javascript"></script>
     <script src="js/Model/Wizard.js" type="text/javascript"></script>
     <script src="js/Collection/Characters.js" type="text/javascript"></script>
+    <script src="js/Collection/ItemBag.js" type="text/javascript"></script>
     
     <script src="js/View/MainView.js" type="text/javascript"></script>
     <script src="js/View/IntroView.js" type="text/javascript"></script>
     <script src="js/View/SimulationView.js" type="text/javascript"></script>
     <script src="js/View/InputView.js" type="text/javascript"></script>
+    <script src="js/View/ItemView.js" type="text/javascript"></script>
     
     <script src="js/gahandler.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>
