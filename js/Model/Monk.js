@@ -12,7 +12,8 @@ var Monk = Character.extend({
         mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true, "dodge_only": true, "alt": "+15% dodge"},
         mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true, "alt": "an extra +20% armor"},
         mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Healing - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
-        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"}
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"},
+        mystic_ally_earth:         {"type": "checkbox", "default": false, "title": "Mystic Ally - Earth", "alternative": true, "alt": "+10% life"}
     }),
     
     extra_options : _.extend({}, Character.prototype.extra_options, {       
@@ -40,6 +41,10 @@ var Monk = Character.extend({
     
     modifyLifeModifier : function (lifemodifier) {
         if (this.get('mantra_of_healing_heavenly')) {
+            lifemodifier += .10;
+        }
+        
+        if (this.get('mystic_ally_earth')) {
             lifemodifier += .10;
         }
         
