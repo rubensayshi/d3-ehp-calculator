@@ -1,7 +1,5 @@
 <?php
 
-// build versioned_index.html
-
 $dir = dirname(__FILE__);
 
 if (!file_exists("{$dir}/index.html")) {
