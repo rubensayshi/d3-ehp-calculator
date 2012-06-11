@@ -322,8 +322,6 @@ var SimulationView = Backbone.View.extend({
             $(selector, this.el).val(ehp_change);
             $(selector + '.percentage', this.el).val(ehp_change_p);
         }, this);
-        
-        console.log(compareModel.get('ehp'));
     },
     
     renderClass: function() {
