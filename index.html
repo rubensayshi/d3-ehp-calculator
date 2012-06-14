@@ -80,12 +80,16 @@
         <div id="input-template">
         <div class="row-fluid">
             <div class="span12 input-character character">
-                <h3>Input New Character</h3>
-                <div class="alert">
-                    <h4>The stats in your ingame character screen already include a lot of your passives and buffs.</h4>
-                    <p>Below you put in the stats from your character screen and tick the checkboxes for the passives and buffs you already have on you! <br />
-                       That way we will be able to calculate what your stats are without those passives and we need that for good calculations :-)
-                    </p>
+                <h3>Input New Character</h3>          
+                <p><span class="badge badge-info">1</span> &nbsp; Select your class.</p>
+                <p><span class="badge badge-info">2</span> &nbsp; Type in the stats for your ingame character screen.</p>
+                <p><span class="badge badge-info">3</span> &nbsp; Select which passives / buffs you have on <strong><em>ingame</em> at this moment</strong> .</p>
+                <p><span class="badge badge-success">4</span> &nbsp; Click the 'Create Character' button to go to the next step!</p>
+                
+                <div class="alert alert-block">
+                The stats in your ingame character screen already include a lot of your passives and buffs. <br />
+                Below you put in the stats from your character screen and tick the checkboxes for the passives and buffs you already have on you! <br />
+                That way we will be able to calculate what your stats are without those passives and we need that for good calculations :-)
                 </div>
                 <table id="base_options" class="table table-bordered table-striped table-condensed">
                     <thead>
@@ -105,7 +109,7 @@
                 <table id="options" class="table table-bordered table-striped table-condensed">
                     <thead>
                         <tr>
-                            <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span id="dodge_ehp_explained" class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
+                            <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -113,7 +117,7 @@
                 <table id="shared_options" class="table table-bordered table-striped table-condensed">
                     <thead>
                         <tr>
-                            <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span id="dodge_ehp_explained" class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
+                            <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -156,7 +160,7 @@
                         <table id="base_options" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th colspan="3">These are your base stats, without any buffs applied.</th>
+                                    <th colspan="3">These are your base stats, without any passives or buffs applied.</th>
                                 </tr>
                                 <tr>
                                     <th>Option</th>
@@ -177,7 +181,7 @@
                         <table id="options" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th colspan="3">These are the passive and buffs you cant have on.</th>
+                                    <th colspan="3">These are the passive and buffs you can have on.</th>
                                 </tr>
                                 <tr>
                                     <th>Option</th>
@@ -190,7 +194,7 @@
                         <table id="extra_options" class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr>
-                                    <th colspan="3">These are the passive and buffs you cant have on.</th>
+                                    <th colspan="3">These are the passive and buffs you can have on.</th>
                                 </tr>
                                 <tr>
                                     <th>Option</th>
@@ -279,10 +283,10 @@
                         </div>
                     </div>
                     <div class="tab-pane item-compare" id="tab2">
-                        <p><span id="dodge_ehp_explained" class="badge badge-info">1</span> &nbsp; Select which item slot you want to compare.</p>
-                        <p><span id="dodge_ehp_explained" class="badge badge-info">2</span> &nbsp; Type in the stats for your current item.</p>
-                        <p><span id="dodge_ehp_explained" class="badge badge-info">3</span> &nbsp; And Type in the stats for your new item.</p>
-                        <p><span id="dodge_ehp_explained" class="badge badge-important">4</span> &nbsp; Check out the stat changes at the bottom of the screen!</p>
+                        <p><span class="badge badge-info">1</span> &nbsp; Select which item slot you want to compare.</p>
+                        <p><span class="badge badge-info">2</span> &nbsp; Type in the stats for your current item.</p>
+                        <p><span class="badge badge-info">3</span> &nbsp; And Type in the stats for your new item.</p>
+                        <p><span class="badge badge-success">4</span> &nbsp; Check out the stat changes at the bottom of the screen!</p>
                         
                         <div class="alert alert-block">
                         We only compare stats for the selected slot, so when you switch to a different slot then the stats at the bottom reflect that item change, it won't display all the item changes together.
