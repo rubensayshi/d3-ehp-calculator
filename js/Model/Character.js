@@ -103,37 +103,145 @@ var Character = Backbone.Model.extend({
         return item;
     },
 
-    /*
-     * these modify methods should be implemented by specific class classes
-     *  the modifyBase* methods will modify the base stat before the modifier is applied
-     *  the modify*Modifier methods will modify the modifier (most of the time that starts on 1) and is applied to the base afterwards
-     *
-     * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
-     */
-    modifyBaseArmor              : function (armor)          { return armor; },
-    modifyArmorModifier          : function (armormodifier)  {
+    modifyBaseArmor : function (armor) { 
+        if (this.get('nervesofsteel')) {
+            armor += this.get('vit');
+        }
+        
+        if (this.get('seize_the_initiative')) {
+            armor += this.get('base_dex');
+        }
+        
+        return armor; 
+    },
+    
+    modifyArmorModifier : function (armormodifier) {
         if (this.get('enchantress')) {
             armormodifier += .15;
         }
         
+        // any version of warcry gives 20%
+        if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life') || this.get('warcry_dodge')) {
+            armormodifier += .2;
+        }
+        // warcry runed for armor gives an aditional 20%
+        if (this.get('warcry_armor')) {
+            armormodifier += .2;
+        }
+
+        if (this.get('toughasnails')) {
+            armormodifier += .25;
+        }
+        
+        if (this.get('mantra_of_evasion_armor')) {
+            armormodifier += .20;
+        }
+        
+        if (this.get('deadly_reach_keen_eye')) {
+            armormodifier += .50;
+        }
+
+        
         return armormodifier; 
     },
-    modifyBaseResist             : function (resist)         { return resist; },
-    modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
-    modifyBaseLife               : function (life)           { return life; },
-    modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
-    modifyDodgeChance            : function (dodgechance)    { return dodgechance; },
-    modifyReductionModifier      : function (modifier)       {
+    
+    modifyBaseResist : function (resist) { 
+        return resist; 
+    },
+    
+    modifyResistModifier : function (resistmodifier) { 
+        if (this.get('warcry_resist')) {
+            resistmodifier += .50;
+        }
+        
+        if (this.get('mantra_of_healing_time')) {
+            resistmodifier += .20;
+        }
+        
+        return resistmodifier; 
+    },
+    
+    modifyBaseLife : function (life) { 
+        return life; 
+    },
+    
+    modifyLifeModifier : function (lifemodifier) { 
+        if (this.get('warcry_life')) {
+            lifemodifier += 0.10;
+        }
+        
+        if (this.get('mantra_of_healing_heavenly')) {
+            lifemodifier += .10;
+        }
+        
+        if (this.get('mystic_ally_earth')) {
+            lifemodifier += .10;
+        }
+        
+        return lifemodifier; 
+    },
+    
+    modifyDodgeChance : function (dodgechance) { 
+        if (this.get('warcry_dodge')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('the_guardians_path')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('fists_of_thunder_flash')) {
+            dodgechance *= (1 - 0.16);
+        }
+        
+        return dodgechance; 
+    },
+    
+    modifyReductionModifier : function (modifier) {
         if (this.get('melee')) {
             modifier *= (1 - 0.30);
+        }
+        
+        if (this.get('threat_shout')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        if (this.get('resolve')) {
+            modifier *= (1 - 0.25);
+        }
+        
+        if (this.get('crippling_wave_concussion')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        if (this.get('mantra_of_conv_intimid')) {
+            modifier *= (1 - 0.10);
         }
 
         return modifier;
     },
-    modifyReductionModifierMelee  : function (modifier)       { return modifier; },
-    modifyReductionModifierRanged : function (modifier)       { return modifier; },
-    modifyReductionModifierMagic  : function (modifier)       { return modifier; },
+    
+    modifyReductionModifierMelee : function (modifier) { 
+        return modifier; 
+    },
+    
+    modifyReductionModifierRanged : function (modifier) { 
+        return modifier; 
+    },
+    
+    modifyReductionModifierMagic : function (modifier) { 
+        if (this.get('superstition')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        return modifier; 
+    },
 
+       
     getDodgeFromExtraDex : function() {
         var basedex  = this.get('base_dex');
         var extradex = this.get('extra_dex');
