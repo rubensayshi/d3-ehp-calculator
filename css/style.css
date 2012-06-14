@@ -10,11 +10,12 @@ body {
     display: none;
 }
 
-.highlighted-row th, .highlighted-row td {
-    border-bottom: 1px solid black;
+table thead > *:first-child > * {
+    background-color: #F9F9F9;
 }
-table {}
-thead th {
+
+table thead > *:last-child > * {
+    background-color: #F9F9F9;
     border-bottom: 1px solid black;
 }
 
@@ -44,3 +45,23 @@ td input, td select {
 
 a:active { outline: none; -moz-outline-style: none; }
 a:focus  { outline: none; -moz-outline-style: none; }
+
+.character tr > *:nth-child(1) {
+    width: 35%;
+}
+.character tr > *:nth-child(2) {
+    width: 30%;
+}
+.character tr > *:nth-child(3) {
+    width: 35%;
+}
+
+.input-character tr > *:nth-child(1) {
+    width: 35%;
+}
+.input-character tr > *:nth-child(2) {
+    width: 30%;
+}
+.input-character tr > *:nth-child(3) {
+    width: 35%;
+}
