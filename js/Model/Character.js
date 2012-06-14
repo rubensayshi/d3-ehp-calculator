@@ -234,6 +234,7 @@ var Character = Backbone.Model.extend({
         dodgechance *= (1 - (this.get('dodge') / 100));
         dodgechance = this.modifyDodgeChance(dodgechance);
         dodgechance = 1 - dodgechance;
+        this.set('dodge', dodgechance);
                     
         var dodgemodifier = 1 - dodgechance;
 

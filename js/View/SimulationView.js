@@ -191,7 +191,7 @@ var SimulationView = Backbone.View.extend({
             }            
         }, this);
         
-        _.each(['life', 'armor', 'armor_reduc', 'resist', 'resist_reduc'], function(buffed_stats_field) {
+        _.each(['life', 'armor', 'armor_reduc', 'resist', 'resist_reduc', 'dodge'], function(buffed_stats_field) {
             var selector = this.getCharacterSelector(buffed_stats_field);
             var $fieldObj = $(selector,  this.el);
 
@@ -348,7 +348,7 @@ var SimulationView = Backbone.View.extend({
     },
 
     prepareVal: function(val, field, dec) {
-        if (field == 'armor_reduc' || field == 'resist_reduc' || field == '%') {
+        if (field == 'armor_reduc' || field == 'resist_reduc' || field == 'dodge' || field == '%') {
             dec = dec != undefined ? dec : 2;
             
             val *= 100;
