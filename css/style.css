@@ -2,10 +2,6 @@ body {
     overflow-y: scroll;
 }
 
-.cp {
-    margin-bottom: 20px;
-}
-
 .templates {
     display: none;
 }

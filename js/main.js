@@ -50,4 +50,4 @@ CharacterList.fetch();
 gahandler.logVersion(VERSION);
 
 $('.auto_tooltip').tooltip();
-var mainView = new MainView({'el': $("#container")});
+var mainView = new MainView({'el': $("body")});
