@@ -36,7 +36,7 @@ var InputView = SimulationView.extend({
         optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
         optionInfo['alt']   = optionInfo['alt']   || "";
         
-        var $row, $col1, $col2, $col3, $input, $alt;
+        var $row, $col1, $col2, $input, $alt;
         
         $row = $('<tr />')
                     .appendTo($parent);
@@ -44,8 +44,6 @@ var InputView = SimulationView.extend({
                     .append($('<span />').html(optionInfo['title']).attr('title', optionInfo['alt']))
                     .appendTo($row);
         $col2 = $('<td />')
-                    .appendTo($row);
-        $col3 = $('<td />')
                     .appendTo($row);
         
         if (optionInfo['type'] == 'checkbox') {
