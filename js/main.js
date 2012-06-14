@@ -28,6 +28,10 @@ if (localStorage) {
 }
 
 var normalizeFloat = function(value, optionName, alertOnError) {
+    if (value === '') {
+        value = 0;
+    }
+    
     var res = parseFloat(value);
 
     if (isNaN(res) || (res != value && res == parseInt(value))) {
