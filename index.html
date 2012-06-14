@@ -26,14 +26,20 @@
     <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">Diablo 3 EHP Calculator</a>
+                <div class="pull-right cp">
+                    <button class="btn btn-primary manage_chars"><i class="icon-user icon-white"></i> Manage Characters</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="container" class="container-fluid">
         <div class="row-fluid">
           <div id="content" class="span9"></div>
-            <div id="sidebar" class="span3">
-                <div class="cp">
-                    <button class="btn btn-primary manage_chars"><i class="icon-user icon-white"></i> Manage Characters</button>
-                </div>
-                
+            <div id="sidebar" class="span3 hidden-phone">
                 <div class="latest-update">
                     <h3>Latest Update</h3>
                     <p><strong>Item Compare has been added!</strong> <br />
@@ -57,7 +63,20 @@
     <div class="templates">
         <div id="intro-template">
             <div class="row-fluid">
-                <div class="span5">
+                <div class="span12">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active"> <a href="#tab1" data-toggle="tab">Select or Create a Character</a> </li>
+                        </ul>
+                    </div>
+                    <div class="well">
+                        <ul class="character-list well unstyled"></ul>
+                        <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>             
+                    </div>    
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
                     <h3>Welcome <small>to the D3 EHP Calculator</small></h3>
                     <p>This is an open source effort to provide you with a tool to (easily) calculator your EHP and
                         to be able to compare which skills and items might provide you with the greatest benefit!
@@ -67,26 +86,24 @@
                         <br />
                         For other discussions or just telling me you like the tool you can use <a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">the topic on diablofans.com</a>
                     </p>                 
+                </div>        
                 </div>
-                <div class="span7">
-                    <h3>Select or Create a Character</h3>
-                    <div class="well">
-                        <ul class="character-list well unstyled"></ul>
-                        <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>             
-                    </div>    
-                </div>
-            </div>
         </div>
         <div id="input-template">
         <div class="row-fluid">
             <div class="span12 input-character character">
-                <h3>Input New Character</h3>          
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active"> <a href="#tab1" data-toggle="tab">Input Character Stats</a> </li>
+                    </ul>
+                </div>       
                 <p><span class="badge badge-info">1</span> &nbsp; Select your class.</p>
                 <p><span class="badge badge-info">2</span> &nbsp; Type in the stats for your ingame character screen.</p>
                 <p><span class="badge badge-info">3</span> &nbsp; Select which passives / buffs you have on <strong><em>ingame</em> at this moment</strong> .</p>
                 <p><span class="badge badge-success">4</span> &nbsp; Click the 'Create Character' button to go to the next step!</p>
                 
-                <div class="alert alert-block">
+                <div id="input-char-alert" class="alert alert-block">
+                <button class="close" data-dismiss="alert">x</button>
                 The stats in your ingame character screen already include a lot of your passives and buffs. <br />
                 Below you put in the stats from your character screen and tick the checkboxes for the passives and buffs you already have on you! <br />
                 That way we will be able to calculate what your stats are without those passives and we need that for good calculations :-)
@@ -148,7 +165,6 @@
         <div id="simulation-template">
         <div class="row-fluid">
             <div class="span12">
-                <h3>D3 EHP Calculator</h3>
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active"> <a href="#tab1" data-toggle="tab">Your Character</a> </li>
@@ -288,8 +304,9 @@
                         <p><span class="badge badge-info">3</span> &nbsp; And Type in the stats for your new item.</p>
                         <p><span class="badge badge-success">4</span> &nbsp; Check out the stat changes at the bottom of the screen!</p>
                         
-                        <div class="alert alert-block">
-                        We only compare stats for the selected slot, so when you switch to a different slot then the stats at the bottom reflect that item change, it won't display all the item changes together.
+                        <div id="item-compare-alert" class="alert alert-block">
+                            <button class="close" data-dismiss="alert">x</button>
+                            We only compare stats for the selected slot, so when you switch to a different slot then the stats at the bottom reflect that item change, it won't display all the item changes together.
                         </div>
                         <div class="row-fluid">
                             <div class="span3">

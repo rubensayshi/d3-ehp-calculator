@@ -1,8 +1,9 @@
 var InputView = SimulationView.extend({
     events: {
-        'change .your_class':       'changeClass',
-        'click button.back':        'backToIntro',
-        'click button.create-char': 'createCharacter'
+        'change .your_class':             'changeClass',
+        'click button.back':              'backToIntro',
+        'click #input-char-alert .close': 'closeInputCharAlert', 
+        'click button.create-char':       'createCharacter'
     },
     
     initialize: function() {
@@ -11,6 +12,12 @@ var InputView = SimulationView.extend({
         updateBreadcrumb("input-char");
         
         this.template = _.template($('#input-template').html());
+    },
+    
+    closeInputCharAlert : function() {
+        if (localStorage) {
+            localStorage.setItem('closeInputCharAlert', true);
+        }
     },
     
     backToIntro : function() {
@@ -108,6 +115,10 @@ var InputView = SimulationView.extend({
 
         if (this.model) {
             $classSelect.val(this.model.get('your_class'));
+        }
+        
+        if (localStorage && localStorage.getItem('closeInputCharAlert')) {
+            $('#input-char-alert', this.el).hide();
         }
 
         $("#dodge_ehp_explained").tooltip({

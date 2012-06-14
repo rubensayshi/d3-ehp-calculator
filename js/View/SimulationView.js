@@ -3,6 +3,7 @@ var SimulationView = Backbone.View.extend({
         'change input':              'viewToModel',
         'change .input_select':      'viewToModel',
         'change .your_class':        'changeClass',
+        'click #item-compare-alert .close': 'closeItemCompareAlert', 
         'click button.reset':        'viewToModel'
     },
     
@@ -14,6 +15,12 @@ var SimulationView = Backbone.View.extend({
         updateBreadcrumb("calculator");
 
         this.template = _.template($('#simulation-template').html());
+    },
+    
+    closeItemCompareAlert : function() {
+        if (localStorage) {
+            localStorage.setItem('closeItemCompareAlert', true);
+        }
     },
 
     getSelector: function(fieldname) {
@@ -371,6 +378,10 @@ var SimulationView = Backbone.View.extend({
             this.renderClass();
         } else {
             this.changeClass();
+        }
+        
+        if (localStorage && localStorage.getItem('closeItemCompareAlert')) {
+            $('#item-compare-alert', this.el).hide();
         }
 
         $("#dodge_ehp_explained").tooltip({
