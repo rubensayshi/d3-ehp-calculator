@@ -88,14 +88,14 @@ var Monk = Character.extend({
         mantra_of_evasion:         {"type": "checkbox", "default": false, "title": "Mantra of Evasion", "alternative": true, "dodge_only": true, "alt": "+15% dodge"},
         mantra_of_evasion_armor:   {"type": "checkbox", "default": false, "title": "Mantra of Evasion - Hard Target", "alternative": true, "alt": "an extra +20% armor"},
         mantra_of_healing_time:    {"type": "checkbox", "default": false, "title": "Mantra of Healing - Time of Need", "alternative": true, "alt": "+20% to all resistance"},
-        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+15% dodge"},
+        mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+10% life"},
         mystic_ally_earth:         {"type": "checkbox", "default": false, "title": "Mystic Ally - Earth", "alternative": true, "alt": "+10% life"}
     }),
     
     extra_options : _.extend({}, Character.constructor.extra_options, {       
         mantra_of_conv_intimid:   {"type": "checkbox", "default": false, "title": "Mantra of Conviction - Intimidation", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         deadly_reach_keen_eye:    {"type": "checkbox", "default": false, "title": "Deadly Reach - Keen Eye", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
-        crippling_wave_concussion:{"type": "checkbox", "default": false, "title": "Crippling Wave - Concussion", "alternative": true, 'magic_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"},
+        crippling_wave_concussion:{"type": "checkbox", "default": false, "title": "Crippling Wave - Concussion", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         fists_of_thunder_flash:   {"type": "checkbox", "default": false, "title": "Fists of Thunder - Lightning Flash", "alternative": true, 'dodge_only': true, "tip": "Keep in mind you can't really keep a 100% uptime"}
     }),
     

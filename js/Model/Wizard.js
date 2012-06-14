@@ -6,7 +6,7 @@ var Wizard = Character.extend({
     }),
 
     modifyArmorModifier : function (armormodifier) {
-        if (this.get('energy_armor')) {
+        if (this.get('energy_armor') || this.get('prismatic')) {
             armormodifier += .65;
         }
 
