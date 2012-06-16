@@ -37,38 +37,32 @@ var Character = Backbone.Model.extend({
     gearbag: null,
     new_gearbag: null,
 
-    base_options:  {
-        your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
-            var classes = {};
-            
-            _.each(classlist, function(info, shortname) {
-                classes[shortname] = info[1];
-            }, this);
-            
-            return classes;
-        }},
-        description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
-        level:            {"type": "text", "default": 60,   "title": "Level"},
-        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": {extra_str: 1}},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "dodge_only": true, "alternative": {extra_dex: 1}},
-        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": {extra_int: 1}},
-        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
-        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
-        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
-        base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
-        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
-        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
-        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+    getOptions: function() {
+        return this.constructor.options;
     },
-    options:       {},
-    extra_options: {},
-    shared_options: {
-        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+    
+    getBaseOptions: function() {
+        return this.constructor.base_options;
+    },
+    
+    getExtraOptions: function() {
+        return this.constructor.extra_options;
+    },
+    
+    getSharedOptions: function() {
+        var shared_options = Character.shared_options;
+        
+        _.each(classlist, function(classinfo, shortname) {
+            if (!(this instanceof classinfo[0])) {
+                shared_options = _.extend({}, shared_options, classinfo[0].getClassSharedOptions());
+            }
+        }, this);
+        
+        return shared_options;
     },
     
     getAllOptions: function() {
-        return _.extend({}, this.base_options, this.options, this.extra_options, this.shared_options);
+        return _.extend({}, this.getBaseOptions(), this.getOptions(), this.getExtraOptions(), this.getSharedOptions());
     },
     
     initialize: function () {
@@ -109,37 +103,145 @@ var Character = Backbone.Model.extend({
         return item;
     },
 
-    /*
-     * these modify methods should be implemented by specific class classes
-     *  the modifyBase* methods will modify the base stat before the modifier is applied
-     *  the modify*Modifier methods will modify the modifier (most of the time that starts on 1) and is applied to the base afterwards
-     *
-     * note that if you implement modifyReductionModifier you'll either have to call super or copy the contents of the method here
-     */
-    modifyBaseArmor              : function (armor)          { return armor; },
-    modifyArmorModifier          : function (armormodifier)  {
+    modifyBaseArmor : function (armor) { 
+        if (this.get('nervesofsteel')) {
+            armor += this.get('vit');
+        }
+        
+        if (this.get('seize_the_initiative')) {
+            armor += this.get('base_dex');
+        }
+        
+        return armor; 
+    },
+    
+    modifyArmorModifier : function (armormodifier) {
         if (this.get('enchantress')) {
             armormodifier += .15;
         }
         
+        // any version of warcry gives 20%
+        if (this.get('warcry') || this.get('warcry_armor') || this.get('warcry_resist') || this.get('warcry_life') || this.get('warcry_dodge')) {
+            armormodifier += .2;
+        }
+        // warcry runed for armor gives an aditional 20%
+        if (this.get('warcry_armor')) {
+            armormodifier += .2;
+        }
+
+        if (this.get('toughasnails')) {
+            armormodifier += .25;
+        }
+        
+        if (this.get('mantra_of_evasion_armor')) {
+            armormodifier += .20;
+        }
+        
+        if (this.get('deadly_reach_keen_eye')) {
+            armormodifier += .50;
+        }
+
+        
         return armormodifier; 
     },
-    modifyBaseResist             : function (resist)         { return resist; },
-    modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
-    modifyBaseLife               : function (life)           { return life; },
-    modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
-    modifyDodgeChance            : function (dodgechance)    { return dodgechance; },
-    modifyReductionModifier      : function (modifier)       {
+    
+    modifyBaseResist : function (resist) { 
+        return resist; 
+    },
+    
+    modifyResistModifier : function (resistmodifier) { 
+        if (this.get('warcry_resist')) {
+            resistmodifier += .50;
+        }
+        
+        if (this.get('mantra_of_healing_time')) {
+            resistmodifier += .20;
+        }
+        
+        return resistmodifier; 
+    },
+    
+    modifyBaseLife : function (life) { 
+        return life; 
+    },
+    
+    modifyLifeModifier : function (lifemodifier) { 
+        if (this.get('warcry_life')) {
+            lifemodifier += 0.10;
+        }
+        
+        if (this.get('mantra_of_healing_heavenly')) {
+            lifemodifier += .10;
+        }
+        
+        if (this.get('mystic_ally_earth')) {
+            lifemodifier += .10;
+        }
+        
+        return lifemodifier; 
+    },
+    
+    modifyDodgeChance : function (dodgechance) { 
+        if (this.get('warcry_dodge')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('the_guardians_path')) {
+            dodgechance *= (1 - 0.15);
+        }
+        
+        if (this.get('fists_of_thunder_flash')) {
+            dodgechance *= (1 - 0.16);
+        }
+        
+        return dodgechance; 
+    },
+    
+    modifyReductionModifier : function (modifier) {
         if (this.get('melee')) {
             modifier *= (1 - 0.30);
+        }
+        
+        if (this.get('threat_shout')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        if (this.get('resolve')) {
+            modifier *= (1 - 0.25);
+        }
+        
+        if (this.get('crippling_wave_concussion')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        if (this.get('mantra_of_conv_intimid')) {
+            modifier *= (1 - 0.10);
         }
 
         return modifier;
     },
-    modifyReductionModifierMelee  : function (modifier)       { return modifier; },
-    modifyReductionModifierRanged : function (modifier)       { return modifier; },
-    modifyReductionModifierMagic  : function (modifier)       { return modifier; },
+    
+    modifyReductionModifierMelee : function (modifier) { 
+        return modifier; 
+    },
+    
+    modifyReductionModifierRanged : function (modifier) { 
+        return modifier; 
+    },
+    
+    modifyReductionModifierMagic : function (modifier) { 
+        if (this.get('superstition')) {
+            modifier *= (1 - 0.20);
+        }
+        
+        return modifier; 
+    },
 
+       
     getDodgeFromExtraDex : function() {
         var basedex  = this.get('base_dex');
         var extradex = this.get('extra_dex');
@@ -303,5 +405,40 @@ var Character = Backbone.Model.extend({
         this.set('ehp_dodge_magic', ehp_dodge_magic);
         
         this.on('change', this.simulate);
+    }
+}, {
+    /* -- static properties -- */
+    base_options:  {
+        your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
+            var classes = {};
+            
+            _.each(classlist, function(info, shortname) {
+                classes[shortname] = info[1];
+            }, this);
+            
+            return classes;
+        }},
+        description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
+        level:            {"type": "text", "default": 60,   "title": "Level"},
+        moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": 1},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "alternative": 1},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": 1},
+        base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
+        base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
+        base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
+        base_dodge:       {"type": "text", "default": 10,   "title": "Dodge %"},
+        extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
+        base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction", "alternative": 1, 'melee_only': true},
+        base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true}
+    },
+    options:       {},
+    extra_options: {},
+    shared_options:{
+        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+    },
+    
+    getClassSharedOptions: function() {
+        return {};
     }
 });

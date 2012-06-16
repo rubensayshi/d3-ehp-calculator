@@ -135,10 +135,10 @@ var SimulationView = Backbone.View.extend({
     
     renderOptions: function() {        
         _.each({
-            '#base_options tbody':  this.model.base_options,
-            '#options tbody':       this.model.options,
-            '#extra_options tbody': this.model.extra_options,
-            '#shared_options tbody':this.model.shared_options
+            '#base_options tbody':  this.model.getBaseOptions(),
+            '#options tbody':       this.model.getOptions(),
+            '#extra_options tbody': this.model.getExtraOptions(),
+            '#shared_options tbody':this.model.getSharedOptions()
         }, function(options, parent) {
             var $parent = $(parent, this.el);
             
