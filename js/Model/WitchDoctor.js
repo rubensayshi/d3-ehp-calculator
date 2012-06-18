@@ -25,7 +25,7 @@ var WitchDoctor = Character.extend({
         
         if (this.get('gruesome_feast') > 0) {
             // (10% Int for every healtglobe consumed up to 5) * resist per Int
-            resist += (this.get('gruesome_feast')*(0.1*this.get('base_int'))) * 0.1;
+            resist += (this.get('gruesome_feast')*(0.1*this.get('int'))) * 0.1;
         }
       
       return resist;

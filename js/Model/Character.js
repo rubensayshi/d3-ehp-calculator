@@ -210,9 +210,14 @@ var Character = Backbone.Model.extend({
         this.off('change', this.simulate);
                 
         // grab the base values and set them so we can start modifying that value
+        this.set('str',    this.get('base_str')    + this.get('extra_str'));
+        this.set('dex',    this.get('base_dex')    + this.get('extra_dex'));
+        this.set('int',    this.get('base_int')    + this.get('extra_int'));
+        this.set('vit',    this.get('base_vit'));
+        
         this.set('armor',  this.get('base_armor')  + this.get('extra_armor')  + (this.get('extra_str')*1));
         this.set('resist', this.get('base_resist') + this.get('extra_resist') + (this.get('extra_int')*0.1));
-        this.set('vit',    this.get('base_vit'));
+        
         this.set('dodge',  this.get('base_dodge')  + this.getDodgeFromExtraDex());
 
         // modify the base values (static increases)
