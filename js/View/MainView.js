@@ -76,5 +76,5 @@ var MainView = Backbone.View.extend({
             .queue(function() {
                 $(this).animate({'opacity': 1}, fade/2).dequeue();
             });
-    },
+    }
 });
