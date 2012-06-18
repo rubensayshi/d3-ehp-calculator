@@ -7,6 +7,7 @@
 <head>
     <title>Diablo3 Effective Health Pool Calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     
     <!-- using different cdns (and some local) to spread the load a bit until I can benchmark things properly -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -258,22 +259,22 @@
                             <tbody>
                                 <tr>
                                     <th>Buffed Life</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline life" value="" /></td>
+                                    <td><input type="text" readonly="true" class="input-small form-inline life" value="" /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <th>Buffed Dodge</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline dodge" value="" /></td>
+                                    <td><input type="text" readonly="true" class="input-small form-inline dodge" value="" /></td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <th>Buffed Armor</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline armor" value="" /></td>
+                                    <td><input type="text" readonly="true" class="input-small form-inline armor" value="" /></td>
                                     <td class="armor_reduc"></td>
                                 </tr>
                                 <tr>
                                     <th>Buffed Resistance</th>
-                                    <td><input type="text" readonly=true class="input-small form-inline resist" value="" /></td>
+                                    <td><input type="text" readonly="true" class="input-small form-inline resist" value="" /></td>
                                     <td class="resist_reduc"></td>
                                 </tr>
                             </tbody>
@@ -296,23 +297,23 @@
                                     <tbody>
                                         <tr>
                                             <th>EHP</th>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp" value="" /></td>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge" value="" /></td>
                                         </tr>
                                         <tr>
                                             <th>EHP melee</th>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_melee" value="" /></td>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_melee" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_melee" value="" /></td>
                                         </tr>
                                         <tr>
                                             <th>EHP ranged</th>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" /></td>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_ranged" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_ranged" value="" /></td>
                                         </tr>
                                         <tr>
                                             <th>EHP magic</th>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_magic" value="" /></td>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_magic" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_magic" value="" /></td>
                                         </tr>
                                         <tr class="highlighted-row">
                                             <th>EHP elite</th>
@@ -367,45 +368,45 @@
                                     <tr>
                                         <th>EHP</th>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp percentage" value="" />
                                         </td>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_dodge" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_dodge percentage" value="" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>EHP melee</th>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_melee" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_melee percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_melee" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_melee percentage" value="" />
                                         </td>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_melee" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_melee percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_dodge_melee" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_dodge_melee percentage" value="" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>EHP ranged</th>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_ranged" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_ranged percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_ranged" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_ranged percentage" value="" />
                                         </td>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_ranged" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_ranged percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_dodge_ranged" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_dodge_ranged percentage" value="" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>EHP magic</th>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_magic" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_magic percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_magic" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_magic percentage" value="" />
                                         </td>
                                         <td>
-                                            <input type="text" readonly=true class="input-small form-inline ehp_dodge_magic" value="" />
-                                            <input type="text" readonly=true class="input-xsmall form-inline ehp_dodge_magic percentage" value="" />
+                                            <input type="text" readonly="true" class="input-small form-inline ehp_dodge_magic" value="" />
+                                            <input type="text" readonly="true" class="input-xsmall form-inline ehp_dodge_magic percentage" value="" />
                                         </td>
                                     </tr>
                                     <tr class="highlighted-row">
