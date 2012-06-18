@@ -1,7 +1,7 @@
 var ItemView = Backbone.View.extend({
     title: '-',
     events: {
-        'change input': 'viewToModel',
+        'change input': 'viewToModel'
     },
 
     initialize: function() {
