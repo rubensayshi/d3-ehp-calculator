@@ -25,7 +25,7 @@ var Monk = Character.extend({
 
     modifyBaseArmor : function (armor) {
         if (this.get('seize_the_initiative')) {
-               armor += this.get('base_dex');
+               armor += this.get('dex');
         }
 
         return armor;

@@ -1,6 +1,6 @@
 var IntroView = Backbone.View.extend({
     events: {
-        'click button.add-character': 'newCharacter',
+        'click button.add-character': 'newCharacter'
     },
     
     newCharacter : function() {
