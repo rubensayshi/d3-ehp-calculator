@@ -61,3 +61,7 @@ a:focus  { outline: none; -moz-outline-style: none; }
 .input-character tr > *:nth-child(3) {
     width: 35%;
 }
+
+#adcontainer {
+    margin-top: 20px;
+}

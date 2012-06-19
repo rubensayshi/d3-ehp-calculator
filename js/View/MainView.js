@@ -3,6 +3,7 @@ var MainView = Backbone.View.extend({
         'click button.manage_chars': 'manageChars'  
     },
     currentView : null,
+    first: true,
     
     initialize: function() {
         _.bindAll(this);
@@ -47,7 +48,12 @@ var MainView = Backbone.View.extend({
         displayCp     = true;
         displayUpdate = true;
         displayBugs   = true;
-                
+        
+        if (this.first) {
+            this.first = false;
+            fade = 0;
+        }
+                        
         if (this.currentView instanceof IntroView) {
             displayCp   = false;
             displayBugs = false;
