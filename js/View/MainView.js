@@ -1,3 +1,12 @@
+/*
+ * ADPREF is version string which we use to store disabling of ads in localcache
+ * when we want to enforce ads to everyone agian we can change this
+ */
+var ADPREF = "AD_20120619",
+    ADPREF_STATE_FIRSTVIEW  = 1,
+    ADPREF_STATE_SECONDVIEW = 2,
+    ADPREF_STATE_DISABLED   = 3;
+    
 var MainView = Backbone.View.extend({
     events: {
         'click button.manage_chars': 'manageChars'  
@@ -19,8 +28,57 @@ var MainView = Backbone.View.extend({
                 return this.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': charFromUrl}); });
             }
         }
+        
+        this.setupAdPref();
 
         return this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+    },
+    
+    setupAdPref: function() {
+        if (!localStorage) {
+            return;
+        }
+        
+        var state = localStorage.getItem(ADPREF);
+            state = state || ADPREF_STATE_FIRSTVIEW;
+
+        if (state == ADPREF_STATE_FIRSTVIEW) {
+            
+            _gaq.push(['_trackEvent', 'ads', 'firstview', ADPREF]);
+            localStorage.setItem(ADPREF, ADPREF_STATE_SECONDVIEW);
+            
+            $('#adcontainer').show();
+            $('#adcontainer').append($('<div class="alert" />').html("Returning visitors can disable the ads."));
+            
+        } else if (state == ADPREF_STATE_SECONDVIEW) {
+            
+            _gaq.push(['_trackEvent', 'ads', 'secondview', ADPREF]);
+            
+            $('#adcontainer').show();
+            $('#adcontainer').append(
+                 $('<div class="alert" />')
+                     .html("As a returning visitor you can now disable the ads.")
+                     .append(
+                         $('<div style="text-align: right;"><br /></div>').append(
+                         $('<button class="btn" />')
+                             .html("I don't like ads")
+                             .click(function() {
+                                 if (confirm("This will remove the ad block for a (long) while, you sure :( ?")) {
+                                     _gaq.push(['_trackEvent', 'ads', 'disable', ADPREF]);
+                                     localStorage.setItem(ADPREF, ADPREF_STATE_DISABLED);
+                                     $('#adcontainer').hide(300);
+                                 }
+                              })
+                         )
+                )
+            );
+            
+        } else {
+            
+            _gaq.push(['_trackEvent', 'ads', 'disabled', ADPREF]);
+            
+            $('#adcontainer').hide();
+        }
     },
     
     getContentEl: function() {

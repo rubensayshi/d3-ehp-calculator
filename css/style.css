@@ -64,4 +64,10 @@ a:focus  { outline: none; -moz-outline-style: none; }
 
 #adcontainer {
     margin-top: 20px;
+    text-align: right;
+}
+
+#adcontainer .alert {
+    text-align: left;
+    padding-right: 14px;
 }
