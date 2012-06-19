@@ -11,6 +11,7 @@ var IntroView = Backbone.View.extend({
         _.bindAll(this);
         
         updateBreadcrumb("intro");
+        if (gahandler) gahandler.introPage();
 
         this.template = _.template($('#intro-template').html());
     },
