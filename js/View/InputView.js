@@ -10,6 +10,7 @@ var InputView = SimulationView.extend({
         _.bindAll(this);
         
         updateBreadcrumb("input-char");
+        if (gahandler) gahandler.inputPage();
         
         this.template = _.template($('#input-template').html());
     },
@@ -97,10 +98,6 @@ var InputView = SimulationView.extend({
         this.renderOptions();
         this.modelToView();
         $(".auto_tooltip").tooltip();
-        
-        if (gahandler) {
-            gahandler.changeClass(classname);
-        }
     },
     
     render: function() {
