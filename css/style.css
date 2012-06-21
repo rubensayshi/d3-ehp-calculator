@@ -62,6 +62,11 @@ a:focus  { outline: none; -moz-outline-style: none; }
     width: 35%;
 }
 
+#donatecontainer {
+    margin-top: 20px;
+    text-align: right;
+}
+
 #adcontainer {
     margin-top: 20px;
     text-align: right;
