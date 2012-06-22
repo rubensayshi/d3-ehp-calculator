@@ -199,9 +199,12 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="tabbable">
+                    <div class="pull-right">
+                    </div>
                     <ul class="nav nav-tabs">
                         <li class="active"> <a href="#tab1" data-toggle="tab">Your Character</a> </li>
                         <li> <a href="#tab2" data-toggle="tab">Item Compare</a> </li>
+                        <li> <a href="#tab3" data-toggle="tab">Stat Weight</a> </li>
                     </ul>
                 </div>
                 <div class="tab-content">
@@ -424,6 +427,22 @@
                             </table>
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane statweight" id="tab3">
+                    <table id="statweight" class="table table-bordered table-striped table-condensed">
+                        <thead>
+                            <tr>
+                                <th colspan="3">These are the stat weights, based on your current stats.</th>
+                            </tr>
+                            <tr>
+                                <th>Stat</th>
+                                <th>EHP</th>
+                                <th>VIT Equivelant <span class="label label-info auto_tooltip" title="VIT Equivelant is EHP normalized back to VIT.">?</span></th>
+                                <th>%%</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>

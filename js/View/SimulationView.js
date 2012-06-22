@@ -31,6 +31,10 @@ var SimulationView = Backbone.View.extend({
         return '.character ' + this.getSelector(fieldname);
     },
 
+    getStatWeightSelector: function(fieldname) {
+        return '.statweight ' + this.getSelector(fieldname);
+    },
+
     getItemCompareSelector: function(fieldname) {
         return '.item-compare ' + this.getSelector(fieldname);
     },
@@ -55,6 +59,40 @@ var SimulationView = Backbone.View.extend({
         }, this);
 
         this.model.save();
+    },
+
+    renderStatWeightRow: function($parent, optionInfo, optionName) {
+        optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
+        optionInfo['alt']   = optionInfo['alt']   || "";
+
+        var altamount = typeof(optionInfo['alternative']) == 'object' ? 1 : optionInfo['alternative'];
+        
+        var $row, $col1, $col2, $col3, $col4, $input, $alt;
+        $row = $('<tr />')
+                .addClass(optionName + "_alt_ehp")
+                .appendTo($parent);
+        $col1 = $('<th />')
+                .html("+"+altamount+" "+optionInfo['title']+"<br />")
+                .attr('title', optionInfo['alt'])
+                .appendTo($row);
+        $col2 = $('<td />')
+                .appendTo($row);
+        $col3 = $('<td />')
+                .appendTo($row);
+        $col4 = $('<td />')
+                .appendTo($row);
+                
+        _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only'], function(x_only) {
+            if (typeof(optionInfo[x_only]) != 'undefined') {
+                $row.addClass(x_only);                        
+            }
+        });
+
+        $('<span />').addClass('statweight_ehp').appendTo($col2);
+        $('<span />').addClass('statweight_viteq').appendTo($col3);
+        $('<span />').addClass('statweight_percentage').appendTo($col4);
+        
+    
     },
     
     renderOptionRow: function($parent, optionInfo, optionName) {
@@ -110,20 +148,25 @@ var SimulationView = Backbone.View.extend({
         }                
         
         if (typeof(optionInfo['alternative']) != 'undefined') {
-            if (typeof optionInfo['alternative'] == 'boolean') {
-                $alt = $col3;
-            } else {
+            if (typeof optionInfo['alternative'] != 'boolean') {
                 var altamount = typeof(optionInfo['alternative']) == 'object' ? 1 : optionInfo['alternative'];
-                
-                $alt = $('<strong />').html("+"+altamount+" "+optionInfo['title']+"<br />").appendTo($col3);
-                $alt = $('<span />');
+                $col3.append($('<strong />').html("+"+altamount+" "+optionInfo['title']));
             }
 
+            $altinfo = $('<i class="pull-right" />').appendTo($col3);
+                       $('<br />').appendTo($col3);
+            $alt     = $('<span />').appendTo($col3);
+
             $alt.addClass(optionName + "_alt_ehp");
+            $alt.addClass("alt_ehp");
             
-            _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only'], function(x_only) {
-                if (typeof(optionInfo[x_only]) != 'undefined') {
-                    $alt.addClass(x_only);                        
+            _.each(['magic', 'melee', 'ranged', 'dodge'], function(x_only) {
+                var x_prop  = x_only + '_only';
+                var x_title = x_only + ' only'; 
+                
+                if (typeof(optionInfo[x_prop]) != 'undefined') {
+                    $altinfo.html(x_title);
+                    $alt.addClass(x_prop);                        
                 }
             });
             
@@ -151,6 +194,11 @@ var SimulationView = Backbone.View.extend({
             _.each(options, function(optionInfo, optionName) { 
                 this.renderOptionRow($parent, optionInfo, optionName); 
             }, this);
+        }, this);
+        
+        var $parent = $('#statweight tbody', this.el);
+        _.each(['base_str', 'base_dex', 'base_int', 'base_vit', 'base_armor', 'base_resist', 'extra_life', 'base_melee_reduc', 'base_ranged_reduc'], function(optionName) { 
+            this.renderStatWeightRow($parent, this.model.base_options[optionName], optionName); 
         }, this);
     },
     
@@ -205,27 +253,28 @@ var SimulationView = Backbone.View.extend({
             this.toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
         }, this);
         
+        var vit_model = this.model.clone();
+        vit_model.set('base_vit', vit_model.get('base_vit')+1);
+        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
+        
         _.each(alternatives, function(alt, alt_field) {
-            var alt_stats   = alt[0];
-            var reltosource = alt[1];
-            var selector    = this.getCharacterSelector(alt_field + "_alt_ehp");
-            var alt_model   = this.model.clone();
+            var alt_stats     = alt[0];
+            var reltosource   = alt[1];
+            var statweightsel = this.getStatWeightSelector(alt_field + "_alt_ehp");
+            var charactersel  = this.getCharacterSelector(alt_field + "_alt_ehp");
+            var alt_model     = this.model.clone();
             
             alt_model.set(alt_stats);
 
-            var alt_ehp_title = 'EHP', alt_ehp_field = 'ehp';
+            var alt_ehp_field = 'ehp';
 
-            if($(selector, this.el).hasClass('melee_only')) {
-                alt_ehp_title = "EHP melee";
+            if($(charactersel, this.el).hasClass('melee_only')) {
                 alt_ehp_field = "ehp_melee";
-            } else if($(selector, this.el).hasClass('ranged_only')) {
-                alt_ehp_title = "EHP ranged";
+            } else if($(charactersel, this.el).hasClass('ranged_only')) {
                 alt_ehp_field = "ehp_ranged";
-            } else if($(selector, this.el).hasClass('magic_only')) {
-                alt_ehp_title = "EHP magic";
+            } else if($(charactersel, this.el).hasClass('magic_only')) {
                 alt_ehp_field = "ehp_magic";
-            } else if($(selector, this.el).hasClass('dodge_only')) {
-                alt_ehp_title = "EHP dodge";
+            } else if($(charactersel, this.el).hasClass('dodge_only')) {
                 alt_ehp_field = "ehp_dodge";
             }
             
@@ -234,13 +283,25 @@ var SimulationView = Backbone.View.extend({
             
             var ehp_change   = alt_ehp - ehp;
             var ehp_change_p = (ehp_change / (reltosource ? ehp : alt_ehp));
+            var viteq        = ehp_change / vit_ehp;
+            
 
             ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change, '', 0))  : this.prepareVal(ehp_change, '', 0);
             ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
+            viteq        = (viteq > 0)        ? ("+" + this.prepareVal(viteq, '', 2))       : this.prepareVal(viteq);
+
+            $(charactersel, this.el).html("");
+            $(charactersel, this.el).append(
+                                        $('<em />').html(ehp_change + " EHP"), 
+                                        $('<em />').html(viteq + " VITeq"), 
+                                        $('<em />').html(ehp_change_p)
+                                    );
             
-            var html = "" + ehp_change + " " + alt_ehp_title + "; " + ehp_change_p;
+            $('.statweight_ehp',        $(statweightsel, this.el)).html(ehp_change);
+            $('.statweight_viteq',      $(statweightsel, this.el)).html(viteq);
+            $('.statweight_percentage', $(statweightsel, this.el)).html(ehp_change_p);
+
             
-            $(selector, this.el).html(html);
         }, this);
     },
 
