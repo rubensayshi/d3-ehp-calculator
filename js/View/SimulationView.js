@@ -15,6 +15,8 @@ var SimulationView = Backbone.View.extend({
         updateBreadcrumb("calculator");
 
         this.template = _.template($('#simulation-template').html());
+        
+        this.options.settings.on('change display_as', this.modelToView);
     },
     
     closeItemCompareAlert : function() {
@@ -289,11 +291,14 @@ var SimulationView = Backbone.View.extend({
             ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change, '', 0))  : this.prepareVal(ehp_change, '', 0);
             ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
             viteq        = (viteq > 0)        ? ("+" + this.prepareVal(viteq, '', 2))       : this.prepareVal(viteq);
-
+            
+            var $fixedchange = this.options.settings.get('display_as') == Settings.DISPLAY_AS_EHP ? 
+                        $('<em />').html(ehp_change + " EHP") :
+                        $('<em />').html(viteq + " VITeq");
+            
             $(charactersel, this.el).html("");
             $(charactersel, this.el).append(
-                                        $('<em />').html(ehp_change + " EHP"), 
-                                        $('<em />').html(viteq + " VITeq"), 
+                                        $fixedchange,
                                         $('<em />').html(ehp_change_p)
                                     );
             

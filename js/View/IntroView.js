@@ -4,7 +4,7 @@ var IntroView = Backbone.View.extend({
     },
     
     newCharacter : function() {
-        this.mainView.changeView(function(contentEl, mainView) { return new InputView({'el': contentEl, 'mainView': mainView}); });
+        this.mainView.changeView(function(contentEl, mainView, settings) { return new InputView({'el': contentEl, 'mainView': mainView, 'settings': settings}); });
     },
     
     initialize: function() {
@@ -37,7 +37,7 @@ var IntroView = Backbone.View.extend({
                       'text-align': 'left'
                 })
                 .click(_.bind(function() {
-                    this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': character}); });
+                    this.mainView.changeView(function(contentEl, mainView, settings) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': character, 'settings': settings}); });
                 }, this))
                 .appendTo($li);
             

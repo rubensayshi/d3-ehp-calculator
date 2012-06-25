@@ -25,13 +25,42 @@ var MainView = Backbone.View.extend({
             var charFromUrl = CharacterList.get(match[1]);
             
             if (charFromUrl) {
-                return this.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': charFromUrl}); });
+                return this.changeView(function(contentEl, mainView, settings) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': charFromUrl, 'settings': settings}); });
             }
         }
-        
+
+        this.setupSettings();
         this.setupAdPref();
 
-        return this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+        return this.changeView(function(contentEl, mainView, settings) { return new IntroView({'el': contentEl, 'mainView': mainView, 'settings': settings}); });
+    },
+    
+    setupSettings: function() {
+        var settings = this.options.settings;
+        
+        var setSelected = function(sel) {
+            var sel = sel || settings.get('display_as');
+                        
+            $('li:not(#display_as_'+sel+') input', $('#settings')).attr('checked', false);
+            $('li#display_as_'+sel+' input', $('#settings')).attr('checked', true);
+        };
+        
+        $('#display_as_EHP', this.el).click(function(e) {
+            e.preventDefault();
+            settings.set('display_as', Settings.DISPLAY_AS_EHP);
+            
+            setSelected();
+        });
+        
+        $('#display_as_VITeq', this.el).click(function(e) {
+            e.preventDefault();            
+            settings.set('display_as', Settings.DISPLAY_AS_VITEQ);
+            
+            setSelected();
+        });
+        
+        setSelected();
+        
     },
     
     setupAdPref: function() {
@@ -86,7 +115,7 @@ var MainView = Backbone.View.extend({
     },
     
     manageChars: function() {
-        return this.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+        return this.changeView(function(contentEl, mainView, settings) { return new IntroView({'el': contentEl, 'mainView': mainView, 'settings': settings}); });
     },
     
     changeView: function(currentView) {
@@ -96,7 +125,7 @@ var MainView = Backbone.View.extend({
         
         if (typeof currentView == 'function') {
             viewEl = this.getContentEl();
-            currentView = currentView(viewEl, this);
+            currentView = currentView(viewEl, this, this.options.settings);
         }
         
         this.currentView = currentView;
