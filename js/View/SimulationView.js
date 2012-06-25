@@ -205,7 +205,7 @@ var SimulationView = Backbone.View.extend({
     },
     
 
-    toField: function($fieldObj, selector, fieldName, fieldValue) {
+    toField: function($fieldObj, fieldName, fieldValue) {
         if ($fieldObj.is('span') || $fieldObj.is('td')) {
             $fieldObj.html(this.prepareVal(fieldValue, fieldName));
         } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
@@ -220,13 +220,17 @@ var SimulationView = Backbone.View.extend({
     },
 
     modelToView: function() {
+        var vit_model = this.model.clone();
+        vit_model.set('base_vit', vit_model.get('base_vit')+1);
+        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
+        
         var alternatives = {};
         
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
             var selector = this.getCharacterSelector(optionName);
             var $fieldObj = $(selector,  this.el);
 
-            this.toField($fieldObj, selector, optionName, this.model.get(optionName));
+            this.toField($fieldObj, optionName, this.model.get(optionName));
             
             if (typeof(optionInfo['alternative']) != 'undefined') {
                 if (typeof optionInfo['alternative'] == 'object') {
@@ -245,19 +249,13 @@ var SimulationView = Backbone.View.extend({
             var selector = this.getCharacterSelector(buffed_stats_field);
             var $fieldObj = $(selector,  this.el);
 
-            this.toField($fieldObj, selector, buffed_stats_field, this.model.get(buffed_stats_field));
+            this.toField($fieldObj, buffed_stats_field, this.model.get(buffed_stats_field));
         }, this);
-        
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
-            var selector = this.getCharacterSelector(ehp_field);
-            var $fieldObj = $(selector,  this.el);
 
-            this.toField($fieldObj, selector, ehp_field, this.model.get(ehp_field));
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+            var $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
+            this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
         }, this);
-        
-        var vit_model = this.model.clone();
-        vit_model.set('base_vit', vit_model.get('base_vit')+1);
-        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
         
         _.each(alternatives, function(alt, alt_field) {
             var alt_stats     = alt[0];
@@ -362,6 +360,10 @@ var SimulationView = Backbone.View.extend({
     },
     
     doItemCompare : function(itemslot) {
+        var vit_model = this.model.clone();
+        vit_model.set('base_vit', vit_model.get('base_vit')+1);
+        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
+        
         var curItem = this.model.getItemForSlot(itemslot, this.model.gearbag);
         var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
         
@@ -378,19 +380,40 @@ var SimulationView = Backbone.View.extend({
         compareModel.simulate();
         
         _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
-            var selector = this.getItemCompareSelector(ehp_field);
+            var $fieldObj, 
+                viteq_field = ehp_field.replace('ehp', 'viteq'),
+                viteq = this.model.get(ehp_field) / vit_ehp;;
+            
+            // set the EHP field
+            $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
+            this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
+            
+            // set the VITeq field
+            $fieldObj = $(this.getCharacterSelector(viteq_field),  this.el);
+            this.toField($fieldObj, viteq_field, viteq);
+        }, this);
+        
+        
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+            var ehp_selector   = this.getItemCompareSelector(ehp_field),
+                viteq_selector = this.getItemCompareSelector(ehp_field.replace('ehp', 'viteq'));
             
             var ehp     = this.model.get(ehp_field);
             var alt_ehp = compareModel.get(ehp_field);
             
             var ehp_change   = alt_ehp - ehp;
             var ehp_change_p = (ehp_change / ehp);
+            var viteq        = ehp_change / vit_ehp;;
 
             ehp_change   = (ehp_change   > 0) ? ("+" + this.prepareVal(ehp_change, '', 0))  : this.prepareVal(ehp_change, '', 0);
             ehp_change_p = (ehp_change_p > 0) ? ("+" + this.prepareVal(ehp_change_p, '%'))  : this.prepareVal(ehp_change_p, '%');
+            viteq        = (viteq > 0)        ? ("+" + this.prepareVal(viteq, '', 2))       : this.prepareVal(viteq);
 
-            $(selector, this.el).val(ehp_change);
-            $(selector + '.percentage', this.el).val(ehp_change_p);
+            $(ehp_selector, this.el).val(ehp_change);
+            $(ehp_selector + '.percentage', this.el).val(ehp_change_p);
+            
+            $(viteq_selector, this.el).val(viteq);
+            $(viteq_selector + '.percentage', this.el).val(ehp_change_p);
         }, this);
     },
     
