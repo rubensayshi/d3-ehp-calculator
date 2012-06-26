@@ -1,7 +1,8 @@
 var SimulationView = Backbone.View.extend({
     events: {
         'change input':              'viewToModel',
-        'change .input_select':      'viewToModel',
+        'change input':              'viewToModel',
+        'change select':             'viewToModel',
         'change .your_class':        'changeClass',
         'click #item-compare-alert .close': 'closeItemCompareAlert', 
         'click button.reset':        'viewToModel'
