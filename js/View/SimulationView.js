@@ -315,7 +315,7 @@ var SimulationView = Backbone.View.extend({
         
         compareModel.simulate();
         
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
             var selector = this.getItemCompareSelector(ehp_field);
             
             var ehp     = this.model.get(ehp_field);

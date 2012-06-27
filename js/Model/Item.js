@@ -25,7 +25,8 @@ var Item = Backbone.Model.extend({
         base_dodge:       {"type": "text", "default": 0,  "title": "Dodge %"},
         extra_life:       {"type": "text", "default": 0,  "title": "Extra Life %"},
         base_melee_reduc: {"type": "text", "default": 0,  "title": "Melee Reduction"},
-        base_ranged_reduc:{"type": "text", "default": 0,  "title": "Ranged Reduction"}
+        base_ranged_reduc:{"type": "text", "default": 0,  "title": "Ranged Reduction"},
+        base_elite_reduc: {"type": "text", "default": 0,  "title": "Elite Reduction"}
     },
     
     getAllOptions: function() {
