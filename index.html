@@ -64,9 +64,7 @@
                 <div class="latest-update">
                     <h3>Latest Update</h3>
                     <p><span class="label label-inverse">VITeq</span></p>
-                    <p>You can now change settings (top right) to choose between EHP and VITeq for the 'alternatives', VITeq is EHP normalized back to 1 VIT. <br />
-                    Settings aren't stored yet, I'll fix that soon! ;)
-                    </p>
+                    <p>You can now change settings (top right) to choose between EHP and VITeq for the 'alternatives', VITeq is EHP normalized back to 1 VIT. </p>
                     <p><span class="label label-inverse">Ads Suck! (part 2)</span></p>
                     <p>Yea, like all internet users I hate ads too, but if the revenue can cover hosting and allow me to buy a few items from RMAH then I can spend a lot more time on working on the tool! <br />
                        <strong>Nonetheless I added a button for returning visitors to disable the ads.</strong>
@@ -118,12 +116,40 @@
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"> <a href="#character-list" data-toggle="tab">Select or Create a Character</a> </li>
+                            <li> <a href="#intro-ehp" data-toggle="tab">What is EHP?</a> </li>
+                            <li> <a href="#intro-viteq" data-toggle="tab">What is VITeq?</a> </li>
                         </ul>
                     </div>
                     <div class="tab-content">
-                        <div id="character-list" class="well">
+                        <div id="character-list" class="tab-pane active well">
+                        	<h3>Characters</h3>
                             <ul class="character-list well unstyled"></ul>
                             <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>             
+                        </div>
+                        <div id="intro-ehp" class="tab-pane well">
+                        	<h3>What does EHP stand for?</h3>
+                        	<p>I think originally EHP started as 'Effective Hit Points', over the course of years it has gotten a lot of varations and I tent to use 'Effective Health Pool'. <br />
+                        	</p>
+                        	<h3>So what is it?</h3>
+                        	<p>EHP is how much <em>raw</em> damage you can take before you die. 
+                        	</p>
+							<h3>How do you calculate it?</h3>
+                        	<p>
+                        	So we calculate it by taking your HP and then adding all your damage reduction to it. <br />
+                        	Usually this is from multiple sources, such as armor, resistance, skills, passives, etc.
+                        	</p>
+							<h3>Why do you care about EHP?</h3>
+                        	<p>
+                        	Higher EHP means we can take more damage before you die, which means we can survive longer. <br />
+                        	</p>
+                        </div>
+                        <div id="intro-viteq" class="tab-pane well">
+                        	<h3>What does VITeq stand for?</h3>
+                        	<p>VITeq = VITality EQuivalent
+                        	</p>
+                        	<h3>So what is it?</h3>
+                        	<p>It's how much VIT a stat equals to, for example if the calculator says +10 armor is 3 VITeq then that means that 10 armor gives as much EHP as  3 VIT would give you!
+                        	</p>
                         </div>
                     </div>
                 </div>
