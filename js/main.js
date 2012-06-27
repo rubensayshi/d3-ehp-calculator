@@ -26,7 +26,9 @@ if (localStorage) {
         localStorage.setItem('VERSION', VERSION);
     }
 
-    var settings = new Settings(localStorage.getItem('SETTINGS'));
+    var settings = new Settings();
+    settings.localStorage = new Backbone.LocalStorage("Settings");
+    settings.fetch();
 }
 
 var normalizeFloat = function(value, optionName, alertOnError) {

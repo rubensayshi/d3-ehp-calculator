@@ -7,7 +7,7 @@ var Settings = Backbone.Model.extend({
     },
     
     initialize: function () {
-        
+        this.on('change', _.bind(this.save, this));
     }
 }, {
     DISPLAY_AS_EHP   : DISPLAY_AS_EHP,
