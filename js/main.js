@@ -28,6 +28,7 @@ if (localStorage) {
 
     var settings = new Settings();
     settings.localStorage = new Backbone.LocalStorage("Settings");
+    settings.id = 'FIXEDIDFORSETTINGS';
     settings.fetch();
 }
 
