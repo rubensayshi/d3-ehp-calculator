@@ -12,6 +12,9 @@ var Character = Backbone.Model.extend({
         extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
+        block_chance: 0,
+        block_value:  0,
+        incoming_hit: 0,
 
         melee:        false,
 
@@ -60,7 +63,10 @@ var Character = Backbone.Model.extend({
         extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
         base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction",  "alternative": 1, 'melee_only': true},
         base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
-        base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true}
+        base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
+        block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1},
+        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 500},
+        incoming_hit:     {"type": "text", "default": 0,    "title": "Incoming Hit"}
     },
     options:       {},
     extra_options: {},
@@ -293,10 +299,29 @@ var Character = Backbone.Model.extend({
 
         // apply the life modifier
         this.set('life', this.get('life') * lifemodifier);
-
+     
+        // average expected hit after damage reduction
+        var block_perc     = this.get('block_chance') / 100;
+        var block_amt      = this.get('block_value');
+        var expected_hit   = this.get('incoming_hit');
+        var reduced_hit    = expected_hit * modifier; 
+        
+        /*
+        console.log({
+            modifier1:    modifier,
+            expected_hit: expected_hit,
+            reduced_hit:  reduced_hit, 
+            modifier2:     reduced_hit / expected_hit, 
+            blocked_hit:  (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))),
+            block_mod:    (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit
+        }); //*/
+        
+                  modifier = reduced_hit / expected_hit;
+        var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;
+        
         // apply all modifiers
         var ehp             = this.get('life') / modifier;
-        var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
+        var ehp_dodge       = this.get('life') / block_modifier;
         var ehp_melee       = this.get('life') / modifier_melee;
         var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
         var ehp_ranged      = this.get('life') / modifier_ranged;
