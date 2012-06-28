@@ -54,7 +54,7 @@ var Character = Backbone.Model.extend({
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
         base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": {extra_str: 1}},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "dodge_only": true, "alternative": {extra_dex: 1}},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "base_d_only": true, "alternative": {extra_dex: 1}},
         base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": {extra_int: 1}},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
@@ -64,8 +64,8 @@ var Character = Backbone.Model.extend({
         base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction",  "alternative": 1, 'melee_only': true},
         base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
-        block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1},
-        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 500},
+        block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
+        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 500, 'base_b_only': true},
         incoming_hit:     {"type": "text", "default": 0,    "title": "Incoming Hit"}
     },
     options:       {},
@@ -264,25 +264,15 @@ var Character = Backbone.Model.extend({
 
         // add more modifiers
         modifier = this.modifyReductionModifier(modifier);
-
-        // add melee only modifiers
-        var modifier_melee = modifier;
-        modifier_melee *= (1 - (this.get('base_melee_reduc') / 100));
-        modifier_melee = this.modifyReductionModifierMelee(modifier_melee);
-
-        // add ranged only modifiers
-        var modifier_ranged = modifier;
-        modifier_ranged *= (1 - (this.get('base_ranged_reduc') / 100));
-        var modifier_ranged = this.modifyReductionModifierRanged(modifier_ranged);
         
-        // add elite only modifiers
-        var modifier_elite = modifier;
-        modifier_elite *= (1 - (this.get('base_elite_reduc') / 100));
-        var modifier_elite = this.modifyReductionModifierElite(modifier_elite);
-        
-        // add magic only modifiers
-        var modifier_magic = modifier;
-        var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
+        // create the special modifiers
+        var modifiers = {
+            'base':   modifier,
+            'melee':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_melee_reduc')  / 100))),
+            'ranged': this.modifyReductionModifierRanged(modifier * (1 - (this.get('base_ranged_reduc') / 100))),
+            'elite':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_elite_reduc')  / 100))),
+            'magic':  this.modifyReductionModifierMelee( modifier)
+        };
 
         // calculate life based on vit/level
         var lifebylvl = this.get('level') - 25;
@@ -301,20 +291,31 @@ var Character = Backbone.Model.extend({
         this.set('life', this.get('life') * lifemodifier);
      
         // average expected hit after damage reduction
-        var block_perc     = this.get('block_chance') / 100;
-        var block_amt      = this.get('block_value');
-        var expected_hit   = this.get('incoming_hit');
-        var reduced_hit    = expected_hit * modifier; 
+        var block_perc   = this.get('block_chance') / 100;
+        var block_amt    = this.get('block_value');
+        var expected_hit = this.get('incoming_hit');
+        var reduced_hit  = expected_hit * modifier; 
         
-        /*
-        console.log({
-            modifier1:    modifier,
-            expected_hit: expected_hit,
-            reduced_hit:  reduced_hit, 
-            modifier2:     reduced_hit / expected_hit, 
-            blocked_hit:  (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))),
-            block_mod:    (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit
-        }); //*/
+        _.each(resulttypes, function(resulttype) {
+            var modifier       = modifiers[resulttype];
+            var reduced_hit    = expected_hit * modifier; 
+            var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;
+            
+            var ehp     = this.get('life') / modifier;
+            var ehp_d   = this.get('life') / dodgemodifier;
+            var ehp_b   = this.get('life') / block_modifier;
+            var ehp_bnd = this.get('life') / block_modifier / dodgemodifier;
+            
+            this.set('ehp_'+resulttype,        ehp);
+            this.set('ehp_'+resulttype+'_d',   ehp_d);
+            this.set('ehp_'+resulttype+'_b',   ehp_b);
+            this.set('ehp_'+resulttype+'_bnd', ehp_bnd);
+        }, this);
+
+        this.on('change', this.simulate);
+        
+        return;
+        
         
                   modifier = reduced_hit / expected_hit;
         var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;

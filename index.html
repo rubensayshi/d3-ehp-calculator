@@ -110,6 +110,15 @@
         </div>
     </div>    
     <div class="templates">
+        <script type="text/template" id="result-row-template">
+            <tr>
+                <th><%= title %></th>
+                <td><input type="text" readonly="true" class="input-small form-inline ehp_<%= key %>" value="" /></td>
+                <td><input type="text" readonly="true" class="input-small form-inline ehp_<%= key %>_b" value="" /></td>
+                <td><input type="text" readonly="true" class="input-small form-inline ehp_<%= key %>_d" value="" /></td>
+                <td><input type="text" readonly="true" class="input-small form-inline ehp_<%= key %>_bnd" value="" /></td>
+            </tr>
+        </script>
         <div id="intro-template">
             <div class="row-fluid">
                 <div class="span12">
@@ -353,8 +362,8 @@
                             </ul>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane active results" id="character-ehp">
-                                <table class="table table-bordered table-striped table-condensed">
+                            <div class="tab-pane active" id="character-ehp">
+                                <table class="table table-bordered table-striped table-condensed results">
                                     <thead>
                                         <tr>
                                             <th>&nbsp;</th>
@@ -368,35 +377,7 @@
                                                 <br /><small>with dodge &amp; block</small></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th>EHP</th>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_block" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_block_dodge" value="" /></td>
-                                        </tr>
-                                        <tr>
-                                            <th>EHP melee</th>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_melee" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_melee" value="" /></td>
-                                        </tr>
-                                        <tr>
-                                            <th>EHP ranged</th>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_ranged" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_ranged" value="" /></td>
-                                        </tr>
-                                        <tr>
-                                            <th>EHP magic</th>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_magic" value="" /></td>
-                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge_magic" value="" /></td>
-                                        </tr>
-                                        <tr class="highlighted-row">
-                                            <th>EHP elite</th>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_elite" value="" /></td>
-                                            <td><input type="text" readonly=true class="input-small form-inline ehp_dodge_elite" value="" /></td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>

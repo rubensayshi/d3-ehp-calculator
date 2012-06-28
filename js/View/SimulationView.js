@@ -16,6 +16,7 @@ var SimulationView = Backbone.View.extend({
         updateBreadcrumb("calculator");
 
         this.template = _.template($('#simulation-template').html());
+        this.result_row_template = _.template($('#result-row-template').html());
         
         this.options.settings.on('change display_as', this.modelToView);
     },
@@ -162,16 +163,17 @@ var SimulationView = Backbone.View.extend({
 
             $alt.addClass(optionName + "_alt_ehp");
             $alt.addClass("alt_ehp");
-            
-            _.each(['magic', 'melee', 'ranged', 'dodge', 'elite'], function(x_only) {
-                var x_prop  = x_only + '_only';
-                var x_title = x_only + ' only'; 
+
+
+            _.each(alttypes, function(title, resulttype) {
+                var x_prop  = resulttype + '_only';
+                var x_title = title + ' only'; 
                 
                 if (typeof(optionInfo[x_prop]) != 'undefined') {
                     $altinfo.html(x_title);
                     $alt.addClass(x_prop);             
                 }
-            });
+            }, this);
             
             if ($alt != $col3) {
                 $alt.appendTo($col3);
@@ -253,9 +255,13 @@ var SimulationView = Backbone.View.extend({
             this.toField($fieldObj, buffed_stats_field, this.model.get(buffed_stats_field));
         }, this);
 
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
-            var $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
-            this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
+        _.each(resulttypes, function(resulttype) {
+            _.each(['', 'd', 'b', 'bnd'], function(alternative) {
+                var ehp_field = 'ehp_'+resulttype+ (alternative ? '_' + alternative : '');
+                
+                var $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
+                this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
+            }, this);
         }, this);
         
         _.each(alternatives, function(alt, alt_field) {
@@ -267,20 +273,15 @@ var SimulationView = Backbone.View.extend({
             
             alt_model.set(alt_stats);
 
-            var alt_ehp_field = 'ehp';
+            var alt_ehp_field = 'ehp_base';
 
-            if($(charactersel, this.el).hasClass('melee_only')) {
-                alt_ehp_field = "ehp_melee";
-            } else if($(charactersel, this.el).hasClass('ranged_only')) {
-                alt_ehp_field = "ehp_ranged";
-            } else if($(charactersel, this.el).hasClass('magic_only')) {
-                alt_ehp_field = "ehp_magic";
-            } else if($(charactersel, this.el).hasClass('dodge_only')) {
-                alt_ehp_field = "ehp_dodge";
-            } else if($(charactersel, this.el).hasClass('elite_only')) {
-                alt_ehp_title = "EHP elite";
-                alt_ehp_field = "ehp_elite";
-            }
+            _.each(alttypes, function(title, resulttype) {
+                if($(charactersel, this.el).hasClass(resulttype + '_only')) {
+                    alt_ehp_field = 'ehp_' + resulttype;
+                }
+            }, this);
+            
+            console.log(alt_ehp_field);
             
             var ehp     = this.model.get(alt_ehp_field);
             var alt_ehp = alt_model.get(alt_ehp_field);
@@ -383,7 +384,7 @@ var SimulationView = Backbone.View.extend({
         
         compareModel.simulate();
         
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', , 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
+        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
             var $fieldObj, 
                 viteq_field = ehp_field.replace('ehp', 'viteq'),
                 viteq = this.model.get(ehp_field) / vit_ehp;;
@@ -458,6 +459,10 @@ var SimulationView = Backbone.View.extend({
 
     render: function() {
         $(this.template()).appendTo($(this.el));
+        _.each(resulttypes, function(resulttype) {
+            var title = 'EHP ' + (resulttype == 'base' ? '' : resulttype);
+            $(this.result_row_template({'key': resulttype, 'title': title})).appendTo($('table.results tbody', this.el));
+        }, this);
 
         var $classSelect = $('.your_class', this.el);
         $classSelect.children().remove();
