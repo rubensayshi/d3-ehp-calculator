@@ -25,6 +25,11 @@ if (localStorage) {
         localStorage.clear();
         localStorage.setItem('VERSION', VERSION);
     }
+
+    var settings = new Settings();
+    settings.localStorage = new Backbone.LocalStorage("Settings");
+    settings.id = 'FIXEDIDFORSETTINGS';
+    settings.fetch();
 }
 
 var normalizeFloat = function(value, optionName, alertOnError) {
@@ -54,4 +59,4 @@ CharacterList.fetch();
 gahandler.logVersion(VERSION);
 
 $('.auto_tooltip').tooltip();
-var mainView = new MainView({'el': $("body")});
+var mainView = new MainView({'el': $("body"), 'settings': settings});

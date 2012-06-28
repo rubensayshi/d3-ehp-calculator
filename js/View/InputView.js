@@ -22,7 +22,7 @@ var InputView = SimulationView.extend({
     },
     
     backToIntro : function() {
-        this.mainView.changeView(function(contentEl, mainView) { return new IntroView({'el': contentEl, 'mainView': mainView}); });
+        this.mainView.changeView(function(contentEl, mainView, settings) { return new IntroView({'el': contentEl, 'mainView': mainView, 'settings': settings}); });
     },
     
     createCharacter : function() {
@@ -36,7 +36,7 @@ var InputView = SimulationView.extend({
         
         newModel.save();
                 
-        this.mainView.changeView(function(contentEl, mainView) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': newModel}); });
+        this.mainView.changeView(function(contentEl, mainView, settings) { return new SimulationView({'el': contentEl, 'mainView': mainView, 'model': newModel, 'settings': settings}); });
     },
     
     renderOptionRow: function($parent, optionInfo, optionName) {

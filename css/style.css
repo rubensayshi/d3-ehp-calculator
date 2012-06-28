@@ -53,13 +53,20 @@ a:focus  { outline: none; -moz-outline-style: none; }
 }
 
 .input-character tr > *:nth-child(1) {
-    width: 35%;
+    width: 60%;
 }
 .input-character tr > *:nth-child(2) {
-    width: 30%;
+    width: 40%;
 }
-.input-character tr > *:nth-child(3) {
-    width: 35%;
+
+.statweight tr > *:nth-child(1) {
+    width: 40%;
+}
+
+.statweight tr > *:nth-child(2),
+.statweight tr > *:nth-child(3),
+.statweight tr > *:nth-child(4) {
+    width: 20%;
 }
 
 #donatecontainer {
@@ -75,4 +82,15 @@ a:focus  { outline: none; -moz-outline-style: none; }
 #adcontainer .alert {
     text-align: left;
     padding-right: 14px;
+}
+
+.alt_ehp em {
+    display: block;
+    float: left;
+}
+.alt_ehp em:nth-child(1) {
+    width: 45%;
+}
+.alt_ehp em:nth-child(2) {
+    width: 30%;
 }
