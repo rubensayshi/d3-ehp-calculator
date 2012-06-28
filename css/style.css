@@ -52,6 +52,18 @@ a:focus  { outline: none; -moz-outline-style: none; }
     width: 35%;
 }
 
+.results tr > *:nth-child(1) {
+    width: 28%;
+}
+.results tr > *:nth-child(n+2) {
+    width: 18%;
+}
+
+.results tr > th small {
+    font-weight: normal;
+}
+
+
 .input-character tr > *:nth-child(1) {
     width: 60%;
 }

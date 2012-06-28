@@ -353,20 +353,28 @@
                             </ul>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="character-ehp">
+                            <div class="tab-pane active results" id="character-ehp">
                                 <table class="table table-bordered table-striped table-condensed">
                                     <thead>
                                         <tr>
                                             <th>&nbsp;</th>
-                                            <th>EHP without dodge</th>
-                                            <th>EHP with dodge <span id="dodge_ehp_explained" class="label label-info">?</span></th>
+                                            <th>EHP 
+                                                <br /><small>base</small></th>
+                                            <th>EHP
+                                                <br /><small>with block</small></th>
+                                            <th>EHP
+                                                <br /><small>with dodge</small></th>
+                                            <th>EHP
+                                                <br /><small>with dodge &amp; block</small></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <th>EHP</th>
                                             <td><input type="text" readonly="true" class="input-small form-inline ehp" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_block" value="" /></td>
                                             <td><input type="text" readonly="true" class="input-small form-inline ehp_dodge" value="" /></td>
+                                            <td><input type="text" readonly="true" class="input-small form-inline ehp_block_dodge" value="" /></td>
                                         </tr>
                                         <tr>
                                             <th>EHP melee</th>

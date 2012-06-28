@@ -321,7 +321,7 @@ var Character = Backbone.Model.extend({
         
         // apply all modifiers
         var ehp             = this.get('life') / modifier;
-        var ehp_dodge       = this.get('life') / block_modifier;
+        var ehp_dodge       = this.get('life') / block_modifier / dodgemodifier;
         var ehp_melee       = this.get('life') / modifier_melee;
         var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
         var ehp_ranged      = this.get('life') / modifier_ranged;
