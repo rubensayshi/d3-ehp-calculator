@@ -302,7 +302,7 @@ var Character = Backbone.Model.extend({
             var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;
             
             var ehp     = this.get('life') / modifier;
-            var ehp_d   = this.get('life') / dodgemodifier;
+            var ehp_d   = this.get('life') / modifier / dodgemodifier;
             var ehp_b   = this.get('life') / block_modifier;
             var ehp_bnd = this.get('life') / block_modifier / dodgemodifier;
             
