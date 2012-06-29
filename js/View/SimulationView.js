@@ -203,7 +203,7 @@ var SimulationView = Backbone.View.extend({
         }, this);
         
         var $parent = $('#statweight tbody', this.el);
-        _.each(['base_str', 'base_dex', 'base_int', 'base_vit', 'base_armor', 'base_resist', 'extra_life', 'base_melee_reduc', 'base_ranged_reduc'], function(optionName) { 
+        _.each(['base_str', 'base_dex', 'base_int', 'base_vit', 'base_armor', 'base_resist', 'extra_life', 'base_melee_reduc', 'base_ranged_reduc', 'block_chance', 'block_value'], function(optionName) { 
             this.renderStatWeightRow($parent, this.model.base_options[optionName], optionName); 
         }, this);
     },
