@@ -66,7 +66,7 @@ var Character = Backbone.Model.extend({
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
         block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
         block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 100, 'base_b_only': true},
-        incoming_hit:     {"type": "text", "default": 0,    "title": "Incoming Hit"}
+        incoming_hit:     {"type": "text", "default": 100000,"title": "Incoming Hit"}
     },
     options:       {},
     extra_options: {},

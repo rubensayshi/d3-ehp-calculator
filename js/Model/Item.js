@@ -11,7 +11,9 @@ var Item = Backbone.Model.extend({
         base_dodge:   0,
         extra_life:   0,
         base_melee_reduc:   0,
-        base_ranged_reduc:  0
+        base_ranged_reduc:  0,
+        block_chance:       0,
+        block_value:        0
     },
 
     base_options:  {
@@ -26,7 +28,9 @@ var Item = Backbone.Model.extend({
         extra_life:       {"type": "text", "default": 0,  "title": "Extra Life %"},
         base_melee_reduc: {"type": "text", "default": 0,  "title": "Melee Reduction"},
         base_ranged_reduc:{"type": "text", "default": 0,  "title": "Ranged Reduction"},
-        base_elite_reduc: {"type": "text", "default": 0,  "title": "Elite Reduction"}
+        base_elite_reduc: {"type": "text", "default": 0,  "title": "Elite Reduction"},
+        block_chance:     {"type": "text", "default": 0,  "title": "Block Chance"},
+        block_value:      {"type": "text", "default": 0,  "title": "Block Value"}
     },
     
     getAllOptions: function() {
