@@ -65,7 +65,7 @@ var Character = Backbone.Model.extend({
         base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
         block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
-        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 500, 'base_b_only': true},
+        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 100, 'base_b_only': true},
         incoming_hit:     {"type": "text", "default": 0,    "title": "Incoming Hit"}
     },
     options:       {},
@@ -293,7 +293,7 @@ var Character = Backbone.Model.extend({
         // average expected hit after damage reduction
         var block_perc   = this.get('block_chance') / 100;
         var block_amt    = this.get('block_value');
-        var expected_hit = this.get('incoming_hit');
+        var expected_hit = this.get('incoming_hit') > 0 ? this.get('incoming_hit') : 1;
         var reduced_hit  = expected_hit * modifier; 
         
         _.each(resulttypes, function(resulttype) {

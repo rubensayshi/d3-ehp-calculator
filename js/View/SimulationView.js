@@ -17,6 +17,7 @@ var SimulationView = Backbone.View.extend({
 
         this.template = _.template($('#simulation-template').html());
         this.result_row_template = _.template($('#result-row-template').html());
+        this.itemcompare_result_row_template = _.template($('#itemcompare-result-row-template').html());
         
         this.options.settings.on('change display_as', this.modelToView);
     },
@@ -225,7 +226,9 @@ var SimulationView = Backbone.View.extend({
     modelToView: function() {
         var vit_model = this.model.clone();
         vit_model.set('base_vit', vit_model.get('base_vit')+1);
-        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
+        var vit_ehp = vit_model.get('ehp_base') - this.model.get('ehp_base');
+        
+        console.log(vit_ehp);
         
         var alternatives = {};
         
@@ -280,9 +283,7 @@ var SimulationView = Backbone.View.extend({
                     alt_ehp_field = 'ehp_' + resulttype;
                 }
             }, this);
-            
-            console.log(alt_ehp_field);
-            
+                        
             var ehp     = this.model.get(alt_ehp_field);
             var alt_ehp = alt_model.get(alt_ehp_field);
             
@@ -360,6 +361,16 @@ var SimulationView = Backbone.View.extend({
 
         $('ul.slot-list > li:first', this.el).addClass('active');
         $('div.slot-list > div:first', this.el).addClass('active');
+
+        _.each(resulttypes, function(resulttype) {
+            var title = 'EHP ' + (resulttype == 'base' ? '' : resulttype);
+            $(this.itemcompare_result_row_template({'key': resulttype, 'title': title, 'type': 'ehp'})).appendTo($('#item-compare-ehp table.results tbody', this.el));
+        }, this);
+        
+        _.each(resulttypes, function(resulttype) {
+            var title = 'VITeq ' + (resulttype == 'base' ? '' : resulttype);
+            $(this.itemcompare_result_row_template({'key': resulttype, 'title': title, 'type': 'viteq'})).appendTo($('#item-compare-viteq table.results tbody', this.el));
+        }, this);
         
         this.doItemCompare($('ul.slot-list > li:first', this.el).data('itemslot'));
     },
@@ -367,7 +378,7 @@ var SimulationView = Backbone.View.extend({
     doItemCompare : function(itemslot) {
         var vit_model = this.model.clone();
         vit_model.set('base_vit', vit_model.get('base_vit')+1);
-        var vit_ehp = vit_model.get('ehp') - this.model.get('ehp');
+        var vit_ehp = vit_model.get('ehp_base') - this.model.get('ehp_base');
         
         var curItem = this.model.getItemForSlot(itemslot, this.model.gearbag);
         var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
@@ -383,25 +394,31 @@ var SimulationView = Backbone.View.extend({
         });
         
         compareModel.simulate();
-        
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic', 'ehp_elite', 'ehp_dodge_elite'], function(ehp_field) {
-            var $fieldObj, 
-                viteq_field = ehp_field.replace('ehp', 'viteq'),
-                viteq = this.model.get(ehp_field) / vit_ehp;;
-            
-            // set the EHP field
-            $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
-            this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
-            
-            // set the VITeq field
-            $fieldObj = $(this.getCharacterSelector(viteq_field),  this.el);
-            this.toField($fieldObj, viteq_field, viteq);
+
+        _.each(resulttypes, function(resulttype) {
+            _.each(['', 'd', 'b', 'bnd'], function(alternative) {
+                var ehp_field   = 'ehp_'+resulttype+ (alternative ? '_' + alternative : ''),
+                    viteq_field = 'viteq_'+resulttype+ (alternative ? '_' + alternative : ''),
+                    $fieldObj   = null;
+                
+                var viteq = this.model.get(ehp_field) / vit_ehp;
+                
+                // set the EHP field
+                $fieldObj = $(this.getCharacterSelector(ehp_field),  this.el);
+                this.toField($fieldObj, ehp_field, this.model.get(ehp_field));
+                
+                // set the VITeq field
+                $fieldObj = $(this.getCharacterSelector(viteq_field),  this.el);
+                this.toField($fieldObj, viteq_field, viteq);
+            }, this);
         }, this);
-        
-        
-        _.each(['ehp', 'ehp_dodge', 'ehp_melee', 'ehp_dodge_melee', 'ehp_ranged', 'ehp_dodge_ranged', 'ehp_magic', 'ehp_dodge_magic'], function(ehp_field) {
-            var ehp_selector   = this.getItemCompareSelector(ehp_field),
-                viteq_selector = this.getItemCompareSelector(ehp_field.replace('ehp', 'viteq'));
+
+        _.each(resulttypes, function(resulttype) {
+            _.each(['', 'd', 'b', 'bnd'], function(alternative) {
+                var ehp_field      = 'ehp_'+resulttype+ (alternative ? '_' + alternative : ''),
+                    viteq_field    = 'viteq_'+resulttype+ (alternative ? '_' + alternative : ''),
+                    ehp_selector   = this.getItemCompareSelector(ehp_field),
+                    viteq_selector = this.getItemCompareSelector(viteq_field);
             
             var ehp     = this.model.get(ehp_field);
             var alt_ehp = compareModel.get(ehp_field);
@@ -419,6 +436,7 @@ var SimulationView = Backbone.View.extend({
             
             $(viteq_selector, this.el).val(viteq);
             $(viteq_selector + '.percentage', this.el).val(ehp_change_p);
+            }, this);
         }, this);
     },
     
@@ -461,7 +479,7 @@ var SimulationView = Backbone.View.extend({
         $(this.template()).appendTo($(this.el));
         _.each(resulttypes, function(resulttype) {
             var title = 'EHP ' + (resulttype == 'base' ? '' : resulttype);
-            $(this.result_row_template({'key': resulttype, 'title': title})).appendTo($('table.results tbody', this.el));
+            $(this.result_row_template({'key': resulttype, 'title': title})).appendTo($('.character table.results tbody', this.el));
         }, this);
 
         var $classSelect = $('.your_class', this.el);

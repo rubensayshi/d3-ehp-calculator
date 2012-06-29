@@ -35,6 +35,9 @@ td input, td select {
 .input-medium {
     width: 110px;
 }
+.input-msmall {
+    width: 62px;
+}
 .input-xsmall {
     width: 50px;
 }
@@ -53,10 +56,10 @@ a:focus  { outline: none; -moz-outline-style: none; }
 }
 
 .results tr > *:nth-child(1) {
-    width: 28%;
+    width: 16%;
 }
 .results tr > *:nth-child(n+2) {
-    width: 18%;
+    width: 21%;
 }
 
 .results tr > th small {
