@@ -271,7 +271,7 @@ var Character = Backbone.Model.extend({
             'melee':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_melee_reduc')  / 100))),
             'ranged': this.modifyReductionModifierRanged(modifier * (1 - (this.get('base_ranged_reduc') / 100))),
             'elite':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_elite_reduc')  / 100))),
-            'magic':  this.modifyReductionModifierMelee( modifier)
+            'magic':  this.modifyReductionModifierMagic( modifier)
         };
 
         // calculate life based on vit/level
