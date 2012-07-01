@@ -16,6 +16,10 @@ var getClassInfo = function(shortname) {
     return (classlist[shortname]) ? modelclass = classlist[shortname] : [];
 };
 
+var resulttypes    = ['base', 'melee', 'ranged', 'elite', 'magic'];
+var alttypes       = {'base_d': 'dodge', 'base_b': 'block'};
+_.each(resulttypes, function(t) { alttypes[t] = t; });
+
 var updateBreadcrumb = function(breadcrumb) {
     window.location.hash = breadcrumb;
 };

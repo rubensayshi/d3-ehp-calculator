@@ -12,6 +12,10 @@ var Character = Backbone.Model.extend({
         extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
+        min_block_chance: 0,
+        max_block_chance: 0,
+        block_value:  0,
+        incoming_hit: 70000,
 
         melee:        false,
 
@@ -31,7 +35,9 @@ var Character = Backbone.Model.extend({
         resist:       null,
         dodge:        null,
         armor_reduc:  null,
-        resist_reduc: null
+        resist_reduc: null,
+        avg_block_value:       0,
+        extra_avg_block_value: 0
     },
 
     gearbag: null,
@@ -50,9 +56,9 @@ var Character = Backbone.Model.extend({
         description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": {extra_str: 1}},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "dodge_only": true, "alternative": {extra_dex: 1}},
-        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": {extra_int: 1}},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": [1, {extra_str: 1}]},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "base_d_only": true, "alternative": [1, {extra_dex: 1}]},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": [1, {extra_int: 1}]},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
         base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
@@ -60,7 +66,12 @@ var Character = Backbone.Model.extend({
         extra_life:       {"type": "text", "default": 13,   "title": "Extra Life %", "alternative": 1},
         base_melee_reduc: {"type": "text", "default": 0,    "title": "Melee Reduction",  "alternative": 1, 'melee_only': true},
         base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
-        base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true}
+        base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
+        block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
+        min_block_value:  {"type": "text", "default": 0,    "title": "Min Block Amount"},
+        max_block_value:  {"type": "text", "default": 0,    "title": "Max Block Amount"},
+        avg_block_value:  {"type": "text", "default": 0,    "title": "Average Block Amount", "disabled": true, "alternative": [500, {extra_avg_block_value: 500}], 'base_b_only': true, "tip": "Calculated based on min and max block amount"},
+        incoming_hit:     {"type": "text", "default": 70000,"title": "Incoming Hit", "tip": "To calculate block you need to input the raw incoming damage from a hit <br />70k is about normal for act2 nagas, act3 mobs <hr />next update I'll provide accurate presets!"}
     },
     options:       {},
     extra_options: {},
@@ -258,25 +269,15 @@ var Character = Backbone.Model.extend({
 
         // add more modifiers
         modifier = this.modifyReductionModifier(modifier);
-
-        // add melee only modifiers
-        var modifier_melee = modifier;
-        modifier_melee *= (1 - (this.get('base_melee_reduc') / 100));
-        modifier_melee = this.modifyReductionModifierMelee(modifier_melee);
-
-        // add ranged only modifiers
-        var modifier_ranged = modifier;
-        modifier_ranged *= (1 - (this.get('base_ranged_reduc') / 100));
-        var modifier_ranged = this.modifyReductionModifierRanged(modifier_ranged);
         
-        // add elite only modifiers
-        var modifier_elite = modifier;
-        modifier_elite *= (1 - (this.get('base_elite_reduc') / 100));
-        var modifier_elite = this.modifyReductionModifierElite(modifier_elite);
-        
-        // add magic only modifiers
-        var modifier_magic = modifier;
-        var modifier_magic = this.modifyReductionModifierMagic(modifier_magic);
+        // create the special modifiers
+        var modifiers = {
+            'base':   modifier,
+            'melee':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_melee_reduc')  / 100))),
+            'ranged': this.modifyReductionModifierRanged(modifier * (1 - (this.get('base_ranged_reduc') / 100))),
+            'elite':  this.modifyReductionModifierMelee( modifier * (1 - (this.get('base_elite_reduc')  / 100))),
+            'magic':  this.modifyReductionModifierMagic( modifier)
+        };
 
         // calculate life based on vit/level
         var lifebylvl = this.get('level') - 25;
@@ -294,30 +295,43 @@ var Character = Backbone.Model.extend({
         // apply the life modifier
         this.set('life', this.get('life') * lifemodifier);
 
-        // apply all modifiers
-        var ehp             = this.get('life') / modifier;
-        var ehp_dodge       = this.get('life') / modifier / dodgemodifier;
-        var ehp_melee       = this.get('life') / modifier_melee;
-        var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
-        var ehp_ranged      = this.get('life') / modifier_ranged;
-        var ehp_dodge_ranged= this.get('life') / modifier_ranged / dodgemodifier;
-        var ehp_magic       = this.get('life') / modifier_magic;
-        var ehp_dodge_magic = this.get('life') / modifier_magic / dodgemodifier;
-        var ehp_elite       = this.get('life') / modifier_elite;
-        var ehp_dodge_elite = this.get('life') / modifier_elite / dodgemodifier;
-
-        // set the final properties
-        this.set('ehp',             ehp);
-        this.set('ehp_dodge',       ehp_dodge);
-        this.set('ehp_melee',       ehp_melee);
-        this.set('ehp_dodge_melee', ehp_dodge_melee);
-        this.set('ehp_ranged',      ehp_ranged);
-        this.set('ehp_dodge_ranged',ehp_dodge_ranged);
-        this.set('ehp_magic',       ehp_magic);
-        this.set('ehp_dodge_magic', ehp_dodge_magic);
-        this.set('ehp_elite',       ehp_elite);
-        this.set('ehp_dodge_elite', ehp_dodge_elite);
+        // figure out avarage block value
+        if (this.get('min_block_value') <= 0) {
+            this.set('avg_block_value', this.get('max_block_value'));
+        } else if (this.get('max_block_value') <= 0) {
+            this.set('avg_block_value', this.get('min_block_value'));
+        } else {
+            this.set('avg_block_value', ( this.get('min_block_value') + this.get('max_block_value') ) / 2);
+        }
         
+        // ensure not below 0
+        if (this.get('avg_block_value') < 0) {
+            this.set('avg_block_value', 0);
+        }
+
+        this.set('avg_block_value', this.get('avg_block_value') + this.get('extra_avg_block_value'));
+
+        // average expected hit after damage reduction
+        var block_perc   = this.get('block_chance') / 100;
+        var block_amt    = this.get('avg_block_value');
+        var expected_hit = this.get('incoming_hit');
+                
+        _.each(resulttypes, function(resulttype) {
+            var modifier       = modifiers[resulttype];
+            var reduced_hit    = expected_hit > 0 ? expected_hit * modifier : 0;
+            var block_modifier = expected_hit > 0 ? ((reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit) : modifier;
+            
+            var ehp     = this.get('life') / modifier;
+            var ehp_d   = this.get('life') / modifier / dodgemodifier;
+            var ehp_b   = this.get('life') / block_modifier;
+            var ehp_bnd = this.get('life') / block_modifier / dodgemodifier;
+            
+            this.set('ehp_'+resulttype,        ehp);
+            this.set('ehp_'+resulttype+'_d',   ehp_d);
+            this.set('ehp_'+resulttype+'_b',   ehp_b);
+            this.set('ehp_'+resulttype+'_bnd', ehp_bnd);
+        }, this);
+
         this.on('change', this.simulate);
     }
 });
