@@ -12,7 +12,8 @@ var Character = Backbone.Model.extend({
         extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
-        block_chance: 0,
+        min_block_chance: 0,
+        max_block_chance: 0,
         block_value:  0,
         incoming_hit: 70000,
 
@@ -34,7 +35,9 @@ var Character = Backbone.Model.extend({
         resist:       null,
         dodge:        null,
         armor_reduc:  null,
-        resist_reduc: null
+        resist_reduc: null,
+        avg_block_value:       0,
+        extra_avg_block_value: 0
     },
 
     gearbag: null,
@@ -53,9 +56,9 @@ var Character = Backbone.Model.extend({
         description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
         level:            {"type": "text", "default": 60,   "title": "Level"},
         moblevel:         {"type": "text", "default": 63,   "title": "Mob Level"},
-        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": {extra_str: 1}},
-        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "base_d_only": true, "alternative": {extra_dex: 1}},
-        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": {extra_int: 1}},
+        base_str:         {"type": "text", "default": 1000, "title": "STR", "tip": "Str isn't used for anything", "alternative": [1, {extra_str: 1}]},
+        base_dex:         {"type": "text", "default": 1000, "title": "DEX", "tip": "Dex is only used for skill effects (eg monk passive), not for dodge", "base_d_only": true, "alternative": [1, {extra_dex: 1}]},
+        base_int:         {"type": "text", "default": 1000, "title": "INT", "tip": "Int is only used for skill effects (eg witch doctor passive), not for resist", "alternative": [1, {extra_int: 1}]},
         base_vit:         {"type": "text", "default": 1000, "title": "VIT", "alternative": 1},
         base_armor:       {"type": "text", "default": 4000, "title": "Armor", "alternative": 10},
         base_resist:      {"type": "text", "default": 200,  "title": "All Resist", "alternative": 1, 'tip': "Insert your most common value of resist from your details pane here. Make sure not use anything that is increased by '+x Special Resistance'!"},
@@ -65,7 +68,9 @@ var Character = Backbone.Model.extend({
         base_ranged_reduc:{"type": "text", "default": 0,    "title": "Ranged Reduction", "alternative": 1, 'ranged_only': true},
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
         block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
-        block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 100, 'base_b_only': true},
+        min_block_value:  {"type": "text", "default": 0,    "title": "Min Block Amount"},
+        max_block_value:  {"type": "text", "default": 0,    "title": "Max Block Amount"},
+        avg_block_value:  {"type": "text", "default": 0,    "title": "Average Block Amount", "disabled": true, "alternative": [500, {extra_avg_block_value: 500}], 'base_b_only': true, "tip": "Calculated based on min and max block amount"},
         incoming_hit:     {"type": "text", "default": 70000,"title": "Incoming Hit", "tip": "To calculate block you need to input the raw incoming damage from a hit <br />70k is about normal for act2 nagas, act3 mobs <hr />next update I'll provide accurate presets!"}
     },
     options:       {},
@@ -289,12 +294,28 @@ var Character = Backbone.Model.extend({
 
         // apply the life modifier
         this.set('life', this.get('life') * lifemodifier);
-     
+
+        // figure out avarage block value
+        if (this.get('min_block_value') <= 0) {
+            this.set('avg_block_value', this.get('max_block_value'));
+        } else if (this.get('max_block_value') <= 0) {
+            this.set('avg_block_value', this.get('min_block_value'));
+        } else {
+            this.set('avg_block_value', ( this.get('min_block_value') + this.get('max_block_value') ) / 2);
+        }
+        
+        // ensure not below 0
+        if (this.get('avg_block_value') < 0) {
+            this.set('avg_block_value', 0);
+        }
+
+        this.set('avg_block_value', this.get('avg_block_value') + this.get('extra_avg_block_value'));
+
         // average expected hit after damage reduction
         var block_perc   = this.get('block_chance') / 100;
-        var block_amt    = this.get('block_value');
+        var block_amt    = this.get('avg_block_value');
         var expected_hit = this.get('incoming_hit');
-        
+                
         _.each(resulttypes, function(resulttype) {
             var modifier       = modifiers[resulttype];
             var reduced_hit    = expected_hit > 0 ? expected_hit * modifier : 0;

@@ -141,6 +141,10 @@ var SimulationView = Backbone.View.extend({
                         .addClass(optionName);
         }
         
+        if (optionInfo['disabled']) {
+            $input.attr('disabled', true);
+        }
+        
         $input.appendTo($col2);
         
         if (typeof(optionInfo['tip']) != 'undefined') {
@@ -154,7 +158,7 @@ var SimulationView = Backbone.View.extend({
         
         if (typeof(optionInfo['alternative']) != 'undefined') {
             if (typeof optionInfo['alternative'] != 'boolean') {
-                var altamount = typeof(optionInfo['alternative']) == 'object' ? 1 : optionInfo['alternative'];
+                var altamount = typeof(optionInfo['alternative']) == 'object' ? optionInfo['alternative'][0] : optionInfo['alternative'];
                 $col3.append($('<strong />').html("+"+altamount+" "+optionInfo['title']));
             }
 
@@ -203,7 +207,7 @@ var SimulationView = Backbone.View.extend({
         }, this);
         
         var $parent = $('#statweight tbody', this.el);
-        _.each(['base_str', 'base_dex', 'base_int', 'base_vit', 'base_armor', 'base_resist', 'extra_life', 'base_melee_reduc', 'base_ranged_reduc', 'block_chance', 'block_value'], function(optionName) { 
+        _.each(['base_str', 'base_dex', 'base_int', 'base_vit', 'base_armor', 'base_resist', 'extra_life', 'base_melee_reduc', 'base_ranged_reduc', 'block_chance', 'avg_block_value'], function(optionName) { 
             this.renderStatWeightRow($parent, this.model.base_options[optionName], optionName); 
         }, this);
     },
@@ -238,7 +242,7 @@ var SimulationView = Backbone.View.extend({
             
             if (typeof(optionInfo['alternative']) != 'undefined') {
                 if (typeof optionInfo['alternative'] == 'object') {
-                    alternatives[optionName] = [optionInfo['alternative'], true];
+                    alternatives[optionName] = [optionInfo['alternative'][1], true];
                 } else if (typeof optionInfo['alternative'] == 'boolean') {
                     alternatives[optionName] = [{/* this should contain stat changes */}, !this.model.get(optionName)];
                     alternatives[optionName][0][optionName] = !this.model.get(optionName);
