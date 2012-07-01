@@ -228,8 +228,6 @@ var SimulationView = Backbone.View.extend({
         vit_model.set('base_vit', vit_model.get('base_vit')+1);
         var vit_ehp = vit_model.get('ehp_base') - this.model.get('ehp_base');
         
-        console.log(vit_ehp);
-        
         var alternatives = {};
         
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
