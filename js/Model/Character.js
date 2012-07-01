@@ -293,13 +293,12 @@ var Character = Backbone.Model.extend({
         // average expected hit after damage reduction
         var block_perc   = this.get('block_chance') / 100;
         var block_amt    = this.get('block_value');
-        var expected_hit = this.get('incoming_hit') > 0 ? this.get('incoming_hit') : 1;
-        var reduced_hit  = expected_hit * modifier; 
+        var expected_hit = this.get('incoming_hit');
         
         _.each(resulttypes, function(resulttype) {
             var modifier       = modifiers[resulttype];
-            var reduced_hit    = expected_hit * modifier; 
-            var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;
+            var reduced_hit    = expected_hit > 0 ? expected_hit * modifier : 0;
+            var block_modifier = expected_hit > 0 ? ((reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit) : modifier;
             
             var ehp     = this.get('life') / modifier;
             var ehp_d   = this.get('life') / modifier / dodgemodifier;
@@ -312,38 +311,6 @@ var Character = Backbone.Model.extend({
             this.set('ehp_'+resulttype+'_bnd', ehp_bnd);
         }, this);
 
-        this.on('change', this.simulate);
-        
-        return;
-        
-        
-                  modifier = reduced_hit / expected_hit;
-        var block_modifier = (reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit;
-        
-        // apply all modifiers
-        var ehp             = this.get('life') / modifier;
-        var ehp_dodge       = this.get('life') / block_modifier / dodgemodifier;
-        var ehp_melee       = this.get('life') / modifier_melee;
-        var ehp_dodge_melee = this.get('life') / modifier_melee / dodgemodifier;
-        var ehp_ranged      = this.get('life') / modifier_ranged;
-        var ehp_dodge_ranged= this.get('life') / modifier_ranged / dodgemodifier;
-        var ehp_magic       = this.get('life') / modifier_magic;
-        var ehp_dodge_magic = this.get('life') / modifier_magic / dodgemodifier;
-        var ehp_elite       = this.get('life') / modifier_elite;
-        var ehp_dodge_elite = this.get('life') / modifier_elite / dodgemodifier;
-
-        // set the final properties
-        this.set('ehp',             ehp);
-        this.set('ehp_dodge',       ehp_dodge);
-        this.set('ehp_melee',       ehp_melee);
-        this.set('ehp_dodge_melee', ehp_dodge_melee);
-        this.set('ehp_ranged',      ehp_ranged);
-        this.set('ehp_dodge_ranged',ehp_dodge_ranged);
-        this.set('ehp_magic',       ehp_magic);
-        this.set('ehp_dodge_magic', ehp_dodge_magic);
-        this.set('ehp_elite',       ehp_elite);
-        this.set('ehp_dodge_elite', ehp_dodge_elite);
-        
         this.on('change', this.simulate);
     }
 });
