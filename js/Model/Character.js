@@ -14,7 +14,7 @@ var Character = Backbone.Model.extend({
         base_ranged_reduc:  0,
         block_chance: 0,
         block_value:  0,
-        incoming_hit: 0,
+        incoming_hit: 70000,
 
         melee:        false,
 
@@ -66,7 +66,7 @@ var Character = Backbone.Model.extend({
         base_elite_reduc: {"type": "text", "default": 0,    "title": "Elite Reduction",  "alternative": 1, 'elite_only': true},
         block_chance:     {"type": "text", "default": 0,    "title": "Block Chance",     "alternative": 1, 'base_b_only': true},
         block_value:      {"type": "text", "default": 0,    "title": "Block Value",      "alternative": 100, 'base_b_only': true},
-        incoming_hit:     {"type": "text", "default": 100000,"title": "Incoming Hit"}
+        incoming_hit:     {"type": "text", "default": 70000,"title": "Incoming Hit", "tip": "To calculate block you need to input the raw incoming damage from a hit <br />70k is about normal for act2 nagas, act3 mobs <hr />next update I'll provide accurate presets!"}
     },
     options:       {},
     extra_options: {},
