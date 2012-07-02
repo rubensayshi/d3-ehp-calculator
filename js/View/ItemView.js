@@ -1,7 +1,8 @@
 var ItemView = Backbone.View.extend({
     title: '-',
     events: {
-        'change input': 'viewToModel'
+        'change input': 'viewToModel',
+        'click .btn.reset': 'reset'
     },
 
     initialize: function() {
@@ -12,6 +13,10 @@ var ItemView = Backbone.View.extend({
     
     getSelector: function(fieldname) {
         return "." + fieldname;
+    },
+
+    reset: function() {
+        this.model.reset();
     },
 
     viewToModel: function() {
@@ -152,7 +157,10 @@ var ItemView = Backbone.View.extend({
         }
         
         $(this.template()).appendTo($(this.el));
-        $('.title', this.el).html(this.options.title);
+        $('.title span', this.el).html(this.options.title);
+        if (this.options.isNewItem) {
+            $('.title', this.el).append('<button class="btn reset btn-primary btn-mini pull-right"><i class="icon-refresh icon-white"></i> Reset</button>');
+        }
 
         this.renderItem();
     }
