@@ -70,7 +70,7 @@ var SimulationView = Backbone.View.extend({
         optionInfo['title'] = optionInfo['title'] || "[" + optionName + "]";
         optionInfo['alt']   = optionInfo['alt']   || "";
 
-        var altamount = typeof(optionInfo['alternative']) == 'object' ? 1 : optionInfo['alternative'];
+        var altamount = typeof(optionInfo['alternative']) == 'object' ? optionInfo['alternative'][0] : optionInfo['alternative'];
         
         var $row, $col1, $col2, $col3, $col4, $input, $alt;
         $row = $('<tr />')
