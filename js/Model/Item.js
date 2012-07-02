@@ -58,5 +58,6 @@ var Item = Backbone.Model.extend({
         }, this);
         
         this.trigger('change');
+        this.save();
     }
 });
