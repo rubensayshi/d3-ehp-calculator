@@ -158,6 +158,9 @@ var ItemView = Backbone.View.extend({
         
         $(this.template()).appendTo($(this.el));
         $('.title span', this.el).html(this.options.title);
+        if (this.options.isNewItem) {
+            $('.title', this.el).append('<button class="btn reset btn-primary btn-mini pull-right"><i class="icon-refresh icon-white"></i> Reset</button>');
+        }
 
         this.renderItem();
     }

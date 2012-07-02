@@ -352,7 +352,7 @@ var SimulationView = Backbone.View.extend({
             var newItem = this.model.getItemForSlot(itemslot, this.model.new_gearbag);
            
             (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
-            (new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item'})).render();
+            (new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item', 'isNewItem': true})).render();
 
             curItem.on('change', function() { this.doItemCompare(itemslot); }, this);
             newItem.on('change', function() { this.doItemCompare(itemslot); }, this);
