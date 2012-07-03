@@ -17,7 +17,7 @@ var Item = Backbone.Model.extend({
     },
 
     base_options:  {
-        description:      {"type": "text", "default": "", "title": "Description", "plain": true},
+        description:      {"type": "text", "default": "My Item", "title": "Description", "plain": true},
         extra_str:        {"type": "text", "default": 0,  "title": "STR"},
         extra_dex:        {"type": "text", "default": 0,  "title": "DEX"},
         extra_int:        {"type": "text", "default": 0,  "title": "INT"},
@@ -50,5 +50,14 @@ var Item = Backbone.Model.extend({
         }, this);
         
         this.trigger('change');
+    },
+
+    reset : function () {
+        _.each(this.getAllOptions(), function(o_info, o_name) {
+            this.set(o_name, o_info['default']);
+        }, this);
+        
+        this.trigger('change');
+        this.save();
     }
 });
