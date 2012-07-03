@@ -4,14 +4,14 @@ completely client side (javascript) calculator for your EHP.
 checkout the working version (project page on github): http://rubensayshi.github.com/d3-ehp-calculator/
 
 
-Authors
-=======
+Contributors (Code or Major Feedback)
+=====================================
 Ruben de Vries (https://github.com/rubensayshi)  
 Kevin McClellan (https://github.com/kdmcclel)  
 Marv Cool (https://github.com/MrMarvin)  
 Scott Smerchek (https://github.com/smerchek)  
-Entropy42 (http://www.diablofans.com/user/73934-entropy42/)  
-
+Entropy42 (http://www.diablofans.com/user/73934-entropy42)  
+jjwa (http://www.diablofans.com/user/64432-jjwa)  
 
 Copyright and License
 =====================
