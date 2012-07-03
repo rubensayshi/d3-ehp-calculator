@@ -8,7 +8,9 @@ Authors
 =======
 Ruben de Vries (https://github.com/rubensayshi)  
 Kevin McClellan (https://github.com/kdmcclel)  
-Marv Cool (https://github.com/MrMarvin)
+Marv Cool (https://github.com/MrMarvin)  
+Scott Smerchek (https://github.com/smerchek)  
+Entropy42 (http://www.diablofans.com/user/73934-entropy42/)  
 
 
 Copyright and License
