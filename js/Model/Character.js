@@ -12,9 +12,9 @@ var Character = Backbone.Model.extend({
         extra_life:   13,
         base_melee_reduc:   0,
         base_ranged_reduc:  0,
-        min_block_chance: 0,
-        max_block_chance: 0,
-        block_value:  0,
+        block_chance:    0,
+        min_block_value: 0,
+        max_block_value: 0,
         incoming_hit: 70000,
 
         melee:        false,
