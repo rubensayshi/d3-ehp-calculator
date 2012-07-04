@@ -8,7 +8,9 @@ var SimulationView = Backbone.View.extend({
         'click button.reset':        'viewToModel'
     },
     
+    
     itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'waist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
+    activeitemslot : null,
 
     initialize: function() {
         _.bindAll(this);
@@ -338,6 +340,7 @@ var SimulationView = Backbone.View.extend({
                                     .append($newItem),
                 $tabA        = $('<a />')
                                     .on('click', _.bind(function(e) {
+                                        this.activeitemslot = itemslot;
                                         this.doItemCompare(itemslot);
                                         $tabA.tab('show');         
                                         e.preventDefault();
@@ -374,10 +377,15 @@ var SimulationView = Backbone.View.extend({
             $(this.itemcompare_result_row_template({'key': resulttype, 'title': title, 'type': 'viteq'})).appendTo($('#item-compare-viteq table.results tbody', this.el));
         }, this);
         
-        this.doItemCompare($('ul.slot-list > li:first', this.el).data('itemslot'));
+
+        this.activeitemslot = $('ul.slot-list > li:first', this.el).data('itemslot');
+        this.doItemCompare();
+        this.model.on('change', _.bind(function() { this.doItemCompare(); }, this));
     },
     
     doItemCompare : function(itemslot) {
+        itemslot = itemslot || this.activeitemslot;
+        
         var vit_model = this.model.clone();
         vit_model.set('base_vit', vit_model.get('base_vit')+1);
         var vit_ehp = vit_model.get('ehp_base') - this.model.get('ehp_base');
