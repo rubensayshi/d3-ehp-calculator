@@ -385,10 +385,11 @@ var SimulationView = Backbone.View.extend({
             newItem.on('change', function() { this.doItemCompare(itemslot); }, this);
 
             newItem.on('change', function() { this.validateNewItemEquippable(itemslot); }, this);
-            this.validateNewItemEquippable(itemslot);
 
             $('ul.slot-list', this.el).append($tab);
             $('div.slot-list', this.el).append($tabpane);
+            
+            this.validateNewItemEquippable(itemslot);
         }, this);
 
         $('ul.slot-list > li:first', this.el).addClass('active');
