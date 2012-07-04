@@ -52,11 +52,29 @@ var Item = Backbone.Model.extend({
         this.trigger('change');
     },
 
+    hasNonDefaultValues: function() {
+        return _.any(this.getAllOptions(), function(o_info, o_name) {
+            if(this.get(o_name) != o_info['default']) {
+                return true;
+            }
+            return false;
+        }, this);
+    },
+
     reset : function () {
         _.each(this.getAllOptions(), function(o_info, o_name) {
             this.set(o_name, o_info['default']);
         }, this);
         
+        this.trigger('change');
+        this.save();
+    },
+
+    overwriteStatsWith : function (item) {
+        _.each(this.getAllOptions(), function(o_info, o_name) {
+            this.set(o_name, item.get(o_name))
+        }, this);
+
         this.trigger('change');
         this.save();
     }

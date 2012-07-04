@@ -5,7 +5,8 @@ var SimulationView = Backbone.View.extend({
         'change select':             'viewToModel',
         'change .your_class':        'changeClass',
         'click #item-compare-alert .close': 'closeItemCompareAlert', 
-        'click button.reset':        'viewToModel'
+        'click button.reset':        'viewToModel',
+        'click button.equip-new-item': 'equipNewItem'
     },
     
     itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'waist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
@@ -25,6 +26,30 @@ var SimulationView = Backbone.View.extend({
     closeItemCompareAlert : function() {
         if (localStorage) {
             localStorage.setItem('closeItemCompareAlert', true);
+        }
+    },
+
+    getActiveItemSlot: function() {
+        return $('ul.slot-list li.active').data('itemslot');
+    },
+
+    equipNewItem: function() {
+        var itemSlot = this.getActiveItemSlot();
+        var curItem = this.model.getItemForSlot(itemSlot, this.model.gearbag);
+        var newItem = this.model.getItemForSlot(itemSlot, this.model.new_gearbag);
+
+        curItem.overwriteStatsWith(newItem);
+        newItem.reset();
+    },
+
+    validateNewItemEquippable: function(itemSlot) {
+        var newItem = this.model.getItemForSlot(itemSlot, this.model.new_gearbag);
+        var $tabPane = $('.tab-pane').filter(function() { return $.data(this, "itemslot") == itemSlot; });
+        if (newItem.hasNonDefaultValues()) {
+            $('button.equip-new-item', $tabPane).removeAttr('disabled');
+        }
+        else {
+            $('button.equip-new-item', $tabPane).attr('disabled', true);   
         }
     },
 
@@ -354,9 +379,14 @@ var SimulationView = Backbone.View.extend({
             (new ItemView({'el': $currentItem, 'model': curItem, 'title': 'Current Item'})).render();
             (new ItemView({'el': $newItem,     'model': newItem, 'title': 'New Item', 'isNewItem': true})).render();
 
+            $('.title', $newItem).append('<button class="btn equip-new-item btn-primary btn-mini pull-right"><i class="icon-chevron-left icon-white"></i> Equip</button>');
+
             curItem.on('change', function() { this.doItemCompare(itemslot); }, this);
             newItem.on('change', function() { this.doItemCompare(itemslot); }, this);
-            
+
+            newItem.on('change', function() { this.validateNewItemEquippable(itemslot); }, this);
+            this.validateNewItemEquippable(itemslot);
+
             $('ul.slot-list', this.el).append($tab);
             $('div.slot-list', this.el).append($tabpane);
         }, this);
