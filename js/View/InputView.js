@@ -88,6 +88,10 @@ var InputView = SimulationView.extend({
                 .appendTo($col2)
                 .tooltip();
         }
+        
+        if (optionInfo['disabled']) {
+            $input.attr('disabled', true);
+        }
     },
 
     changeClass: function() {
