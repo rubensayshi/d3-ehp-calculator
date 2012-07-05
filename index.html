@@ -151,34 +151,34 @@
                     </div>
                     <div class="tab-content">
                         <div id="character-list" class="tab-pane active well">
-                        	<h3>Characters</h3>
+                            <h3>Characters</h3>
                             <ul class="character-list well unstyled"></ul>
                             <button class="btn btn-success add-character"><i class="icon-user icon-white"></i> Add New Character</button>             
                         </div>
                         <div id="intro-ehp" class="tab-pane well">
-                        	<h3>What does EHP stand for?</h3>
-                        	<p>I think originally EHP started as 'Effective Hit Points', over the course of years it has gotten a lot of varations and I tent to use 'Effective Health Pool'. <br />
-                        	</p>
-                        	<h3>So what is it?</h3>
-                        	<p>EHP is how much <em>raw</em> damage you can take before you die. 
-                        	</p>
-							<h3>How do you calculate it?</h3>
-                        	<p>
-                        	So we calculate it by taking your HP and then adding all your damage reduction to it. <br />
-                        	Usually this is from multiple sources, such as armor, resistance, skills, passives, etc.
-                        	</p>
-							<h3>Why do you care about EHP?</h3>
-                        	<p>
-                        	Higher EHP means we can take more damage before you die, which means we can survive longer. <br />
-                        	</p>
+                            <h3>What does EHP stand for?</h3>
+                            <p>I think originally EHP started as 'Effective Hit Points', over the course of years it has gotten a lot of varations and I tent to use 'Effective Health Pool'. <br />
+                            </p>
+                            <h3>So what is it?</h3>
+                            <p>EHP is how much <em>raw</em> damage you can take before you die. 
+                            </p>
+                            <h3>How do you calculate it?</h3>
+                            <p>
+                            So we calculate it by taking your HP and then adding all your damage reduction to it. <br />
+                            Usually this is from multiple sources, such as armor, resistance, skills, passives, etc.
+                            </p>
+                            <h3>Why do you care about EHP?</h3>
+                            <p>
+                            Higher EHP means we can take more damage before you die, which means we can survive longer. <br />
+                            </p>
                         </div>
                         <div id="intro-viteq" class="tab-pane well">
-                        	<h3>What does VITeq stand for?</h3>
-                        	<p>VITeq = VITality EQuivalent
-                        	</p>
-                        	<h3>So what is it?</h3>
-                        	<p>It's how much VIT a stat equals to, for example if the calculator says +10 armor is 3 VITeq then that means that 10 armor gives as much EHP as  3 VIT would give you!
-                        	</p>
+                            <h3>What does VITeq stand for?</h3>
+                            <p>VITeq = VITality EQuivalent
+                            </p>
+                            <h3>So what is it?</h3>
+                            <p>It's how much VIT a stat equals to, for example if the calculator says +10 armor is 3 VITeq then that means that 10 armor gives as much EHP as  3 VIT would give you!
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -195,70 +195,71 @@
                         For other discussions or just telling me you like the tool you can use <a href="http://www.diablofans.com/topic/43712-diablo3-effective-health-pool-calculator/">the topic on diablofans.com</a>
                     </p>                 
                 </div>        
-                </div>
+            </div>
         </div>
         <div id="input-template">
             <div class="row-fluid">
-            <div class="span12 input-character character">
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active"> <a href="#input-character" data-toggle="tab">Input Character Stats</a> </li>
-                    </ul>
-                </div>
-                <div class="tab-content">
-                    <div id="input-character">
-                        <p><span class="badge badge-info">1</span> &nbsp; Select your class.</p>
-                        <p><span class="badge badge-info">2</span> &nbsp; Type in the stats for your ingame character screen.</p>
-                        <p><span class="badge badge-info">3</span> &nbsp; Select which passives / buffs you have on <strong><em>ingame</em> at this moment</strong> .</p>
-                        <p><span class="badge badge-success">4</span> &nbsp; Click the 'Create Character' button to go to the next step!</p>
-                        
-                        <div id="input-char-alert" class="alert alert-block">
-                        <button class="close" data-dismiss="alert">x</button>
-                        The stats in your ingame character screen already include a lot of your passives and buffs. <br />
-                        Below you put in the stats from your character screen and tick the checkboxes for the passives and buffs you already have on you! <br />
-                        That way we will be able to calculate what your stats are without those passives and we need that for good calculations :-)
+                <div class="span12 input-character character">
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs">
+                            <li class="active"> <a href="#input-character" data-toggle="tab">Input Character Stats</a> </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div id="input-character">
+                            <p><span class="badge badge-info">1</span> &nbsp; Select your class.</p>
+                            <p><span class="badge badge-info">2</span> &nbsp; Type in the stats for your ingame character screen.</p>
+                            <p><span class="badge badge-info">3</span> &nbsp; Select which passives / buffs you have on <strong><em>ingame</em> at this moment</strong> .</p>
+                            <p><span class="badge badge-success">4</span> &nbsp; Click the 'Create Character' button to go to the next step!</p>
+                            
+                            <div id="input-char-alert" class="alert alert-block">
+                                <button class="close" data-dismiss="alert">x</button>
+                                The stats in your ingame character screen already include a lot of your passives and buffs. <br />
+                                Below you put in the stats from your character screen and tick the checkboxes for the passives and buffs you already have on you! <br />
+                                That way we will be able to calculate what your stats are without those passives and we need that for good calculations :-)
+                            </div>
+                            <table id="base_options" class="table table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Please fill in your stats as you read them from your character screen.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Your Class</th>
+                                        <td>
+                                            <select class="your_class"></select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table id="options" class="table table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <table id="shared_options" class="table table-bordered table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <table class="table table-bordered table-striped table-condensed">
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2" class="well" style="text-align: right;">
+                                            <button class="btn btn-danger back"><i class="icon-arrow-left icon-white"></i> Cancel / Back</button>
+                                            <button class="btn btn-success create-char"><i class="icon-user icon-white"></i> Create Character</button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
-                        <table id="base_options" class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Please fill in your stats as you read them from your character screen.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>Your Class</th>
-                                    <td>
-                                        <select class="your_class"></select>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table id="options" class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <table id="shared_options" class="table table-bordered table-striped table-condensed">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Please select the passives and buffs you have on you RIGHT NOW. <span class="label label-info auto_tooltip" title="you will be able to change skills to see different setups later.">?</span></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <table class="table table-bordered table-striped table-condensed">
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2" class="well" style="text-align: right;">
-                                        <button class="btn btn-danger back"><i class="icon-arrow-left icon-white"></i> Cancel / Back</button>
-                                        <button class="btn btn-success create-char"><i class="icon-user icon-white"></i> Create Character</button>
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
                     </div>
                 </div>
             </div>

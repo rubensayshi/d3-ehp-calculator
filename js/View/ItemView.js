@@ -81,6 +81,10 @@ var ItemView = Backbone.View.extend({
                         .addClass(optionName);
         }
         
+        if (optionInfo['disabled']) {
+            $input.attr('disabled', true);
+        }
+        
         $input.appendTo($col2);
     },
     

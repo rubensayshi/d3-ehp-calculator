@@ -9,7 +9,9 @@ var SimulationView = Backbone.View.extend({
         'click button.equip-new-item': 'equipNewItem'
     },
     
+    
     itemslots : ['head', 'shoulders', 'chest', 'hands', 'wrist', 'waist', 'legs', 'feet', 'amulet', 'ring1', 'ring2', 'weapon', 'offhand'],
+    activeitemslot : null,
 
     initialize: function() {
         _.bindAll(this);
@@ -70,6 +72,8 @@ var SimulationView = Backbone.View.extend({
     },
 
     viewToModel: function() {
+        var props = {};
+        
         _.each(this.model.getAllOptions(), function(optionInfo, optionName) {
             var selector = this.getCharacterSelector(optionName);
             var $fieldObj = $(selector,  this.el);
@@ -77,17 +81,19 @@ var SimulationView = Backbone.View.extend({
             if ($fieldObj.is('span') || $fieldObj.is('td')) {
                 // --
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'checkbox') {
-                this.model.set(optionName, !!$fieldObj.prop('checked'));
+                props[optionName] = !!$fieldObj.prop('checked');
             } else if ($fieldObj.is('input') && $fieldObj.prop('type') == 'text' && !$fieldObj.prop('readonly')) {
                 var val = $fieldObj.val();
                     val = $fieldObj.hasClass('plain') ? val : normalizeFloat(val, optionName);
-                
-                this.model.set(optionName, val);
+
+                props[optionName] = val;
             } else if ($fieldObj.is('select') && !$fieldObj.prop('readonly')) {
-                this.model.set(optionName, $fieldObj.val());
+                props[optionName] = $fieldObj.val();
             }
         }, this);
-
+                
+        this.model.set(props);
+        
         this.model.save();
     },
 
@@ -363,6 +369,7 @@ var SimulationView = Backbone.View.extend({
                                     .append($newItem),
                 $tabA        = $('<a />')
                                     .on('click', _.bind(function(e) {
+                                        this.activeitemslot = itemslot;
                                         this.doItemCompare(itemslot);
                                         $tabA.tab('show');         
                                         e.preventDefault();
@@ -405,10 +412,15 @@ var SimulationView = Backbone.View.extend({
             $(this.itemcompare_result_row_template({'key': resulttype, 'title': title, 'type': 'viteq'})).appendTo($('#item-compare-viteq table.results tbody', this.el));
         }, this);
         
-        this.doItemCompare($('ul.slot-list > li:first', this.el).data('itemslot'));
+
+        this.activeitemslot = $('ul.slot-list > li:first', this.el).data('itemslot');
+        this.doItemCompare();
+        this.model.on('change', _.bind(function() { this.doItemCompare(); }, this));
     },
     
     doItemCompare : function(itemslot) {
+        itemslot = itemslot || this.activeitemslot;
+        
         var vit_model = this.model.clone();
         vit_model.set('base_vit', vit_model.get('base_vit')+1);
         var vit_ehp = vit_model.get('ehp_base') - this.model.get('ehp_base');
