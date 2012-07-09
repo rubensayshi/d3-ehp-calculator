@@ -109,3 +109,7 @@ a:focus  { outline: none; -moz-outline-style: none; }
 .alt_ehp em:nth-child(2) {
     width: 30%;
 }
+
+.new-item th > button {
+    margin-left: 5px;
+}
