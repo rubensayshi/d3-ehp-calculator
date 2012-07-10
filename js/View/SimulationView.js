@@ -117,12 +117,12 @@ var SimulationView = Backbone.View.extend({
                 .appendTo($row);
         $col4 = $('<td />')
                 .appendTo($row);
-                
-        _.each(['magic_only', 'melee_only', 'ranged_only', 'dodge_only'], function(x_only) {
-            if (typeof(optionInfo[x_only]) != 'undefined') {
-                $row.addClass(x_only);                        
+
+        _.each(alttypes, function(title, resulttype) {            
+            if (typeof(optionInfo[resulttype + '_only']) != 'undefined') {
+                $row.addClass(resulttype + '_only');
             }
-        });
+        }, this);
 
         $('<span />').addClass('statweight_ehp').appendTo($col2);
         $('<span />').addClass('statweight_viteq').appendTo($col3);
