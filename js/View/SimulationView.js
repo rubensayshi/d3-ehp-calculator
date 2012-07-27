@@ -39,6 +39,45 @@ var SimulationView = Backbone.View.extend({
         var itemSlot = this.getActiveItemSlot();
         var curItem = this.model.getItemForSlot(itemSlot, this.model.gearbag);
         var newItem = this.model.getItemForSlot(itemSlot, this.model.new_gearbag);
+        var model = this.model;
+
+        // modify this if you modify the item compare view
+        var statsMapping = [
+            'extra_str',
+            'extra_dex',
+            'extra_int',
+            'base_vit',
+            'base_armor',
+            'base_resist',
+            'base_dodge',
+            'extra_life',
+            'base_melee_reduc',
+            'base_ranged_reduc',
+            'base_elite_reduc',
+            'block_chance',
+            'min_block_value',
+            'max_block_value'
+        ];
+
+        _.each(statsMapping, function(optionName) {
+            model.set(optionName, model.get(optionName) - curItem.get(optionName) + newItem.get(optionName));
+        })
+
+        model.set('base_str', model.get('base_str') + model.get('extra_str'));
+        model.set('base_armor', model.get('base_armor') + model.get('extra_armor') + model.get('extra_str') * 1);
+        model.set('extra_str', 0);
+        model.set('extra_armor', 0); // not used anywhere at the time of committing this code
+
+        model.set('base_int', model.get('base_int') + model.get('extra_int'));
+        model.set('base_resist', model.get('base_resist') + model.get('extra_resist') + model.get('extra_int') * 0.1);
+        model.set('extra_int', 0);
+        model.set('extra_resist', 0); // not used anywhere at the time of committing this code
+
+        model.set('base_dodge', model.get('base_dodge') + model.getDodgeFromExtraDex());
+        model.set('base_dex', model.get('base_dex') + model.get('extra_dex'));
+        model.set('extra_dex', 0);
+
+        model.simulate();
 
         curItem.overwriteStatsWith(newItem);
         newItem.reset();
