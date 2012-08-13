@@ -20,7 +20,7 @@ var Character = Backbone.Model.extend({
         melee:        false,
 
         moblevel:     63,
-        
+
         extra_vit:    0,
         extra_dex:    0,
         extra_int:    0,
@@ -46,11 +46,11 @@ var Character = Backbone.Model.extend({
     base_options:  {
         your_class:       {"type": "select", "default": "br", "title": "Your Class", "options": function () {
             var classes = {};
-            
+
             _.each(classlist, function(info, shortname) {
                 classes[shortname] = info[1];
             }, this);
-            
+
             return classes;
         }},
         description:      {"type": "text", "default": "",   "title": "Description", "plain": true, "tip": "This is what we'll use in the list of saved characters."},
@@ -78,39 +78,39 @@ var Character = Backbone.Model.extend({
     shared_options: {
         enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
     },
-    
+
     getAllOptions: function() {
         return _.extend({}, this.base_options, this.options, this.extra_options, this.shared_options);
     },
-    
+
     initialize: function () {
         // ensure there's always an options collection
         if (!this.options) {
             this.options = {};
         }
-        
+
         _.each(this.getAllOptions(), function(o_info, o_name) {
             if(typeof(this.get(o_name)) == 'undefined') {
                 this.set(o_name, o_info['default']);
             }
         }, this);
-        
+
         this.gearbag = new ItemBag();
         this.gearbag.localStorage = new Backbone.LocalStorage("gear" + this.id);
         this.gearbag.fetch();
-        
+
         this.new_gearbag = new ItemBag();
         this.new_gearbag.localStorage = new Backbone.LocalStorage("new_gear" + this.id);
         this.new_gearbag.fetch();
-        
+
         this.on('change', this.simulate);
         this.trigger('change');
     },
-    
+
     getItemForSlot: function(itemslot, itembag) {
         var aItems = itembag.where({'slot': itemslot}),
             item;
-        
+
         if (aItems.length) {
             var item = aItems[0];
         } else {
@@ -133,11 +133,12 @@ var Character = Backbone.Model.extend({
         if (this.get('enchantress')) {
             armormodifier += .15;
         }
-        
-        return armormodifier; 
+
+        return armormodifier;
     },
     modifyBaseResist             : function (resist)         { return resist; },
     modifyResistModifier         : function (resistmodifier) { return resistmodifier; },
+    modifyVitModifier            : function (vitmodifier)    { return vitmodifier; },
     modifyBaseLife               : function (life)           { return life; },
     modifyLifeModifier           : function (lifemodifier)   { return lifemodifier; },
     modifyDodgeChance            : function (dodgechance)    { return dodgechance; },
@@ -156,42 +157,42 @@ var Character = Backbone.Model.extend({
     getDodgeFromExtraDex : function() {
         var basedex  = this.get('base_dex');
         var extradex = this.get('extra_dex');
-        
+
         var calcdex  = basedex;
         var dexsteps = [[100, 0.100], [500, 0.025], [1000, 0.020], [8000, 0.010]];
         var dodge    = 0;
-        
+
         _.all(dexsteps, function(dexstep) {
             var stepmax = dexstep[0],
                 ddgpdex = dexstep[1];
-            
+
             if (basedex <= stepmax) {
                 var dextomax    = (stepmax - basedex);
                 var dexoverflow = dextomax - extradex;
-                
+
                 if (dexoverflow >= 0) {
                     dodge += (extradex * ddgpdex);
-                    
+
                     return false;
                 } else {
                     dodge += (dextomax * ddgpdex);
-                    
+
                     basedex += dextomax;
                     extradex-= dextomax;
-                    
+
                     return true;
                 }
             }
-            
+
             return true;
         });
-        
+
         return dodge;
     },
-    
+
     rebase : function () {
         this.off('change', this.simulate);
-        
+
         this.set('armor',  this.get('base_armor'));
         this.set('resist', this.get('base_resist'));
         this.set('dodge',  this.get('base_dodge'));
@@ -199,7 +200,7 @@ var Character = Backbone.Model.extend({
         // create and modify the armor modifier
         var armormodifier = 1;
         armormodifier = this.modifyArmorModifier(armormodifier);
-        
+
         // create and modify the resist modifier
         var resistmodifier = 1;
         resistmodifier = this.modifyResistModifier(resistmodifier);
@@ -209,28 +210,28 @@ var Character = Backbone.Model.extend({
 
         this.set('base_armor',  this.get('base_armor')  - this.modifyBaseArmor(0));
         this.set('base_resist', this.get('base_resist') - this.modifyBaseResist(0));
-        
-        
+
+
         // create and modify the dodge chance
         var dodgechance = 1;
         dodgechance = this.modifyDodgeChance(dodgechance);
         this.set('base_dodge', ((1 - (1-(this.get('dodge') / 100)) / dodgechance)) * 100);
-        
+
         this.on('change', this.simulate);
     },
-    
+
     simulate : function () {
         this.off('change', this.simulate);
-                
+
         // grab the base values and set them so we can start modifying that value
         this.set('str',    this.get('base_str')    + this.get('extra_str'));
         this.set('dex',    this.get('base_dex')    + this.get('extra_dex'));
         this.set('int',    this.get('base_int')    + this.get('extra_int'));
         this.set('vit',    this.get('base_vit'));
-        
+
         this.set('armor',  this.get('base_armor')  + this.get('extra_armor')  + (this.get('extra_str')*1));
         this.set('resist', this.get('base_resist') + this.get('extra_resist') + (this.get('extra_int')*0.1));
-        
+
         this.set('dodge',  this.get('base_dodge')  + this.getDodgeFromExtraDex());
 
         // modify the base values (static increases)
@@ -245,13 +246,18 @@ var Character = Backbone.Model.extend({
         var resistmodifier = 1;
         resistmodifier = this.modifyResistModifier(resistmodifier);
 
+        var vitmodifier = 1;
+        vitmodifier = this.modifyVitModifier(vitmodifier);
+
+        this.set('vit', this.get('vit') * vitmodifier);
+
         // create and modify the dodge chance
         var dodgechance = 1;
         dodgechance *= (1 - (this.get('dodge') / 100));
         dodgechance = this.modifyDodgeChance(dodgechance);
         dodgechance = 1 - dodgechance;
         this.set('dodge', dodgechance);
-                    
+
         var dodgemodifier = 1 - dodgechance;
 
         // apply the modifiers to the base value (with their static increases already applied) for armor and resist
@@ -269,7 +275,7 @@ var Character = Backbone.Model.extend({
 
         // add more modifiers
         modifier = this.modifyReductionModifier(modifier);
-        
+
         // create the special modifiers
         var modifiers = {
             'base':   modifier,
@@ -303,7 +309,7 @@ var Character = Backbone.Model.extend({
         } else {
             this.set('avg_block_value', ( this.get('min_block_value') + this.get('max_block_value') ) / 2);
         }
-        
+
         // ensure not below 0
         if (this.get('avg_block_value') < 0) {
             this.set('avg_block_value', 0);
@@ -315,17 +321,17 @@ var Character = Backbone.Model.extend({
         var block_perc   = this.get('block_chance') / 100;
         var block_amt    = this.get('avg_block_value');
         var expected_hit = this.get('incoming_hit');
-                
+
         _.each(resulttypes, function(resulttype) {
             var modifier       = modifiers[resulttype];
             var reduced_hit    = expected_hit > 0 ? expected_hit * modifier : 0;
             var block_modifier = expected_hit > 0 ? ((reduced_hit * (1 - block_perc) + block_perc * (reduced_hit - Math.min(reduced_hit, block_amt))) / expected_hit) : modifier;
-            
+
             var ehp     = this.get('life') / modifier;
             var ehp_d   = this.get('life') / modifier / dodgemodifier;
             var ehp_b   = this.get('life') / block_modifier;
             var ehp_bnd = this.get('life') / block_modifier / dodgemodifier;
-            
+
             this.set('ehp_'+resulttype,        ehp);
             this.set('ehp_'+resulttype+'_d',   ehp_d);
             this.set('ehp_'+resulttype+'_b',   ehp_b);

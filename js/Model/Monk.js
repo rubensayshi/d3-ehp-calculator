@@ -4,7 +4,7 @@ var Monk = Character.extend({
         your_class:  "mn",
         melee     :  true
     }),
-    
+
     options : _.extend({}, Character.prototype.options, {
         resolve:                   {"type": "checkbox", "default": false, "title": "Resolve", "alternative": true, "tip": "Keep in mind you can't always have this on your target (ranged mobs, etc).", "alt": "-25% damage taken from mobs you've hit"},
         the_guardians_path:        {"type": "checkbox", "default": false, "title": "The Guardians Path", "alternative": true, "base_d_only": true, "tip": "Only if you're using DUAL WIELD!!", "alt": "+15% dodge when dual wielding"},
@@ -15,8 +15,8 @@ var Monk = Character.extend({
         mantra_of_healing_heavenly:{"type": "checkbox", "default": false, "title": "Mantra of Healing - Heavenly Body", "alternative": true, "alt": "+10% life"},
         mystic_ally_earth:         {"type": "checkbox", "default": false, "title": "Mystic Ally - Earth", "alternative": true, "alt": "+10% life"}
     }),
-    
-    extra_options : _.extend({}, Character.prototype.extra_options, {       
+
+    extra_options : _.extend({}, Character.prototype.extra_options, {
         mantra_of_conv_intimid:   {"type": "checkbox", "default": false, "title": "Mantra of Conviction - Intimidation", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         deadly_reach_keen_eye:    {"type": "checkbox", "default": false, "title": "Deadly Reach - Keen Eye", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
         crippling_wave_concussion:{"type": "checkbox", "default": false, "title": "Crippling Wave - Concussion", "alternative": true, "tip": "Keep in mind you can't really keep a 100% uptime"},
@@ -30,24 +30,28 @@ var Monk = Character.extend({
 
         return armor;
     },
-    
+
     modifyResistModifier : function (resistmodifier) {
         if (this.get('mantra_of_healing_time')) {
             resistmodifier += .20;
         }
-        
+
         return resistmodifier;
     },
-    
-    modifyLifeModifier : function (lifemodifier) {
+
+    modifyVitModifier : function (vitmodifier) {
         if (this.get('mantra_of_healing_heavenly')) {
-            lifemodifier += .10;
+            vitmodifier += .10;
         }
-        
+
+        return vitmodifier;
+    },
+
+    modifyLifeModifier : function (lifemodifier) {
         if (this.get('mystic_ally_earth')) {
             lifemodifier += .10;
         }
-        
+
         return lifemodifier;
     },
 
@@ -55,7 +59,7 @@ var Monk = Character.extend({
         if (this.get('mantra_of_evasion_armor')) {
             armormodifier += .20;
         }
-        
+
         if (this.get('deadly_reach_keen_eye')) {
             armormodifier += .50;
         }
@@ -63,33 +67,33 @@ var Monk = Character.extend({
         // parent does the check for enchantress
         return this.constructor.__super__.modifyArmorModifier.apply(this, arguments);
     },
-    
+
 
     modifyDodgeChance : function (dodgechance) {
         if (this.get('mantra_of_evasion') || this.get('mantra_of_evasion_armor')) {
             dodgechance *= (1 - 0.15);
         }
-        
+
         if (this.get('the_guardians_path')) {
             dodgechance *= (1 - 0.15);
         }
-        
+
         if (this.get('fists_of_thunder_flash')) {
             dodgechance *= (1 - 0.16);
         }
-        
-        return dodgechance; 
+
+        return dodgechance;
     },
 
     modifyReductionModifier : function (modifier) {
         if (this.get('resolve')) {
             modifier *= (1 - 0.25);
         }
-        
+
         if (this.get('crippling_wave_concussion')) {
             modifier *= (1 - 0.20);
         }
-        
+
         if (this.get('mantra_of_conv_intimid')) {
             modifier *= (1 - 0.10);
         }
