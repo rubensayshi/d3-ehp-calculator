@@ -60,6 +60,10 @@ var CharacterList = new Characters();
 CharacterList.localStorage = new Backbone.LocalStorage("Characters");
 CharacterList.fetch();
 
+CharacterList.each(function(character) {
+    character.stealGearBagsFromUndefined();
+});
+
 gahandler.logVersion(VERSION);
 
 $('.auto_tooltip').tooltip();

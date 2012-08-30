@@ -37,7 +37,9 @@ var Character = Backbone.Model.extend({
         armor_reduc:  null,
         resist_reduc: null,
         avg_block_value:       0,
-        extra_avg_block_value: 0
+        extra_avg_block_value: 0,
+
+        stealfromundefined: true
     },
 
     gearbag: null,
@@ -95,6 +97,13 @@ var Character = Backbone.Model.extend({
             }
         }, this);
 
+        this.buildGearBags();
+
+        this.on('change', this.simulate);
+        this.trigger('change');
+    },
+
+    buildGearBags: function() {
         this.gearbag = new ItemBag();
         this.gearbag.localStorage = new Backbone.LocalStorage("gear" + this.id);
         this.gearbag.fetch();
@@ -102,9 +111,28 @@ var Character = Backbone.Model.extend({
         this.new_gearbag = new ItemBag();
         this.new_gearbag.localStorage = new Backbone.LocalStorage("new_gear" + this.id);
         this.new_gearbag.fetch();
+    },
 
-        this.on('change', this.simulate);
-        this.trigger('change');
+    stealGearBagsFromUndefined: function() {
+        if (this.id && this.get('stealfromundefined') && this.gearbag.size() == 0 && this.new_gearbag.size() == 0) {
+            this.buildGearBags();
+            this.set('stealfromundefined', false);
+
+            undefinedgearbag = new ItemBag();
+            undefinedgearbag.localStorage = new Backbone.LocalStorage("gear" + undefined);
+            undefinedgearbag.fetch();
+
+            undefinednew_gearbag = new ItemBag();
+            undefinednew_gearbag.localStorage = new Backbone.LocalStorage("new_gear" + undefined);
+            undefinednew_gearbag.fetch();
+
+            undefinedgearbag.each(function(item) {
+                this.gearbag.add(item.clone());
+            }, this);
+            undefinednew_gearbag.each(function(item) {
+                this.new_gearbag.add(item.clone());
+            }, this);
+        }
     },
 
     getItemForSlot: function(itemslot, itembag) {
@@ -216,6 +244,9 @@ var Character = Backbone.Model.extend({
         var dodgechance = 1;
         dodgechance = this.modifyDodgeChance(dodgechance);
         this.set('base_dodge', ((1 - (1-(this.get('dodge') / 100)) / dodgechance)) * 100);
+
+        this.buildGearBags();
+        this.set('stealfromundefined', false);
 
         this.on('change', this.simulate);
     },
