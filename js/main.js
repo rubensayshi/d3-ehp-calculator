@@ -40,19 +40,19 @@ var normalizeFloat = function(value, optionName, alertOnError) {
     if (value === '') {
         value = 0;
     }
-    
+
     var res = parseFloat(value);
 
     if (isNaN(res) || (res != value && res == parseInt(value))) {
         if (alertOnError) {
             alert("We failed to properly parse the value for [" + optionName + "]");
-        
+
             return 0;
-        } else {                  
+        } else {
             return normalizeFloat(value.replace(",", "."), optionName, true);
         }
     }
-    
+
     return res;
 }
 
