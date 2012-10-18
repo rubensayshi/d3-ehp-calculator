@@ -78,7 +78,8 @@ var Character = Backbone.Model.extend({
     options:       {},
     extra_options: {},
     shared_options: {
-        enchantress:      {"type": "checkbox", "default": false, "title": "Enchantress Companion", "alternative": true, "alt": "+15% armor"}
+        enchantress_armor:      {"type": "checkbox", "default": false, "title": "Enchantress Powered Armor", "alternative": true, "alt": "+5% armor"},
+        enchantress_reflect:    {"type": "checkbox", "default": false, "title": "Enchantress Reflect Missiles", "ranged_only": true,  "alternative": true, "alt": "-6% ranged damage taken"}
     },
 
     getAllOptions: function() {
@@ -158,8 +159,8 @@ var Character = Backbone.Model.extend({
      */
     modifyBaseArmor              : function (armor)          { return armor; },
     modifyArmorModifier          : function (armormodifier)  {
-        if (this.get('enchantress')) {
-            armormodifier += .15;
+        if (this.get('enchantress_armor')) {
+            armormodifier += .05;
         }
 
         return armormodifier;
@@ -178,7 +179,13 @@ var Character = Backbone.Model.extend({
         return modifier;
     },
     modifyReductionModifierMelee  : function (modifier)       { return modifier; },
-    modifyReductionModifierRanged : function (modifier)       { return modifier; },
+    modifyReductionModifierRanged : function (modifier)       {
+        if (this.get('enchantress_reflect')) {
+            modifier *= (1 - 0.05);
+        }
+
+        return modifier;
+    },
     modifyReductionModifierElite  : function (modifier)       { return modifier; },
     modifyReductionModifierMagic  : function (modifier)       { return modifier; },
 
